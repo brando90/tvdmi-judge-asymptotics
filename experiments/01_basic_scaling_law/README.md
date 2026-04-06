@@ -1,33 +1,53 @@
-# Experiment 01 — Basic Scaling Law
+# Experiment 01 — Random-Witness Scaling Law
 
-## Goal
+**Tests:** Theorem 1 (random-witness consistency)
 
-Verify the basic scaling law `Error(K) ~ K^{-alpha}` with independent,
-identically distributed judges.
+## Theory prediction
 
-## Hypothesis
+Each judge is a random witness h_j drawn from a distribution μ over critic
+functions. The best-of-K estimator is τ̂(c) = max_{j≤K} Δ_c(h_j). The
+approximation gap satisfies:
 
-When K i.i.d. judges each have accuracy p > 0.5, the aggregated error from
-majority vote or mean decreases as a power law in K.
+    Pr(τ(c) − τ̂(c) > ε) ≤ exp(−K · p_ε(c))
 
-## Method
+where p_ε(c) = μ{h : Δ_c(h) ≥ τ(c) − ε}. When p_ε ∝ ε^β, the error
+scales as O_p(K^{−1/β}).
 
-1. Fix n items with known ground-truth labels.
-2. For each judge k in {1, ..., K}, generate binary judgments with accuracy p.
-3. Aggregate via majority vote and via mean.
-4. Compute error = fraction of items where the aggregate disagrees with
-   ground truth.
-5. Sweep K in {1, 2, 3, 5, 10, 20, 50, 100, 200, 500}.
-6. Sweep p in {0.55, 0.6, 0.7, 0.8, 0.9}.
-7. Sweep n in {100, 500, 1000, 5000}.
-8. Repeat each configuration 100 times for confidence intervals.
+## Simulation design
 
-## Expected output
+1. **Ground truth**: Fix a joint distribution P_UV (bivariate Gaussian
+   with known correlation, discretized to a d×d grid, d=20). Compute the
+   true τ(c) = TV(P_UV, P_U ⊗ P_V) exactly on the grid.
 
-- Log-log plot of Error vs K for each (p, n) combination.
-- Fitted alpha for each setting.
-- Table of alpha values vs p.
-- Comparison: theoretical alpha (from Condorcet/CLT) vs empirical.
+2. **Judge distribution**: Each judge h_j is a random binary function on
+   the d×d grid. To control β, use a parametric family:
+   - Draw a random "quality" parameter q_j ~ Beta(α_shape, 1) where
+     α_shape controls the tail (higher α_shape → higher β → thinner tail
+     near the optimum → slower convergence).
+   - Given q_j, construct h_j as a noisy version of the optimal critic h*,
+     where h_j(u,v) = h*(u,v) with probability q_j, else random.
+   - This gives p_ε(c) ∝ ε^β with β determined by α_shape.
+
+3. **Protocol**: For each K in {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024}:
+   - Draw K judges from the distribution.
+   - Compute Δ_c(h_j) for each judge (population-level, no finite-sample
+     noise — that is Experiment 03).
+   - Record τ̂_K = max_j Δ_c(h_j).
+   - Repeat 500 times. Record mean and std of the gap τ(c) − τ̂_K.
+
+4. **β sweep**: β ∈ {0.5, 1, 2, 4}.
+
+## Plots
+
+- Log-log plot of mean gap vs K, one curve per β value.
+- Overlay the theoretical prediction K^{−1/β} as a dashed line.
+- Fit slope via OLS on the log-log data; report α̂ and compare to 1/β.
+
+## Output files
+
+- `main.py`
+- `results/exp1_scaling_loglog.pdf` / `.png`
+- `results/exp1_fitted_exponents.csv` (columns: beta, alpha_predicted, alpha_fitted, R²)
 
 ## Run
 
