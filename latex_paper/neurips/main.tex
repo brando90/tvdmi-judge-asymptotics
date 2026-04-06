@@ -55,26 +55,21 @@ with Judge Ensembles: Scaling Laws and Formal Guarantees}
 \maketitle
 
 \begin{abstract}
-Reference-free evaluation methods that aggregate scores from multiple imperfect
-judges are increasingly used to assess language model outputs, yet the
-theoretical foundations for when and why these aggregated scores converge to a
-gold-standard evaluation signal remain sparse. We study the asymptotic behavior
-of judge ensembles through the lens of Total Variation Distance and Mutual
-Information (TVD-MI). Concretely, we ask: if $K$ judges independently (or
-dependently) score $n$ items, under what conditions does the aggregated
-reference-free score converge to an oracle evaluation target as $K \to \infty$?
-We formalize the evaluation setup, define a general judge ensemble model
-parameterized by inter-judge dependence $\rho$ and adversarial fraction
-$\delta$, and prove a consistency theorem establishing convergence under
-explicit assumptions on judge quality and diversity. We derive a scaling law of
-the form $\mathrm{Error}(K) \sim K^{-\alpha}$, characterize the exponent
-$\alpha$ as a function of $\rho$ and $\delta$, and identify sharp robustness
-thresholds beyond which aggregation fails. Our theoretical results are
-validated by simulations across a range of judge configurations, and the core
-definitions and theorems are formalized in the Lean~4 proof assistant. This
-work provides both a practical guideline for how many judges suffice for
-reliable reference-free evaluation and a formal foundation for the emerging
-practice of LLM-as-a-judge ensembles.
+We study the asymptotic behavior of reference-free evaluation with ensembles of
+TVD-MI judges. Each judge is modeled as a stochastic critic for the binary
+hypothesis test distinguishing joint from product distributions. We prove two
+complementary judge-scaling results. In a \emph{coverage regime}, where judges
+are random witnesses drawn from a critic distribution, the best-of-$K$ ensemble
+converges to the optimal TVD witness at a rate controlled by the near-optimal
+witness mass. In a \emph{consensus regime}, where judges are independently
+better than chance relative to the Bayes critic, majority vote converges
+exponentially fast to the optimal critic. Combining these with bounded-score
+concentration yields a two-axis error decomposition in judge count~$K$ and
+per-judge sample size~$n$. We further show that residual judge dependence
+induces an irreducible variance floor, and adversarial contamination induces an
+unavoidable additive bias. Under a monotone validity link between TVD-MI and an
+inaccessible gold metric, these results imply asymptotic rank consistency with
+gold evaluation.
 \end{abstract}
 
 \section{Introduction}
