@@ -4,110 +4,49 @@ This directory contains all experiments for the TVD-MI judge asymptotics
 project. Each experiment is in a numbered folder. Run each experiment from
 its own folder.
 
+## Shared utilities
+
+`utils.py` — shared across all experiments. Provides:
+- `make_joint_distribution(d, correlation)` — discretized bivariate Gaussian
+- `compute_true_tvd(P_UV, P_U, P_V)` — exact TVD on a grid
+- `optimal_critic(P_UV, P_U, P_V)` — Bayes-optimal binary critic h*
+- `compute_delta(h, P_UV, P_U, P_V)` — Δ_c(h) for a given critic
+- `fit_power_law(K_vals, errors)` — fit error = aK^{-α} + b
+- `fit_exponential_decay(K_vals, errors)` — fit error = a·exp(-bK) + c
+- Consistent matplotlib styling and color palette
+
+## Notation
+
+- **K**: number of judges (sweep: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024)
+- **n**: samples per judge for estimation (sweep: 50, 100, 500, 1000, 5000)
+- **ρ**: pairwise inter-judge correlation (sweep: 0, 0.01, 0.05, 0.1, 0.3, 0.5, 0.8)
+- **δ**: fraction of adversarial judges (sweep: 0, 0.05, 0.1, 0.2, 0.3, 0.45)
+- **γ**: per-judge competence margin above chance (sweep: 0.01, 0.05, 0.1, 0.2, 0.4)
+- **β**: near-optimal witness mass geometry (sweep: 0.5, 1, 2, 4)
+- **τ(c)**: ground-truth TVD-MI value
+
+Use 500 Monte Carlo repetitions per configuration unless noted otherwise.
+
 ## Experiment plan
 
-The experiments below are organized to systematically validate the theoretical
-claims of the project. They progress from foundational formalization to
-increasingly complex empirical scenarios.
+| # | Name | Tests | X-axis | Y-axis | Expected shape |
+|---|------|-------|--------|--------|----------------|
+| 00 | Lean formalization | — | — | — | Machine-checked proofs |
+| 01 | Random-witness scaling | Theorem 1 | K (log) | Gap (log) | Slope = −1/β |
+| 02 | Consensus scaling | Theorem 2 | K (linear) | Gap (log) | Straight line, slope = −2γ² |
+| 03 | Two-axis decomposition | Theorem 3 | K × n grid | Gap | Heatmap, two error sources |
+| 04 | Diversity & dependence | Variance formula | K (log) | RMSE (log) | Slope −0.5 then floor at √(σ²ρ) |
+| 05 | Adversarial robustness | Breakdown threshold | δ | Gap | Phase transition at δ* = 2γ/(1+2γ) |
+| 06 | LLM judges (optional) | All of the above | K | Corr with gold | Power-law or exponential |
+| 07 | Aggregation rules | Comparison | K | Error | Method-dependent |
+| 08 | TVD-MI score estimator | Bias/variance | K, n | MSE | Decreasing |
+| 09 | Pairwise comparisons | Bradley-Terry | K, m | Ranking error | Decreasing |
+| 10 | Diversity metrics | Correlation | Diversity | α | Predictive |
+| 11 | Finite-sample bounds | Concentration | K | Bound vs error | Tight/loose |
 
-### 00 — Lean 4 formalization (`00_lean_formalization/`)
-
-**Goal:** Formalize the natural-language proof of the main consistency theorem
-in Lean 4.
-
-- Input: natural-language proof (to be provided).
-- Output: machine-checked Lean 4 proof of the core theorems.
-- This is not a simulation; it is a formal verification task.
-
-### 01 — Basic scaling law (`01_basic_scaling_law/`)
-
-**Goal:** Verify the basic scaling law `Error(K) ~ K^{-alpha}` with
-independent, identically distributed judges.
-
-- Simulate K judges, each with fixed accuracy p > 0.5, scoring n items.
-- Aggregate via majority vote or mean.
-- Plot error vs K on log-log axes and fit alpha.
-- Sweep p in {0.55, 0.6, 0.7, 0.8, 0.9} and n in {100, 500, 1000, 5000}.
-
-### 02 — Effect of judge quality distribution (`02_judge_quality_distribution/`)
-
-**Goal:** Study how heterogeneous judge quality affects the scaling exponent.
-
-- Draw each judge's accuracy from a distribution (e.g., Beta(a,b)).
-- Vary the distribution to control mean quality and variance.
-- Measure how alpha changes with quality spread.
-
-### 03 — Inter-judge dependence (`03_inter_judge_dependence/`)
-
-**Goal:** Quantify how correlated judges slow down convergence.
-
-- Introduce pairwise correlation rho between judge scores.
-- Use a multivariate normal copula to generate correlated binary judgments.
-- Sweep rho in {0, 0.1, 0.2, ..., 0.9} and measure Error(K) for each.
-- Plot alpha vs rho.
-
-### 04 — Adversarial judges (`04_adversarial_judges/`)
-
-**Goal:** Find the robustness threshold for adversarial contamination.
-
-- Fix K judges, replace a fraction delta with adversaries (always wrong or
-  strategic).
-- Sweep delta in {0, 0.05, 0.1, ..., 0.49}.
-- Identify the critical delta beyond which aggregation breaks.
-- Compare naive mean vs. robust aggregation (trimmed mean, median).
-
-### 05 — Aggregation rules comparison (`05_aggregation_rules/`)
-
-**Goal:** Compare different aggregation methods.
-
-- Methods: majority vote, mean, weighted mean (inverse-variance), median,
-  Dawid-Skene EM, spectral methods.
-- Evaluate each under the settings of experiments 01–04.
-- Report error, convergence rate, and computational cost.
-
-### 06 — TVD-MI score computation (`06_tvd_mi_score/`)
-
-**Goal:** Implement and validate the TVD-MI score itself.
-
-- Define TVD and MI estimators for finite judge panels.
-- Measure bias and variance of the estimator as K and n grow.
-- Compare plug-in estimator vs. debiased estimator.
-
-### 07 — Pairwise comparison protocol (`07_pairwise_comparisons/`)
-
-**Goal:** Extend the framework to pairwise (Bradley-Terry style) judgments.
-
-- Each judge compares pairs of items instead of rating them.
-- Vary m (comparisons per item) and K.
-- Aggregate via Bradley-Terry MLE or spectral ranking.
-- Measure convergence to the true ranking.
-
-### 08 — Real judge data (`08_real_judge_data/`)
-
-**Goal:** Validate the scaling law on real LLM-as-a-judge data.
-
-- Use public judge datasets (e.g., Chatbot Arena, MT-Bench).
-- Subsample K judges from the full panel.
-- Measure error vs K using the full panel as the gold reference.
-- Fit the scaling law and compare empirical alpha to theory.
-
-### 09 — Diversity metrics (`09_diversity_metrics/`)
-
-**Goal:** Measure and relate judge diversity to convergence rate.
-
-- Define diversity metrics: disagreement rate, entropy of judge panel,
-  effective number of independent judges.
-- Correlate diversity with convergence speed across experiments 01–04.
-- Test whether diversity is a sufficient statistic for predicting alpha.
-
-### 10 — Finite-sample bounds (`10_finite_sample_bounds/`)
-
-**Goal:** Empirically validate finite-sample concentration inequalities.
-
-- For given K and n, compute theoretical error bounds from the consistency
-  theorem.
-- Compare predicted bounds to observed error in simulations.
-- Identify regimes where the bounds are tight vs. loose.
+Experiments 01–05 are the core synthetic experiments that directly validate
+the theorems. Experiment 06 validates on real data. Experiments 07–11 are
+secondary extensions.
 
 ## Adding a new experiment
 
