@@ -1,0 +1,145 @@
+\documentclass{article}
+
+\PassOptionsToPackage{numbers, compress}{natbib}
+
+% to compile a preprint version, e.g., for submission to arXiv, add the
+% [preprint] option:
+\usepackage[preprint]{neurips_2025}
+
+% to compile a camera-ready version, add the [final] option:
+% \usepackage[final]{neurips_2025}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+% Notation macros
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\tvd}{\mathrm{TVD}}
+\newcommand{\mi}{\mathrm{MI}}
+\newcommand{\kl}{\mathrm{KL}}
+
+\title{Asymptotic Consistency of Reference-Free Evaluation\\
+with Judge Ensembles: Scaling Laws and Formal Guarantees}
+
+\author{%
+  Brando Miranda \\
+  Department of Computer Science \\
+  Stanford University \\
+  \texttt{brando9@stanford.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Reference-free evaluation methods that aggregate scores from multiple imperfect
+judges are increasingly used to assess language model outputs, yet the
+theoretical foundations for when and why these aggregated scores converge to a
+gold-standard evaluation signal remain sparse. We study the asymptotic behavior
+of judge ensembles through the lens of Total Variation Distance and Mutual
+Information (TVD-MI). Concretely, we ask: if $K$ judges independently (or
+dependently) score $n$ items, under what conditions does the aggregated
+reference-free score converge to an oracle evaluation target as $K \to \infty$?
+We formalize the evaluation setup, define a general judge ensemble model
+parameterized by inter-judge dependence $\rho$ and adversarial fraction
+$\delta$, and prove a consistency theorem establishing convergence under
+explicit assumptions on judge quality and diversity. We derive a scaling law of
+the form $\mathrm{Error}(K) \sim K^{-\alpha}$, characterize the exponent
+$\alpha$ as a function of $\rho$ and $\delta$, and identify sharp robustness
+thresholds beyond which aggregation fails. Our theoretical results are
+validated by simulations across a range of judge configurations, and the core
+definitions and theorems are formalized in the Lean~4 proof assistant. This
+work provides both a practical guideline for how many judges suffice for
+reliable reference-free evaluation and a formal foundation for the emerging
+practice of LLM-as-a-judge ensembles.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+% TODO: Write introduction
+
+\section{Problem Setup}
+\label{sec:setup}
+
+% TODO: Formalize the evaluation setup
+
+\section{Judge Ensemble Model}
+\label{sec:model}
+
+% TODO: Define the judge ensemble model and aggregation rule
+
+\section{Consistency Theorem}
+\label{sec:consistency}
+
+% TODO: State and prove the main consistency result
+
+\section{Scaling Law}
+\label{sec:scaling}
+
+% TODO: Derive the scaling law exponent alpha
+
+\section{Robustness and Adversarial Judges}
+\label{sec:robustness}
+
+% TODO: Analyze dependence, diversity, and adversarial contamination
+
+\section{Experiments}
+\label{sec:experiments}
+
+% TODO: Report simulation results
+
+\section{Lean 4 Formalization}
+\label{sec:lean}
+
+% TODO: Describe the formal verification
+
+\section{Related Work}
+\label{sec:related}
+
+% TODO: Survey related work
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+% TODO: Write conclusion
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+
+\section{Proofs}
+\label{app:proofs}
+
+% TODO: Full proofs
+
+\section{Additional Experiments}
+\label{app:experiments}
+
+% TODO: Additional experimental results
+
+\end{document}
