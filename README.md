@@ -62,21 +62,22 @@ A good way to read this project is:
 
 ## What this repository contains
 
-- `paper/`
-  LaTeX sources for the theory and empirical papers
-
-- `theory/`
-  Definitions, assumptions, theorem statements, and proof sketches in natural
-  language
-
-- `lean/`
-  Lean 4 formalization of the setup and the main results
+- `latex_paper/neurips/`
+  NeurIPS paper (LaTeX, using neurips_2025 template)
 
 - `experiments/`
-  Simulations and judge-scaling experiments
+  Numbered experiment folders (00–10+), each self-contained with a README
+  describing goal, hypothesis, method, and expected output.
+  See `experiments/README.md` for the full experiment plan.
+
+- `lean/`
+  Lean 4 formalization of the setup and the main results (future)
 
 - `notes/`
-  Working notes, open problems, and design decisions
+  Working notes, open problems, and design decisions (future)
+
+- `CLAUDE.md`
+  Agent instructions and project conventions
 
 ## Planned outputs
 

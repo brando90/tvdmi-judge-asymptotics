@@ -1,0 +1,140 @@
+\documentclass{article}
+
+\PassOptionsToPackage{numbers, compress}{natbib}
+
+% to compile a preprint version, e.g., for submission to arXiv, add the
+% [preprint] option:
+\usepackage[preprint]{neurips_2025}
+
+% to compile a camera-ready version, add the [final] option:
+% \usepackage[final]{neurips_2025}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+% Theorem environments
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+
+% Notation macros
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\tvd}{\mathrm{TVD}}
+\newcommand{\mi}{\mathrm{MI}}
+\newcommand{\kl}{\mathrm{KL}}
+
+\title{Asymptotic Consistency of Reference-Free Evaluation\\
+with Judge Ensembles: Scaling Laws and Formal Guarantees}
+
+\author{%
+  Brando Miranda \\
+  Department of Computer Science \\
+  Stanford University \\
+  \texttt{brando9@stanford.edu} \\
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We study the asymptotic behavior of reference-free evaluation with ensembles of
+TVD-MI judges. Each judge is modeled as a stochastic critic for the binary
+hypothesis test distinguishing joint from product distributions. We prove two
+complementary judge-scaling results. In a \emph{coverage regime}, where judges
+are random witnesses drawn from a critic distribution, the best-of-$K$ ensemble
+converges to the optimal TVD witness at a rate controlled by the near-optimal
+witness mass. In a \emph{consensus regime}, where judges are independently
+better than chance relative to the Bayes critic, majority vote converges
+exponentially fast to the optimal critic. Combining these with bounded-score
+concentration yields a two-axis error decomposition in judge count~$K$ and
+per-judge sample size~$n$. We further show that residual judge dependence
+induces an irreducible variance floor, and adversarial contamination induces an
+unavoidable additive bias. Under a monotone validity link between TVD-MI and an
+inaccessible gold metric, these results imply asymptotic rank consistency with
+gold evaluation.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+% TODO: Write introduction
+
+\section{Problem Setup}
+\label{sec:setup}
+
+% TODO: Formalize the evaluation setup
+
+\section{Judge Ensemble Model}
+\label{sec:model}
+
+% TODO: Define the judge ensemble model and aggregation rule
+
+\section{Consistency Theorem}
+\label{sec:consistency}
+
+% TODO: State and prove the main consistency result
+
+\section{Scaling Law}
+\label{sec:scaling}
+
+% TODO: Derive the scaling law exponent alpha
+
+\section{Robustness and Adversarial Judges}
+\label{sec:robustness}
+
+% TODO: Analyze dependence, diversity, and adversarial contamination
+
+\section{Experiments}
+\label{sec:experiments}
+
+% TODO: Report simulation results
+
+\section{Lean 4 Formalization}
+\label{sec:lean}
+
+% TODO: Describe the formal verification
+
+\section{Related Work}
+\label{sec:related}
+
+% TODO: Survey related work
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+% TODO: Write conclusion
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+
+\section{Proofs}
+\label{app:proofs}
+
+% TODO: Full proofs
+
+\section{Additional Experiments}
+\label{app:experiments}
+
+% TODO: Additional experimental results
+
+\end{document}
