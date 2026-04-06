@@ -403,7 +403,7 @@ $\frac{1}{2} + \gamma$ and adversaries are always wrong:
 \delta < \frac{2\gamma}{1 + 2\gamma}.
 \end{equation}
 \item Under the milder sign-flip adversary model, the threshold becomes
-$\delta < \gamma / (1 + \gamma)$.
+$\delta < 1/2$.
 \end{itemize}
 \end{theorem}
 
@@ -425,21 +425,12 @@ Majority vote succeeds asymptotically iff this exceeds $\frac{1}{2}$:
 For sign-flip adversaries (correct with probability $\frac{1}{2} - \gamma$):
 \begin{align}
 (1-\delta)\Big(\tfrac{1}{2} + \gamma\Big) + \delta\Big(\tfrac{1}{2} - \gamma\Big) &> \tfrac{1}{2} \\
-\tfrac{1}{2} + \gamma - 2\delta\gamma &> \tfrac{1}{2} \\
-\delta &< \frac{1}{2}.
-\end{align}
-
-Wait---let me redo this more carefully. For sign-flip adversaries who are
-correct with probability $\frac{1}{2} - \gamma$:
-\begin{align}
-(1-\delta)\Big(\tfrac{1}{2} + \gamma\Big) + \delta\Big(\tfrac{1}{2} - \gamma\Big) &> \tfrac{1}{2} \\
 \tfrac{1}{2} + \gamma(1-2\delta) &> \tfrac{1}{2} \\
 \gamma(1-2\delta) &> 0 \\
 \delta &< \tfrac{1}{2}.
 \end{align}
 
-So the sign-flip threshold is $\delta < 1/2$, which is the standard
-Byzantine majority threshold.
+This is the standard Byzantine majority threshold.
 \end{proof}
 
 \begin{proposition}[Robust aggregation error]
@@ -494,7 +485,7 @@ $\tau$. By the monotone link, this agrees with the gold ranking.
 The strongest first-paper result is the three-part theorem:
 
 \begin{enumerate}
-\item \textbf{Coverage regime} (Theorem~\ref{thm:coverage}):
+\item \textbf{Coverage regime} (Theorem~\ref{thm:two-axis}):
 \[
 \Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j)
 > \varepsilon + \eta\Big)
