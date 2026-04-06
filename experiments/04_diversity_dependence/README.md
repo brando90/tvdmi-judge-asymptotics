@@ -1,6 +1,6 @@
 # Experiment 04 — Diversity and Dependence (ρ Effect)
 
-**Tests:** Proposition 5.1 (variance of equicorrelated ensemble mean)
+**Tests:** Variance of equicorrelated ensemble mean (Proposition 4.2 in main_theorem.tex)
 
 ## Theory prediction
 
@@ -12,9 +12,11 @@ When ρ > 0, there is an irreducible error floor of σ²ρ.
 
 ## Simulation design
 
-1. **Judge score model**: For a fixed candidate c with true quality τ(c):
+1. **Judge score model**: For a fixed candidate c with true quality τ(c) = 0.5:
    - Generate K correlated scores S_1,...,S_K from a multivariate normal
      with mean τ(c), variance σ² = 0.1, and equicorrelation ρ.
+   - Note: τ(c) = 0.5 and σ² = 0.1 ensure clipping to [0,1] has
+     negligible effect (< 0.1% of samples clipped).
    - Use the standard equicorrelation construction:
      S_j = √ρ · Z_common + √(1−ρ) · Z_j + τ(c), where Z's are i.i.d.
      N(0, σ²).

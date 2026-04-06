@@ -1,6 +1,6 @@
 # Experiment 05 — Adversarial Robustness and Breakdown
 
-**Tests:** Theorem 6.1 (adversarial breakdown threshold)
+**Tests:** Adversarial breakdown threshold (Theorem 5.2 in main_theorem.tex)
 
 ## Theory prediction
 
@@ -16,12 +16,14 @@ For robust scalar aggregation: error ~ O(K^{−1/2} + δ).
 1. Use the consensus setup from Experiment 02 with a fixed γ = 0.1.
 2. Fraction 1 − δ of judges are honest (correct with prob ½ + γ).
 3. Fraction δ are adversarial (always output 1 − h*(z)).
-4. For each (K, δ), compute majority-vote gap. Use K = 256 (large enough
-   that finite-K noise is small) and sweep δ in
+4. Sweep both K in {16, 64, 256, 1024} and δ in
    {0, 0.05, 0.1, 0.2, 0.3, 0.45}.
-5. **Plot**: Gap vs δ for fixed K. Mark the theoretical breakdown threshold
-   δ* = 2γ/(1 + 2γ). Show that below δ*, error → 0 with K, and above δ*,
-   error is bounded away from 0.
+5. **Plots**:
+   - Gap vs δ for each K value. Mark the theoretical breakdown threshold
+     δ* = 2γ/(1 + 2γ). Show that below δ*, error decreases with K, and
+     above δ*, error is bounded away from 0 regardless of K.
+   - Gap vs K for selected δ values (one below and one above δ*),
+     demonstrating convergence vs non-convergence.
 
 ### Part B — Scalar score contamination
 
