@@ -22,9 +22,16 @@ tvdmi-judge-asymptotics/
 │   └── neurips/           # NeurIPS template files + main.tex
 ├── experiments/           # numbered experiment folders
 │   ├── 00_lean_formalization/   # Lean 4 proof formalization
-│   ├── 01_basic_scaling_law/    # basic K-scaling simulation
-│   ├── ...
-│   └── README.md          # experiment plan overview
+│   ├── 01_basic_scaling_law/    # best-of-K, gap ~ K^{-1/beta}
+│   ├── 02_consensus_scaling/    # majority-vote, exp convergence
+│   ├── 03_two_axis_decomposition/ # K x n tradeoff
+│   ├── 04_diversity_dependence/ # correlated judges (rho)
+│   ├── 05_adversarial_robustness/ # breakdown threshold
+│   ├── 06_llm_judges/          # real LLM-judge validation
+│   ├── 07–11                    # secondary extensions
+│   ├── utils.py               # shared utilities
+│   ├── EXPERIMENT_PLAN.md     # full implementation spec
+│   └── README.md              # experiment index
 ├── lean/                  # Lean 4 project (future)
 └── notes/                 # working notes (future)
 ```
@@ -67,11 +74,13 @@ tvdmi-judge-asymptotics/
 ### Key notation (keep consistent across code and paper)
 
 - `K` — number of judges
-- `n` — number of items/examples
-- `m` — pairwise comparisons per item
-- `rho` — inter-judge dependence
+- `n` — number of samples per judge
+- `rho` — inter-judge dependence (pairwise correlation)
 - `delta` — adversarial fraction
+- `gamma` — per-judge competence margin above chance
+- `beta` — controls near-optimal witness mass geometry
 - `alpha` — scaling exponent in `Error(K) ~ K^{-alpha}`
+- `tau(c)` — ground-truth TVD-MI value
 
 ## What agents should do
 
