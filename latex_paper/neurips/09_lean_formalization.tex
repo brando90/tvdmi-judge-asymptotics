@@ -1,0 +1,39 @@
+%=============================================================================
+\section{Lean~4 Formalization}
+\label{sec:lean}
+
+We formally verify the core algebraic, order-theoretic, and convergence results
+in Lean~4 using the Mathlib library \citep{mathlib2020}. The formalization covers:
+
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+\item \textbf{Variance algebra} (Proposition~\ref{prop:variance-floor}): The
+  two forms of the equicorrelated variance formula are equal, and the variance
+  floor $\sigma^2\rho$ is tight.
+
+\item \textbf{Adversarial thresholds} (Theorem~\ref{thm:adversarial}): Both the
+  always-wrong and sign-flip breakdown conditions are verified as biconditionals
+  over~$\R$.
+
+\item \textbf{Ranking preservation} (Theorem~\ref{thm:gold-consistency}): If
+  all estimates are within~$\varepsilon$ of truth and all true values are
+  separated by more than $2\varepsilon$, the induced ranking is preserved.
+
+\item \textbf{Random-witness convergence}: $(1-p)^K \to 0$ for $p \in (0,1]$,
+  established via Mathlib's \texttt{tendsto\_pow\_atTop\_nhds\_zero\_of\_lt\_one}.
+
+\item \textbf{Exponential bound}: $1 - x \le e^{-x}$ for all $x \in \R$, and
+  the corollary $(1-p)^K \le e^{-Kp}$ for $p \in [0,1]$.
+
+\item \textbf{Consensus convergence structure}: The Hoeffding exponent
+  $-2K\gamma_0^2$ is verified negative, and $2e^{-2K\gamma_0^2} \to 0$.
+
+\item \textbf{Two-axis structure}: If both error sequences converge to zero,
+  their sum converges to zero.
+
+\item \textbf{Variance convergence}: For constant $\rho_0 > 0$,
+  $\Var(\bar{S}_K) \to \sigma^2\rho_0$; for $\rho = 0$,
+  $\sigma^2/K \to 0$.
+\end{enumerate}
+
+All proofs compile without \texttt{sorry}. The formalization is available in
+\texttt{experiments/00\_lean\_formalization/lean/}.

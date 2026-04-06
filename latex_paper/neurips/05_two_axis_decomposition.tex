@@ -1,0 +1,59 @@
+%=============================================================================
+\section{Two-Axis Error Decomposition}
+\label{sec:two-axis}
+
+In practice, each judge's population-level witness value $\Delta_c(h_j)$ is
+estimated from finite data.
+
+\begin{assumption}[Finite-sample estimation]
+\label{asm:finite-sample}
+Each judge $j$'s critic value is estimated from $n$ i.i.d.\ positive/negative
+examples, giving $\widehat\Delta_c(h_j)$.
+\end{assumption}
+
+\begin{theorem}[Two-axis decomposition]
+\label{thm:two-axis}
+Under Assumptions~\ref{asm:random-witness} and~\ref{asm:finite-sample},
+for any $\varepsilon > 0$ and $\eta > 0$:
+\begin{equation}
+\label{eq:two-axis}
+\Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j)
+> \varepsilon + \eta\Big)
+\le \underbrace{e^{-K\,p_\varepsilon(c)}}_{\text{judge approx.}}
+ + \underbrace{2K\,e^{-2n\eta^2}}_{\text{sample estimation}}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Define the good event $G = \{|\widehat\Delta_c(h_j) - \Delta_c(h_j)| \le \eta,
+\;\forall\, j\}$.
+
+\textbf{Step 1 (Concentration per judge).}
+Since critics map to $[0,1]$, Hoeffding's inequality gives
+$\Prob(|\widehat\Delta_c(h_j) - \Delta_c(h_j)| > \eta) \le 2e^{-2n\eta^2}$.
+By a union bound: $\Prob(G^c) \le 2K\,e^{-2n\eta^2}$.
+
+\textbf{Step 2 (Judge approximation on $G$).}
+On $G$, $\widehat\Delta_c(h_j) \ge \Delta_c(h_j) - \eta$ for all~$j$, so
+$\max_j \widehat\Delta_c(h_j) \ge \hat\tau^{\max}_K(c) - \eta$.
+If $\tau(c) - \max_j \widehat\Delta_c(h_j) > \varepsilon + \eta$,
+then $\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon$, which by
+Theorem~\ref{thm:coverage} has probability at most $e^{-K\,p_\varepsilon(c)}$.
+
+\textbf{Step 3 (Combine).}
+\begin{equation}
+\Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j)
+> \varepsilon + \eta\Big)
+\le \Prob\!\big(\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon\big)
+   + \Prob(G^c)
+\le e^{-K\,p_\varepsilon(c)} + 2K\,e^{-2n\eta^2}. \qedhere
+\end{equation}
+\end{proof}
+
+\begin{remark}
+This cleanly separates two independent error sources:
+(i)~\emph{judge approximation error}, controlled by ensemble size~$K$ and the
+geometry of the judge distribution via $p_\varepsilon(c)$; and
+(ii)~\emph{finite-sample estimation error}, controlled by the per-judge sample
+size~$n$. Both terms vanish as $K, n \to \infty$, and the rates are independent.
+\end{remark}

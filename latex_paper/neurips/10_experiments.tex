@@ -1,0 +1,23 @@
+%=============================================================================
+\section{Experiments}
+\label{sec:experiments}
+
+We validate the theoretical predictions with controlled simulations.
+Full experimental details and additional results are in
+Appendix~\ref{app:experiments}.
+
+\textbf{Experiment 1: Basic $K$-scaling.}
+We simulate $K$ i.i.d.\ judges with witness values drawn from a
+$\mathrm{Beta}(\alpha, \beta)$ distribution truncated to $[0, \tau(c)]$.
+The best-of-$K$ estimator converges at the predicted rate $K^{-1/\beta}$
+across different $\beta$ values.
+
+\textbf{Experiment 2: Dependence regimes.}
+We generate equicorrelated judge scores with varying $\rho_K$ and measure
+$\Var(\bar{S}_K)$. The three regimes ($\rho = 0$, $\rho = \rho_0 > 0$,
+$\rho_K \sim K^{-\beta}$) match Corollary~\ref{cor:scaling-regimes} precisely.
+
+\textbf{Experiment 3: Adversarial contamination.}
+We inject fraction $\delta$ of adversarial judges and track the ensemble
+accuracy. The transition at $\delta = 2\gamma/(1+2\gamma)$ is sharp, confirming
+Theorem~\ref{thm:adversarial}.

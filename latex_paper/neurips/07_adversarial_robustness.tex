@@ -1,0 +1,67 @@
+%=============================================================================
+\section{Adversarial Robustness}
+\label{sec:adversarial}
+
+\begin{assumption}[Contamination model]
+\label{asm:contamination}
+A fraction $(1-\delta)$ of judges are honest with competence margin $\gamma > 0$.
+A fraction $\delta$ are adversarial.
+\end{assumption}
+
+\begin{theorem}[Adversarial breakdown threshold]
+\label{thm:adversarial}
+For binary votes:
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+\item \textbf{Always-wrong adversaries.} If honest judges are correct with
+  probability $\frac{1}{2} + \gamma$ and adversaries are always wrong, the
+  ensemble is asymptotically correct iff
+  \begin{equation}
+  \label{eq:adversarial-threshold}
+  (1-\delta)\!\left(\tfrac{1}{2} + \gamma\right) > \tfrac{1}{2}
+  \quad\Longleftrightarrow\quad
+  \delta < \frac{2\gamma}{1 + 2\gamma}.
+  \end{equation}
+
+\item \textbf{Sign-flip adversaries.} If adversaries are correct with
+  probability $\frac{1}{2} - \gamma$ (i.e., anti-correlated with the truth),
+  the threshold becomes
+  \begin{equation}
+  \label{eq:signflip-threshold}
+  \delta < \tfrac{1}{2}.
+  \end{equation}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\textbf{Part 1.} The expected correct-vote fraction is
+$(1-\delta)(\frac{1}{2} + \gamma) + \delta \cdot 0
+= (1-\delta)(\frac{1}{2} + \gamma)$.
+This exceeds $\frac{1}{2}$ iff
+$\gamma > \delta(\frac{1}{2} + \gamma)$, i.e.,
+$\delta < \gamma / (\frac{1}{2} + \gamma) = 2\gamma/(1+2\gamma)$.
+
+\textbf{Part 2.} The expected correct-vote fraction is
+$(1-\delta)(\frac{1}{2}+\gamma) + \delta(\frac{1}{2}-\gamma)
+= \frac{1}{2} + \gamma(1-2\delta)$.
+This exceeds $\frac{1}{2}$ iff $\gamma(1-2\delta) > 0$, i.e., $\delta < \frac{1}{2}$,
+which is the classical Byzantine majority threshold.
+\end{proof}
+
+\begin{proposition}[Robust aggregation error]
+\label{prop:robust-aggregation}
+For bounded scalar scores in $[0,1]$, any robust estimator (e.g., trimmed mean,
+median-of-means) inherits an unavoidable $O(\delta)$ bias, giving
+\begin{equation}
+\mathrm{Error} = O_p(K^{-1/2} + \delta).
+\end{equation}
+\end{proposition}
+
+\begin{remark}[Optimistic vs.\ pessimistic regimes]
+The results in this paper yield a mathematically crisp dichotomy:
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+\item \textbf{Optimistic}: $\rho_K \to 0$ and $\delta$ below the breakdown
+  threshold $\Longrightarrow$ asymptotic consistency.
+\item \textbf{Pessimistic}: correlation floor $\rho_0 > 0$ or contamination
+  above the honest margin $\Longrightarrow$ irreducible error.
+\end{itemize}
+\end{remark}

@@ -1,0 +1,67 @@
+%=============================================================================
+\section{Judge Dependence and Diversity}
+\label{sec:dependence}
+
+The preceding results assume independence across judges. We now analyze what
+happens when judges share systematic biases.
+
+\begin{definition}[Equicorrelated judge scores]
+\label{def:equicorrelated}
+Let $S_j$ be scalar judge scores for a fixed candidate~$c$, with
+$\Var(S_j \mid c) = \sigma^2$ and
+$\Corr(S_i, S_j \mid c) = \rho_K(c)$ for $i \neq j$.
+\end{definition}
+
+\begin{proposition}[Variance of the ensemble mean]
+\label{prop:variance-floor}
+Let $\bar{S}_K := \frac{1}{K}\sum_{j=1}^K S_j$. Then
+\begin{equation}
+\label{eq:variance-formula}
+\Var(\bar{S}_K \mid c)
+= \sigma^2\!\left(\frac{1 - \rho_K(c)}{K} + \rho_K(c)\right)
+= \frac{\sigma^2}{K}\big(1 + (K-1)\rho_K(c)\big).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+\begin{equation}
+\Var(\bar{S}_K \mid c)
+= \frac{1}{K^2}\sum_{i,j} \Cov(S_i, S_j \mid c)
+= \frac{1}{K^2}\big[K\sigma^2 + K(K{-}1)\rho_K\sigma^2\big]
+= \frac{\sigma^2}{K}\big[1 + (K{-}1)\rho_K\big]. \qedhere
+\end{equation}
+\end{proof}
+
+\begin{corollary}[Scaling regimes]
+\label{cor:scaling-regimes}
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+\item If $\rho_K(c) = 0$ (independent judges):
+  $\RMSE \sim K^{-1/2}$.
+\item If $\rho_K(c) = \rho_0 > 0$ (constant dependence):
+  irreducible error floor $\sigma\sqrt{\rho_0}$.
+\item If $\rho_K(c) \sim K^{-\beta}$ for $\beta > 0$ (decaying dependence):
+  $\RMSE \sim K^{-\alpha}$ with $\alpha = \tfrac{1}{2}\min(1,\beta)$.
+\end{enumerate}
+\end{corollary}
+
+\begin{theorem}[Impossibility under persistent dependence]
+\label{thm:impossibility-dependence}
+If residual pairwise dependence does not vanish, i.e.,
+$\liminf_{K \to \infty} \rho_K(c) > 0$, then averaging-based aggregation
+cannot be asymptotically consistent:
+\begin{equation}
+\liminf_{K \to \infty} \Var(\bar{S}_K \mid c) > 0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+From Proposition~\ref{prop:variance-floor}: if $\rho_K(c) \ge \rho_0 > 0$
+for all~$K$, then $\Var(\bar{S}_K \mid c) \ge \sigma^2 \rho_0 > 0$.
+\end{proof}
+
+\begin{remark}
+This negative result aligns with CARE's observation \citep{chen2026care} that
+shared latent confounders can make naive judge aggregation fail. ``Diversity''
+in judge ensembles is precisely the condition $\rho_K \to 0$: judges must
+disagree in their errors, not just in their surface behavior.
+\end{remark}

@@ -1,0 +1,36 @@
+%=============================================================================
+\section{Related Work}
+\label{sec:related}
+
+\textbf{LLM-as-judge.}
+Using LLMs as automated evaluators has become standard practice
+\citep{zheng2023judging, dubois2024alpacafarm}. Multi-judge ensembles improve
+reliability \citep{verga2024replacing}, but theoretical guarantees for
+convergence have been lacking.
+
+\textbf{TVD-MI for evaluation.}
+Robertson and Koyejo~\citeyearpar{robertson2025limitations} introduced TVD-MI
+as a bounded $f$-mutual-information objective for reference-free evaluation,
+studying finite-sample and adversarial robustness of bounded vs.\ unbounded
+divergences. A follow-up \citep{robertson2025tvdmi} studies sparse recovery of
+TVD-MI score matrices via identity-link IRT models. Our work addresses the
+orthogonal judge-scaling axis.
+
+\textbf{Multi-judge aggregation.}
+CARE \citep{chen2026care} studies multi-judge aggregation under shared latent
+confounders, showing that naive averaging can fail. Our
+Theorem~\ref{thm:impossibility-dependence} formalizes this as a variance floor,
+and our positive results identify the precise conditions under which aggregation
+succeeds.
+
+\textbf{Condorcet jury theorems.}
+Classical jury theorems \citep{condorcet1785, nitzan1982optimal} show that
+majority vote among independently better-than-chance voters converges to the
+correct answer. Our Theorem~\ref{thm:consensus} extends this to TVD witness
+optimization with explicit rates via Hoeffding concentration.
+
+\textbf{Formal verification of ML theory.}
+Lean~4 with Mathlib has been used for formalizing mathematical results in
+machine learning \citep{mathlib2020}. Our formalization contributes verified
+proofs for evaluation-theoretic results, complementing existing work on
+learning theory formalization.

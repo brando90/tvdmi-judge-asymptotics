@@ -1,0 +1,29 @@
+%=============================================================================
+\section{Discussion and Conclusion}
+\label{sec:conclusion}
+
+We have established a two-layer theorem program for reference-free evaluation
+with TVD-MI judge ensembles. The key insight is a clean separation between the
+\emph{statistical} question (does the ensemble estimator converge to the latent
+TVD-MI target?) and the \emph{validity} question (does the TVD-MI target track
+the gold metric?).
+
+On the statistical side, we proved convergence in two complementary regimes
+(coverage and consensus), derived a two-axis error decomposition separating
+judge count from sample size, and identified precise impossibility conditions.
+On the validity side, we showed that a monotone link between $\tau(c)$ and
+$g(c)$ suffices for rank consistency.
+
+The theory yields a crisp optimistic/pessimistic dichotomy: ensemble evaluation
+works when judges are diverse ($\rho_K \to 0$) and contamination is below the
+honest margin; it fails when either condition is violated. This provides
+concrete guidance for practitioners: (i)~select judges that disagree in their
+errors, not just in their outputs; (ii)~monitor inter-judge correlation as an
+early warning for irreducible error; (iii)~use robust aggregation when
+adversarial judges are suspected.
+
+\textbf{Limitations.} The validity link (Definition~\ref{def:gold-metric}) is
+an assumption, not a theorem. Verifying it empirically for specific domains
+requires a small anchor set with gold labels. The independence assumptions in
+Theorems~\ref{thm:coverage} and~\ref{thm:consensus} are strong; extending to
+mixing or exchangeable judge sequences is an important open direction.

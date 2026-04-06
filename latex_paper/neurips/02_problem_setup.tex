@@ -1,0 +1,53 @@
+%=============================================================================
+\section{Problem Setup}
+\label{sec:setup}
+
+Let $c$ denote the candidate system being evaluated. Let $(U, V)$ be the
+pair of objects whose statistical dependence defines the reference-free signal.
+In the simplest prompt--response form, $U = \text{prompt}$ and $V =
+\text{response}$. In peer-prediction forms \citep{robertson2025limitations},
+$(U, V)$ can be two reports tied to the same latent source.
+
+\begin{definition}[Latent TVD-MI target]
+\label{def:tvd-mi-target}
+For candidate $c$, define
+\begin{equation}
+\tau(c)
+:= \tvd\!\big(P^{(c)}_{UV},\; P^{(c)}_{U} \otimes P^{(c)}_{V}\big)
+= \sup_{h \in \cH} \Delta_c(h),
+\end{equation}
+where $\cH = \{h : \cU \times \cV \to [0,1]\}$ and
+\begin{equation}
+\Delta_c(h)
+:= \E_{P^{(c)}_{UV}}\!\big[h(U,V)\big]
+   - \E_{P^{(c)}_{U} \otimes P^{(c)}_{V}}\!\big[h(U,V)\big].
+\end{equation}
+\end{definition}
+
+\begin{definition}[Gold metric and validity link]
+\label{def:gold-metric}
+Let $g(c)$ be an inaccessible gold metric (e.g., human preference).
+A \emph{monotone validity link} holds if
+\begin{equation}
+\tau(c_1) > \tau(c_2) \;\Longleftrightarrow\; g(c_1) > g(c_2).
+\end{equation}
+More generally, $g(c) = \phi(\tau(c))$ for a monotone function $\phi$.
+\end{definition}
+
+\begin{remark}
+The architectural point is a two-layer decomposition: first prove consistency
+of the ensemble estimator to~$\tau(c)$, then invoke the validity link to
+transfer consistency to the gold metric~$g(c)$. This separation allows the
+statistical analysis (Sections~\ref{sec:coverage}--\ref{sec:two-axis}) to
+proceed independently of the domain-specific validity assumption
+(Section~\ref{sec:gold}).
+\end{remark}
+
+\begin{remark}[Clarification on ``reference-free'']
+Reference-free means \emph{no gold output}, not \emph{no source variable}.
+The MI construction requires either prompt/source information or
+same-vs-different pairing structure. Without structural assumptions,
+elicitation without verification is impossible in full generality, so the
+theory requires explicit identifiability assumptions rather than an
+unconditional convergence claim.
+\end{remark}

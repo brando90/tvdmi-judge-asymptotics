@@ -1,0 +1,63 @@
+%=============================================================================
+\section{Random-Witness Consistency (Coverage Regime)}
+\label{sec:coverage}
+
+\begin{assumption}[Random witness model]
+\label{asm:random-witness}
+Each judge $j \in \{1, \ldots, K\}$ is a random critic $h_j \sim \mu$
+drawn i.i.d.\ from a judge distribution $\mu$ over witness functions
+$h : \cU \times \cV \to [0,1]$.
+\end{assumption}
+
+\begin{definition}[Best-of-$K$ ensemble estimator]
+\label{def:best-of-K}
+$\hat\tau^{\max}_K(c) := \max_{1 \le j \le K} \Delta_c(h_j).$
+\end{definition}
+
+\begin{definition}[Near-optimal witness mass]
+\label{def:near-optimal-mass}
+For $\varepsilon > 0$,\;
+$p_\varepsilon(c) := \mu\!\big\{h : \Delta_c(h) \ge \tau(c) - \varepsilon\big\}.$
+\end{definition}
+
+\begin{theorem}[Random-witness consistency]
+\label{thm:coverage}
+Under Assumption~\ref{asm:random-witness}, for any $\varepsilon > 0$,
+\begin{equation}
+\label{eq:coverage}
+\Prob\!\big(\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon\big)
+= \big(1 - p_\varepsilon(c)\big)^K
+\le e^{-K \, p_\varepsilon(c)}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The event $\{\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon\}$ is equivalent
+to every judge missing the $\varepsilon$-optimal set:
+$\{\Delta_c(h_j) < \tau(c) - \varepsilon,\; \forall\, j\}$.
+Since judges are i.i.d.,
+\begin{equation}
+\Prob\!\big(\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon\big)
+= \prod_{j=1}^K \big(1 - p_\varepsilon(c)\big)
+= \big(1 - p_\varepsilon(c)\big)^K.
+\end{equation}
+The exponential bound follows from $1 - x \le e^{-x}$ for $x \in [0,1]$.
+\end{proof}
+
+\begin{corollary}[Scaling law under polynomial witness mass]
+\label{cor:scaling-law-coverage}
+If $p_\varepsilon(c) \asymp \varepsilon^\beta$ for some $\beta > 0$, then
+$\tau(c) - \hat\tau^{\max}_K(c) = O_p(K^{-1/\beta})$.
+\end{corollary}
+
+\begin{proof}
+Set $\varepsilon = K^{-1/\beta}$, so $p_\varepsilon(c) \asymp K^{-1}$ and
+$e^{-K \cdot K^{-1}} = e^{-1}$, a constant.
+\end{proof}
+
+\begin{remark}
+The exponent $\beta$ encodes the geometry of the judge distribution near
+optimal critics. The scaling law is \emph{not universal}; it depends on
+diversity. This makes the theory clearly distinct from Robertson--Koyejo,
+who study the sample axis, not the judge-ensemble axis.
+\end{remark}

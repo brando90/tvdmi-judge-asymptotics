@@ -1,0 +1,62 @@
+%=============================================================================
+\section{Introduction}
+\label{sec:introduction}
+
+Evaluating the quality of generated text without access to gold-standard
+references is a central challenge in modern NLP. \emph{Reference-free evaluation}
+replaces human-written references with automated judges---typically large
+language models (LLMs)---that score candidate outputs directly. Recent work has
+shown that ensembles of such judges can improve reliability
+\citep{verga2024replacing, zheng2023judging}, but the theoretical foundations
+for \emph{when and why} judge ensembles converge to a meaningful quality signal
+remain underdeveloped.
+
+The TVD-MI framework \citep{robertson2025limitations} provides a principled
+foundation. It casts reference-free evaluation as a binary hypothesis test:
+given a candidate system~$c$, each judge distinguishes samples from the joint
+distribution $P^{(c)}_{UV}$ (prompt-response pairs from~$c$) from the product
+distribution $P^{(c)}_U \otimes P^{(c)}_V$ (shuffled, independent pairs). The
+total variation distance between these two distributions---the \emph{latent
+TVD-MI target} $\tau(c)$---measures the information the candidate's responses
+preserve about the prompts. Each judge is a bounded witness function for this
+variational problem.
+
+\textbf{The open question.} No existing theorem shows that increasing the number
+of judges alone makes the TVD-MI ensemble estimator converge to the gold oracle.
+Robertson and Koyejo~\citeyearpar{robertson2025limitations} study finite-sample
+and adversarial robustness of bounded divergences; a follow-up
+\citep{robertson2025tvdmi} studies sparse recovery of TVD-MI score matrices;
+CARE \citep{chen2026care} studies multi-judge aggregation under shared latent
+confounders. None addresses the judge-scaling axis directly.
+
+\textbf{Our contributions.} We provide a \emph{two-layer theorem program} that
+fills this gap:
+
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+\item \textbf{Random-witness consistency} (Theorem~\ref{thm:coverage}): In a
+  coverage regime, the best-of-$K$ ensemble converges to the optimal TVD witness
+  at rate $(1-p_\varepsilon)^K$, where $p_\varepsilon$ is the near-optimal
+  witness mass. If this mass scales as $\varepsilon^\beta$, the approximation
+  gap is $O_p(K^{-1/\beta})$.
+
+\item \textbf{Consensus convergence} (Theorem~\ref{thm:consensus}): In a
+  consensus regime with positive competence margin~$\gamma_0$, majority-vote
+  judges converge exponentially fast: the gap decays as
+  $2e^{-2K\gamma_0^2}$.
+
+\item \textbf{Two-axis decomposition} (Theorem~\ref{thm:two-axis}): A union
+  bound separates judge approximation error (controlled by~$K$) from
+  finite-sample estimation error (controlled by per-judge sample size~$n$).
+
+\item \textbf{Impossibility results}: Persistent inter-judge dependence induces
+  an irreducible variance floor (Theorem~\ref{thm:impossibility-dependence}),
+  and adversarial contamination beyond $\delta = 2\gamma/(1+2\gamma)$ causes
+  breakdown (Theorem~\ref{thm:adversarial}).
+
+\item \textbf{Gold-metric consistency} (Theorem~\ref{thm:gold-consistency}):
+  Under a monotone validity link, ensemble consistency for~$\tau(c)$ implies
+  rank consistency with the inaccessible gold metric.
+
+\item \textbf{Lean~4 formalization}: All algebraic, order-theoretic, and
+  convergence-structural results are formally verified in Lean~4 with Mathlib.
+\end{enumerate}

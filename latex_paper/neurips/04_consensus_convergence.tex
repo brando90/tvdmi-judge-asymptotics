@@ -1,0 +1,69 @@
+%=============================================================================
+\section{Consensus Convergence (Consensus Regime)}
+\label{sec:consensus}
+
+\begin{definition}[Bayes-optimal binary critic]
+\label{def:bayes-critic}
+Let $h^\star$ be the Bayes-optimal binary critic achieving $\Delta_c(h^\star) = \tau(c)$.
+\end{definition}
+
+\begin{assumption}[Positive competence]
+\label{asm:competence}
+For each evaluation pair $z = (u,v)$, judge $j$ outputs a binary vote
+$b_j(z) \in \{0,1\}$ satisfying
+\begin{equation}
+\Prob\!\big(b_j(z) = h^\star(z) \mid z\big)
+\ge \tfrac{1}{2} + \gamma(z),
+\end{equation}
+where $\gamma(z) > 0$ is a pointwise competence margin. Votes are conditionally
+independent across judges given~$z$.
+\end{assumption}
+
+\begin{definition}[Majority vote]
+$b_K(z) := \mathbf{1}\!\big[\sum_{j=1}^K b_j(z) > K/2\big].$
+\end{definition}
+
+\begin{theorem}[Consensus convergence]
+\label{thm:consensus}
+Under Assumption~\ref{asm:competence}, let $M$ denote the mixture distribution
+over evaluation pairs. Then
+\begin{equation}
+0 \le \tau(c) - \Delta_c(b_K)
+\le 2\,\E_{Z \sim M}\!\big[e^{-2K\gamma(Z)^2}\big].
+\end{equation}
+If $\gamma(z) \ge \gamma_0 > 0$ almost surely, then
+\begin{equation}
+\label{eq:consensus-uniform}
+\tau(c) - \Delta_c(b_K) \le 2\,e^{-2K\gamma_0^2}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Fix $z = (u,v)$ and let $X_j = \mathbf{1}[b_j(z) = h^\star(z)]$, a Bernoulli
+random variable with parameter $q(z) \ge \frac{1}{2} + \gamma(z)$.
+The $X_j$ are independent given~$z$.
+
+Majority vote errs when $\sum_j X_j \le K/2$. By Hoeffding's inequality
+applied to $\E[\sum_j X_j \mid z] \ge K(\frac{1}{2} + \gamma(z))$:
+\begin{equation}
+\Prob\!\big(b_K(z) \neq h^\star(z) \mid z\big)
+\le e^{-2K\gamma(z)^2}.
+\end{equation}
+
+Since $h^\star$ and $b_K$ are binary, the gap in TVD witness values satisfies
+\begin{equation}
+\Delta_c(h^\star) - \Delta_c(b_K)
+\le 2\,\E_M\!\big[|h^\star(Z) - b_K(Z)|\big]
+= 2\,\E_M\!\big[\Prob(b_K(Z) \neq h^\star(Z) \mid Z)\big]
+\le 2\,\E_M\!\big[e^{-2K\gamma(Z)^2}\big].
+\end{equation}
+Under the uniform margin $\gamma(z) \ge \gamma_0$, the bound becomes
+$2\,e^{-2K\gamma_0^2}$.
+\end{proof}
+
+\begin{remark}
+Under positive competence and conditional independence, majority-vote judges
+converge \emph{exponentially fast} to the optimal TVD critic. This is the
+cleanest formalization of the asymptotic-consensus hypothesis, connecting
+classical Condorcet jury results to modern judge-ensemble evaluation.
+\end{remark}

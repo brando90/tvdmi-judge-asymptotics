@@ -1,0 +1,37 @@
+%=============================================================================
+\section{Gold-Metric Rank Consistency}
+\label{sec:gold}
+
+\begin{theorem}[Rank consistency with gold metric]
+\label{thm:gold-consistency}
+Suppose a monotone validity link holds (Definition~\ref{def:gold-metric}).
+Let $\{c_1, \ldots, c_L\}$ be a finite set of candidates with distinct
+gold scores, and let $\Delta_{\min} := \min_{l \neq l'} |\tau(c_l) - \tau(c_{l'})|
+> 0$. If the ensemble estimator $\hat\tau_K(c)$ satisfies
+\begin{equation}
+\Prob\!\Big(\max_{l \le L} |\hat\tau_K(c_l) - \tau(c_l)| > \varepsilon\Big) \to 0
+\quad\text{as } K \to \infty,
+\end{equation}
+then for $\varepsilon < \Delta_{\min}/2$, the ranking induced by $\hat\tau_K$
+agrees with the gold ranking with probability approaching~$1$.
+\end{theorem}
+
+\begin{proof}
+On the event $\{\max_l |\hat\tau_K(c_l) - \tau(c_l)| \le \varepsilon\}$ with
+$\varepsilon < \Delta_{\min}/2$: for any $l \neq l'$ with $\tau(c_l) < \tau(c_{l'})$,
+\begin{equation}
+\hat\tau_K(c_{l'}) - \hat\tau_K(c_l)
+\ge (\tau(c_{l'}) - \varepsilon) - (\tau(c_l) + \varepsilon)
+= \tau(c_{l'}) - \tau(c_l) - 2\varepsilon
+> 0.
+\end{equation}
+So the estimated ranking agrees with the $\tau$-ranking, which by the monotone
+link agrees with the gold ranking.
+\end{proof}
+
+\begin{remark}
+The separation condition $\Delta_{\min} > 0$ is necessary: if two candidates
+have identical $\tau$-values but different gold scores, the validity link is
+violated. In practice, $\Delta_{\min}$ can be estimated and used to determine
+the sample size needed for reliable ranking.
+\end{remark}

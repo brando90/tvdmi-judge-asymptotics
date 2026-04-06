@@ -1,0 +1,41 @@
+%=============================================================================
+\section{Full Proofs}
+\label{app:proofs}
+
+All proofs are given in the main text. Here we collect additional technical
+details.
+
+\subsection{Proof of Corollary~\ref{cor:scaling-regimes}}
+
+\textbf{Case 1} ($\rho_K = 0$). From~\eqref{eq:variance-formula},
+$\Var(\bar{S}_K) = \sigma^2/K$, so $\RMSE = \sigma/\sqrt{K}$.
+
+\textbf{Case 2} ($\rho_K = \rho_0 > 0$). As $K \to \infty$,
+$(1-\rho_0)/K \to 0$, so $\Var(\bar{S}_K) \to \sigma^2\rho_0$.
+
+\textbf{Case 3} ($\rho_K \sim K^{-\beta}$).
+$\Var(\bar{S}_K) = \sigma^2(K^{-1} + (1-K^{-1})K^{-\beta})
+\sim \sigma^2 \max(K^{-1}, K^{-\beta})
+= \sigma^2 K^{-\min(1,\beta)}$.
+So $\RMSE \sim K^{-\min(1,\beta)/2}$.
+
+\subsection{Proof of Proposition~\ref{prop:robust-aggregation}}
+
+Any estimator of the mean of honest judges' scores incurs $O_p(K^{-1/2})$ error
+from averaging $\lfloor(1-\delta)K\rfloor$ independent bounded scores (by the
+CLT or Hoeffding). The adversarial fraction shifts the population mean by at
+most $\delta \cdot \sup|S| = O(\delta)$. No estimator can distinguish the
+adversarial shift from a true signal shift without additional structural
+assumptions, so the $O(\delta)$ term is unavoidable.
+
+\subsection{Hoeffding's Inequality (Reference)}
+
+For completeness, we state the form of Hoeffding's inequality used throughout.
+Let $X_1, \ldots, X_n$ be independent random variables with $X_i \in [a_i, b_i]$.
+Then for $t > 0$:
+\begin{equation}
+\Prob\!\left(\frac{1}{n}\sum_{i=1}^n (X_i - \E[X_i]) \ge t\right)
+\le \exp\!\left(-\frac{2n^2 t^2}{\sum_{i=1}^n (b_i - a_i)^2}\right).
+\end{equation}
+When $X_i \in [0,1]$ for all~$i$, this simplifies to
+$\Prob(|\bar{X} - \E[\bar{X}]| > t) \le 2e^{-2nt^2}$.
