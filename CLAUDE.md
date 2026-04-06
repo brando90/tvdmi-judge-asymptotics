@@ -31,8 +31,8 @@ tvdmi-judge-asymptotics/
 │   ├── utils.py               # shared utilities
 │   ├── EXPERIMENT_PLAN.md     # full implementation spec
 │   └── README.md              # experiment index
-├── lean/                  # Lean 4 project (future)
-└── notes/                 # working notes (future)
+├── theory/                # working notes and assumptions
+└── lean/                  # Lean 4 project (future)
 ```
 
 ## Conventions
