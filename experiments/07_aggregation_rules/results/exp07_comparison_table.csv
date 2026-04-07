@@ -1,0 +1,19 @@
+Scenario,Method,alpha,a,b,R2
+Independent,Majority Vote,0.1418,0.2904,-0.124648,0.9544
+Independent,Simple Mean,0.1365,0.2933,-0.129979,0.9507
+Independent,Weighted Mean,0.143,0.288,-0.123019,0.9511
+Independent,Median,0.1336,0.2964,-0.133701,0.9489
+Independent,Dawid-Skene EM,0.1067,0.3473,-0.183308,0.9409
+Independent,Spectral,0.0652,0.0255,0.158647,0.7689
+Correlated,Majority Vote,0.3795,0.0357,0.113136,0.9408
+Correlated,Simple Mean,0.3151,0.0392,0.109416,0.9673
+Correlated,Weighted Mean,0.378,0.0342,0.112894,0.9576
+Correlated,Median,0.41,0.0351,0.114372,0.9232
+Correlated,Dawid-Skene EM,0.3881,0.0339,0.113854,0.9421
+Correlated,Spectral,0.2866,0.0022,0.180619,0.3039
+Adversarial,Majority Vote,5.0,0.0,0.213514,-0.0
+Adversarial,Simple Mean,5.0,0.0,0.213611,-0.0
+Adversarial,Weighted Mean,5.0,0.0,0.233549,-0.0
+Adversarial,Median,5.0,0.0,0.214426,-0.0
+Adversarial,Dawid-Skene EM,5.0,0.0,0.215492,-0.0
+Adversarial,Spectral,5.0,0.0,0.221785,-0.0
