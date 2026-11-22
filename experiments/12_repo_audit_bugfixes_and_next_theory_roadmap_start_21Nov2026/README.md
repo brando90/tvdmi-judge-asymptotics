@@ -8,8 +8,9 @@ Date: 11-21-2026
 
 ## Google Drive & Companion Links
 
-- Typeset Derivation PDF (`THEORY_AND_NEXT_EXPERIMENTS_11-21-2026.pdf`): *pending upload update*
-- Google Doc Companion (typeset equation PNGs + audit summary): *pending upload update*
+- Google Drive Experiment 12 folder: <https://drive.google.com/drive/folders/1ZstMW9y3sBIvlD5R6L8ropvzrAbzchS2>
+- Typeset Derivation PDF (`THEORY_AND_NEXT_EXPERIMENTS_11-21-2026.pdf`): <https://drive.google.com/file/d/1m3m9cs_tkTv4vUcLjUvq129Grsm0yOCp/view?usp=drivesdk>
+- Google Doc Companion (typeset equation PNGs + audit summary): <https://docs.google.com/document/d/14JuGIAOMoWrBrI4pLcxj20oExt-okDbwU18rzdpZuLA/edit?usp=drivesdk>
 - GitHub Markdown derivation: [THEORY_AND_NEXT_EXPERIMENTS_11-21-2026.md](THEORY_AND_NEXT_EXPERIMENTS_11-21-2026.md)
 - Live results ledger: [results.md](results.md)
 
