@@ -2,9 +2,12 @@
 
 Date: 11-21-2026
 
-**Status:** COMPLETE (verified post-QA; pending final Drive link backfill after `main` push)
-**Last updated:** 11-21-2026 20:14 PST
+**Status:** COMPLETE on GitHub `main` (`e540915`); Google Drive/Doc companion upload pending OAuth refresh of `~/keys/gspread_authorized_user.json` (`invalid_grant`: 7-day token expired `11-21-2026 20:04 PST`) and `google-drive` MCP sign-in
+**Last updated:** 11-21-2026 20:22 PST
 **Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/RESULTS_11-21-2026.md>
+**Primary Implementation Commit (`main`):** <https://github.com/brando90/tvdmi-judge-asymptotics/commit/e540915>
+**Derivation PDF / Rule-91 HTML Companion:** [`AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026.pdf`](AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026.pdf) · [`AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026_gdoc_companion.html`](AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026_gdoc_companion.html)
+**NeurIPS Venue / arXiv PDFs (`main`):** [`main.pdf`](../../latex_paper/neurips/main.pdf) · [`main_arxiv.pdf`](../../latex_paper/neurips/main_arxiv.pdf)
 
 **TLDR:** Executed all 4 prioritized roadmap extensions and machine-checked `11` new Lean 4.29.0 theorems in `TvdmiJudge/SpectralCalibration.lean` (`54` theorems total across `TvdmiJudge`, `3,289` build jobs, strictly standard axioms `[propext, Classical.choice, Quot.sound]`, zero `sorry`). Tier 2 Light QA (`agy --model gemini-4-neon-xhigh --effort xhigh`) passed after fixing finite-population `replace=False -> replace=True` Davis–Kahan sampling (`-1.03` true `O(1/n)` slope), rounding alignments (`0.145`, `6.59e-13`, `1,753`), and NeurIPS checklist float flushing (`\clearpage`).
 

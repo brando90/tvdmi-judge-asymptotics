@@ -1,8 +1,13 @@
 # Experiment 14: Semi-Supervised Calibration, `RewardBench 2`, Cross-Family Confounders & Davis–Kahan Lean 4
 
 - **Date:** `11-21-2026`
-- **Status:** Executed locally (`seed=42`, `Lean v4.29.0`); pending final Drive link backfill after Light QA & `main` push.
-- **Doc link:** Pending Drive upload (local ledgers: [`RESULTS_11-21-2026.md`](RESULTS_11-21-2026.md), [`AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026.pdf`](AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026.pdf)).
+- **Status:** COMPLETE on GitHub `main` (`e540915`); Google Drive/Doc companion upload pending OAuth refresh of `~/keys/gspread_authorized_user.json` (`invalid_grant`: 7-day token expired `11-21-2026 20:04 PST`) and `google-drive` MCP sign-in.
+- **Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/RESULTS_11-21-2026.md>
+- **Live GitHub Deliverables (`main` @ `e540915`):**
+  - Typeset Derivation PDF: <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026.pdf>
+  - Rule 91 Google Doc Companion HTML (7 live `raw.githubusercontent.com` PNGs verified HTTP 200): [`AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026_gdoc_companion.html`](AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026_gdoc_companion.html)
+  - NeurIPS Anonymous Venue PDF (`main.pdf`, 9-page body): <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/latex_paper/neurips/main.pdf>
+  - NeurIPS Named arXiv PDF (`main_arxiv.pdf`): <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/latex_paper/neurips/main_arxiv.pdf>
 - **TLDR:** Proved `11` new Lean 4 theorems in [`SpectralCalibration.lean`](../00_lean_formalization/lean/TvdmiJudge/SpectralCalibration.lean) (`54` theorems total across `TvdmiJudge`, `3,289` jobs, strictly standard axioms) and validated all 4 prioritized extensions on `SummEval` (`1,600` summaries), `LMSYS MT-Bench` (`2,575` pairs), and `RewardBench 2` (`1,753` deduplicated non-`Ties` prompts across `27` open-source reward models).
 
 ## Reproducibility Commands
