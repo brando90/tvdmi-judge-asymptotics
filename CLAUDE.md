@@ -68,7 +68,7 @@ tvdmi-judge-asymptotics/
 
 ### Git
 
-- Feature branches off `main`.
+- No branches (11-21-2026). This is a research project: everything goes straight to `main`, and each piece of work lives in its own experiment folder under `experiments/`. Brando (Nov 9, 2026): "there should be no branches, merge them all to main, put it in their claude and agents .md file for this project, since it's a research project". Brando (Nov 21, 2026): "merge all branches to main of this github.com/brando90/tvdmi-judge-asymptotics".
 - Commit messages: imperative mood, concise, one-line summary.
 - Do not commit large binary files or datasets. Use `.gitignore`.
 
