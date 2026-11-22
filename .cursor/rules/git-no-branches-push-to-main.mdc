@@ -1,0 +1,8 @@
+---
+description: Git workflow for this repo: no branches, push to main
+alwaysApply: true
+---
+
+No branches, push to main (11-21-2026). This is a research project: no branches and no pull requests, push everything straight to `main` (pull first, no force-push), with each piece of work in its own experiment folder under `experiments/`.
+
+Brando (Nov 9, 2026): "there should be no branches, merge them all to main, put it in their claude and agents .md file for this project, since it's a research project". Brando (Nov 21, 2026): "no branches, push to main, make sure that's in this repos cursor claude agents .md go".
