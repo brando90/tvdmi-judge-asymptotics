@@ -6,7 +6,7 @@ Date: 11-21-2026
 **Last updated:** 11-21-2026 21:17 PST
 **Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/15_shrinkage_partial_confounders_and_multifactor_lean_start_21Nov2026/results.md>
 
-**TLDR:** Completed Experiment 15 end-to-end: Lean 4 `MultiFactorContinuous.lean` (`12` new theorems -> `66` total in `TvdmiJudge`, `3,290` jobs, `[propext, Classical.choice, Quot.sound]`), `run_exp15_suite.py` (`seed=42`, `25.4s`, `0` warnings/`nan`s), Rule-91 `220 DPI` equation PNGs + `0`-overfull 3-page PDF, anonymous Page-9 `main.pdf` (`21`p) & named `main_arxiv.pdf` (`23`p), and `agy gemini-4-neon-xhigh` Light QA. Google Drive upload stays honestly marked pending OAuth refresh (`~/keys/gspread_authorized_user.json` expired `Nov 21 20:04 PST` with `invalid_grant`).
+**TLDR:** Completed Experiment 15 end-to-end: Lean 4 `MultiFactorContinuous.lean` (`12` new theorems -> `66` total in `TvdmiJudge`, `3,290` jobs, `[propext, Classical.choice, Quot.sound]`), `run_exp15_suite.py` (`seed=42`, `25.4s`, `0` warnings/`nan`s), Rule-91 `220 DPI` equation PNGs (`HTTP 200` on `main`) + `SHRINKAGE_PARTIAL_CONFOUNDERS_JUDGEBENCH_AND_MULTIFACTOR_LEAN_11-21-2026_gdoc_companion.html` (`7` images, `0` forbidden math hits) + `0`-overfull 3-page PDF, anonymous Page-9 `main.pdf` (`21`p) & named `main_arxiv.pdf` (`23`p), and `agy gemini-4-neon-xhigh` Light QA. Google Drive upload stays honestly marked pending OAuth refresh (`~/keys/gspread_authorized_user.json` unchanged at `Nov 14 20:04`, expired `Nov 21 20:04 PST` with `invalid_grant`).
 
 | Phase | Status | Notes |
 |---|---|---|

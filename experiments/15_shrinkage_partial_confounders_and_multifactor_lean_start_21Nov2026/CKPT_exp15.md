@@ -13,3 +13,4 @@ Last updated: 11-21-2026 21:17 PST
 - 11-21-2026 20:51 PST -- Pre-registered Experiment 15 (`SRB-Spec`, `JudgeBench`, partial proxy confounders, multi-factor/continuous Lean 4).
 - 11-21-2026 21:05 PST -- Completed Lean 4 `MultiFactorContinuous.lean` (`66` total theorems), `run_exp15_suite.py` (`25.4s`), and `eq01..eq06.png`.
 - 11-21-2026 21:17 PST -- Completed Page-9 NeurIPS/arXiv rebuild, `agy gemini-4-neon-xhigh` Light QA (`6` fixes reconciled), and post-QA deterministic checks.
+- 11-21-2026 21:18 PST -- Pushed `6f51508` to `origin/main`, verified HTTP `200` on all `7` raw GitHub PNG URLs, built Rule-91 `SHRINKAGE_PARTIAL_CONFOUNDERS_JUDGEBENCH_AND_MULTIFACTOR_LEAN_11-21-2026_gdoc_companion.html`, confirmed Drive OAuth pending refresh (`Nov 14 20:04` mtime).
