@@ -2,48 +2,19 @@
 \section{Lean~4 Formalization}
 \label{sec:lean}
 
-We formally verify all algebraic, finite-alphabet variational, invariance,
-concentration-scaling, and optimality results in Lean~4 (\texttt{leanprover/lean4:v4.29.0})
-with Mathlib \citep{mathlib2020} across two modules in
-\texttt{experiments/00\_lean\_formalization/lean/TvdmiJudge/}:
+We formally verify all finite-alphabet variational, invariance, concentration,
+calibration, confounder, and Davis--Kahan theorems in Lean~4
+(\texttt{leanprover/lean4:v4.29.0}) with Mathlib \citep{mathlib2020} across three
+modules in \texttt{experiments/00\_lean\_formalization/lean/TvdmiJudge/}:
 
-\begin{enumerate}[leftmargin=*,itemsep=2pt]
-\item \textbf{Variational duality and injection blindness} (\texttt{NewTheory.lean},
-  Theorem~\ref{thm:injection-blindness}): Finite-alphabet TVD variational upper
-  bound (\texttt{finite\_tvd\_variational\_le}), Scheff\'e attainment
-  (\texttt{finite\_tvd\_variational\_eq}), and exact injection blindness
-  $\tvd = 1 - \sum_x P_X(x)^2$ for arbitrary injective maps
-  $f:\alpha \to \beta$ (\texttt{injection\_tvd\_blindness}).
-\item \textbf{Double-centering invariance and oriented peer recovery}
-  (\texttt{NewTheory.lean}, Theorem~\ref{thm:double-centering}): Exact
-  cancellation of additive prompt/verbosity shifts $a(x) + b(y)$ inside the
-  TVD-MI witness contrast (\texttt{tvdmi\_double\_centering\_invariance}), plus
-  strict monotonicity and negative inversion rejection of the oriented peer
-  formula (\texttt{oriented\_peer\_strict\_mono}, \texttt{oriented\_peer\_rejects\_inverter}).
-\item \textbf{Equicorrelated variance, clone hijacking, and $1/F$ recovery}
-  (\texttt{Basic.lean} and \texttt{NewTheory.lean}): Equicorrelated variance
-  identities and persistent floor (\texttt{variance\_equicorrelated\_mean},
-  \texttt{variance\_floor}), concrete clone-hijacking strict variance-increase
-  counterexample (\texttt{clone\_hijacking\_strict\_increase\_counterexample}),
-  asymptote to $\tau_1^2$ (\texttt{clone\_hijacking\_tendsto}), and uniform
-  $B/F$ upper bound independent of clone counts (\texttt{var\_family\_balanced\_le\_inv\_F},
-  \texttt{inv\_F\_rate\_vanishes}).
-\item \textbf{Two-axis Hoeffding correction and split-sample convergence}
-  (\texttt{NewTheory.lean}, Theorem~\ref{thm:two-axis}--\ref{thm:split-sample}):
-  Exact two-sample Hoeffding exponent reduction to $n\eta^2$
-  (\texttt{hoeffding\_two\_sample\_exponent}), vanishing three-axis split bound
-  (\texttt{split\_sample\_bound\_vanishes}), and witness exponential decay.
-\item \textbf{Adversarial thresholds and Nitzan--Paroush optimality}
-  (\texttt{Basic.lean} and \texttt{NewTheory.lean}): Always-wrong and
-  sign-flip biconditionals (\texttt{adversarial\_threshold\_div}),
-  effective-family breakdown $\delta_{\mathrm{fam}} < 1/2$ invariant to clone floods
-  (\texttt{effective\_family\_adversarial\_threshold}), ranking preservation
-  (\texttt{ranking\_preserved}), and weighted Cauchy--Schwarz variance optimality
-  with exact equality attainment (\texttt{optimal\_judge\_weights\_cauchy\_schwarz},
-  \texttt{optimal\_judge\_weights\_equality}).
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=2pt]
+\raggedright
+\item \textbf{Variational duality and injection blindness} (\texttt{NewTheory.lean}, Thm.~\ref{thm:injection-blindness}): Finite-alphabet TVD upper bound (\texttt{finite\_tvd\_variational\_le}), Scheff\'e attainment (\texttt{finite\_tvd\_variational\_eq}), and injection blindness $\tvd = 1 - \sum_x P_X(x)^2$ (\texttt{injection\_tvd\_blindness}).
+\item \textbf{Double-centering and oriented peer recovery} (\texttt{NewTheory.lean}, Thm.~\ref{thm:double-centering}): Exact cancellation of additive shifts $a(x)+b(y)$ (\texttt{tvdmi\_double\_centering\_invariance}), strict monotonicity, and inverter rejection (\texttt{oriented\_peer\_strict\_mono}, \texttt{oriented\_peer\_rejects\_inverter}).
+\item \textbf{Clone hijacking and $1/F$ recovery} (\texttt{Basic.lean}, \texttt{NewTheory.lean}): Equicorrelated floor (\texttt{variance\_floor}), clone-hijacking asymptote and counterexample (\texttt{clone\_hijacking\_tendsto}, \texttt{clone\_hijacking\_strict\_increase\_counterexample}), and uniform $B/F$ recovery (\texttt{var\_family\_balanced\_le\_inv\_F}, \texttt{inv\_F\_rate\_vanishes}).
+\item \textbf{Two-axis Hoeffding and split-sample bounds} (\texttt{NewTheory.lean}, Thms.~\ref{thm:two-axis}--\ref{thm:split-sample}): Exact two-sample $n\eta^2$ exponent (\texttt{hoeffding\_two\_sample\_exponent}) and vanishing split bound (\texttt{split\_sample\_bound\_vanishes}).
+\item \textbf{Adversarial thresholds and optimal weights} (\texttt{Basic.lean}, \texttt{NewTheory.lean}): Adversarial biconditional (\texttt{adversarial\_threshold\_div}), effective-family breakdown $\delta_{\mathrm{fam}} < 1/2$ (\texttt{effective\_family\_adversarial\_threshold}), ranking preservation, and Cauchy--Schwarz Nitzan--Paroush weights (\texttt{optimal\_judge\_weights\_cauchy\_schwarz}).
+\item \textbf{Calibration, confounders, and Davis--Kahan} (\texttt{SpectralCalibration.lean}, Thm.~\ref{thm:calibration-dk}): MSE debiasing (\texttt{mse\_bias\_variance\_decomp}), strict $\mathrm{ICC}(A,1) < \mathrm{ICC}(C,1)$ gap and calibrated equality (\texttt{icc\_agreement\_lt\_consistency\_of\_bias}, \texttt{anchor\_calibration\_excess\_tendsto\_zero}), confounder floor and residualization (\texttt{cross\_family\_confounder\_variance\_floor}, \texttt{confounder\_residualization\_recovery}), and rank-1 $O(n^{-1/2})$ subspace decay (\texttt{davis\_kahan\_rayleigh\_sin\_sq\_bound}, \texttt{davis\_kahan\_sample\_rate\_vanishes}).
 \end{enumerate}
 
-The entire Lean~4 project builds cleanly (\texttt{lake build}, 3,288~jobs) with
-zero \texttt{sorry} placeholders, and \texttt{\#print axioms} checks verify
-that all headline theorems depend exclusively on the standard Lean axioms
-\texttt{[propext, Classical.choice, Quot.sound]}.
+The entire Lean~4 project ($54$ theorems: $28$ in \texttt{Basic.lean}, $15$ in \texttt{NewTheory.lean}, $11$ in \texttt{SpectralCalibration.lean}) compiles cleanly (\texttt{lake build}, 3,289~jobs) with zero \texttt{sorry}, depending solely on \texttt{[propext, Classical.choice, Quot.sound]}.

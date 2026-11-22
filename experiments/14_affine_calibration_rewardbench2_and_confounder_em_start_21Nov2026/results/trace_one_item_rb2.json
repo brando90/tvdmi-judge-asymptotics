@@ -1,0 +1,30 @@
+{
+  "prompt_subset": "Factuality",
+  "prompt_id": "30",
+  "num_correct": 1,
+  "total_completions": 4,
+  "cand_word_counts": [
+    760,
+    772,
+    772,
+    716
+  ],
+  "skywork_v2_8b_scores": [
+    29.578125,
+    23.140625,
+    16.578125,
+    15.03125
+  ],
+  "pku_beaver_v1_reward_scores": [
+    -0.54638671875,
+    -1.2177734375,
+    -1.330078125,
+    -0.52734375
+  ],
+  "unique_completion_counts": [
+    4
+  ],
+  "n_prompts_dedup": 1753,
+  "n_candidates_total": 7012,
+  "raw_sha256_meta": "b91b392066dc7eeca36f3189c8fa1be14eb91b40795839c2034d4577ef856c73"
+}

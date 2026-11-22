@@ -63,3 +63,19 @@ estimator $\hat\tau_K$ satisfies $\Prob(\max_{l \le L} |\hat\tau_K(c_l) -
 \Delta_{\min}/2$ the induced candidate ranking matches the gold ranking with
 probability approaching~$1$.
 \end{theorem}
+
+\begin{theorem}[Agreement ICC calibration, cross-family residualization, and Davis--Kahan rate]
+\label{thm:calibration-dk}
+(i)~Whenever rank covariance $\Cov(\widehat{Y}, Y) > 0$ pairs with nonzero mean
+bias ($\mu_{\widehat{Y}} \neq \mu_Y$), absolute agreement obeys
+$\mathrm{ICC}(A,1) < \mathrm{ICC}(C,1)$, closing identically once $m$-anchor
+affine calibration matches means ($\mu_{\widehat{Y}} = \mu_Y$) with excess
+calibration MSE vanishing at $O(1/m)$. (ii)~Under a shared cross-family
+confounder $cW$ ($\Var(W) = v_W > 0$), $1/F$ family balancing stalls at floor
+$c^2 v_W$, which covariate residualization $\widetilde{Z}^{\mathrm{CR}} = (I - P_W)\widetilde{Z}$
+removes. (iii)~For eigengap $\gamma_{\mathrm{gap}} = \lambda_1 - \lambda_2 > 0$
+and Rayleigh perturbation $\varepsilon_n = O(n^{-1/2})$ \citep{davis1970rotation},
+the empirical singular vector satisfies
+$\sin^2\theta(\hat{u}_n, u_1) \le 2\varepsilon_n / \gamma_{\mathrm{gap}} \to 0$
+(\texttt{SpectralCalibration.lean}).
+\end{theorem}

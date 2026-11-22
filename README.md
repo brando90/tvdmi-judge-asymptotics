@@ -1,9 +1,9 @@
 # Reference-Free Evaluation with Judge Ensembles: Scaling Laws, Consistency Proofs and Lean 4 (TVD-MI)
 
 > **TLDR (11-21-2026)**
-> - **What it is:** a research repo on reference-free evaluation with judge ensembles (scoring with TVD-MI, Total Variation Distance–Mutual Information): does the aggregated score converge to a gold target as the number of judges K grows, at what rate, and when does it break (dependent or adversarial judges)?
-> - **Status:** theory and simulations are written up; the Lean 4 formalization is in progress (`experiments/00_lean_formalization/README.md`). Experiment 01 (best-of-K scaling) reports fitted exponents that match the predicted K^(-1/beta); see each experiment's `results_summary/` for the rest.
-> - **Where things are:** `experiments/` (numbered folders 00–11, plan in `experiments/README.md` and `experiments/EXPERIMENT_PLAN.md`), `theory/assumptions.md` (assumptions), `latex_paper/neurips/main.tex` (NeurIPS 2025 paper), `experiments/00_lean_formalization/` (natural-language proofs in `main_theorem.tex`, Lean 4 project in `lean/`), `CLAUDE.md` and `agents.md` (agent rules).
+> - **What it is:** a research repo on reference-free evaluation with judge ensembles (scoring with TVD-MI, Total Variation Distance–Mutual Information): does the aggregated score converge to a gold target as the number of judges K grows, at what rate, and when does it break (dependent, cloned, or adversarial judges, or shared confounders)?
+> - **Status:** Lean 4 formalization compiled across `Basic.lean`, `NewTheory.lean`, and `SpectralCalibration.lean`; historical scripts `01`–`11` reconciled in Experiment 12–13; real-LLM validation & falsification completed on `SummEval` (`1,600` items), `LMSYS MT-Bench` (`2,575` pairs), and `RewardBench 2` (`1,753` deduplicated non-tie prompts, `27` open-source reward/cost models: `23` main + `4` PKU Beaver models) in Experiments 13–14; dual NeurIPS (`main.pdf`) and arXiv (`main_arxiv.pdf`) builds maintained.
+> - **Where things are:** `experiments/` (`00` Lean 4, `01`–`14` empirical/theoretical experiments, roadmap in `experiments/README.md`), `theory/assumptions.md`, `latex_paper/neurips/main.tex` & `main_arxiv.tex`, `CLAUDE.md`, and `AGENTS.md`.
 
 This repository studies the mathematics of reference-free evaluation with judge
 ensembles, with a focus on Total Variation Distance–Mutual Information
@@ -103,3 +103,21 @@ A good way to read this project is:
 
 This repository is about making reference-free evaluation mathematically
 precise, empirically testable, and formally verifiable.
+
+## Citation
+
+If you find this repository, mathematical derivations, Lean 4 formalization, or `RB-Spec TVD-MI` experiments useful, please cite:
+
+```bibtex
+@misc{miranda2026tvdmijudgeasymptotics,
+  title  = {Asymptotic Consistency of Reference-Free Evaluation with TVD-MI Judge Ensembles},
+  author = {Miranda, Brando and Koyejo, Sanmi},
+  year   = {2026},
+  url    = {https://github.com/brando90/tvdmi-judge-asymptotics},
+  note   = {Preprint and Lean 4 formalization}
+}
+```
+
+## TODO
+
+- [ ] **TODO (Authorship):** Ask Rylan Schaeffer if he wants to be an author on this paper/project, and update the paper author list and BibTeX citation above accordingly.

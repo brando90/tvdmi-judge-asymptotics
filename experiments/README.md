@@ -47,6 +47,7 @@ Use 500 Monte Carlo repetitions per configuration unless noted otherwise.
 | 11 | Finite-sample bounds | Concentration | K | Bound vs error | Tight/loose |
 | 12 | `12_repo_audit_bugfixes_and_next_theory_roadmap_start_21Nov2026` | Repo audit & fixes | K, B, rho, delta | Gap / RMSE / bias | Corrected `1/beta`, split-sample `K*`, oriented peer TVD-MI |
 | 13 | `13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026` | Real-LLM & Lean `NewTheory` | M clones, delta, budget | Spearman / Acc / ICC(A,1) | Clone hijacking vs `RB-Spec` `1/F` recovery on SummEval & MT-Bench |
+| 14 | `14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026` | Calibration, RB2, Confounders, Davis–Kahan | m anchors, c confounder, n samples | ICC(A,1) / ECE / Acc / sin^2(theta) | Bias-calibrated ICC agreement, `RB2` natural clones/cost inversion, `CR-RB-Spec`, `O(1/n)` sin^2 decay |
 
 Experiments 01–05 are the core synthetic experiments that directly validate
 the theorems. Experiment 06 validates on real data. Experiments 07–11 are

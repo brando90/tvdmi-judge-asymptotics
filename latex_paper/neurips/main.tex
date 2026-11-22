@@ -2,9 +2,20 @@
 
 \PassOptionsToPackage{numbers, compress}{natbib}
 
-% to compile a preprint version, e.g., for submission to arXiv, add the
-% [preprint] option:
-\usepackage[preprint]{neurips_2025}
+% Trigger Rule 89: toggle between venue submission (main.pdf, no-supp) and arXiv (main_arxiv.pdf, with-supp).
+\newif\ifsupplementary
+\ifdefined\withsupplementary
+  \supplementarytrue
+\else
+  \supplementaryfalse
+\fi
+
+% arXiv builds use [preprint]; NeurIPS venue builds remain anonymous with line numbers.
+\ifsupplementary
+  \usepackage[preprint]{neurips_2025}
+\else
+  \usepackage{neurips_2025}
+\fi
 
 % to compile a camera-ready version, add the [final] option:
 % \usepackage[final]{neurips_2025}
@@ -51,26 +62,33 @@
 \newcommand{\cU}{\mathcal{U}}
 \newcommand{\cV}{\mathcal{V}}
 
-% Trigger Rule 89: toggle between venue submission (main.pdf, no-supp) and arXiv (main_arxiv.pdf, with-supp).
-\newif\ifsupplementary
-\ifdefined\withsupplementary
-  \supplementarytrue
-\else
-  \supplementaryfalse
-\fi
-
 % --- Author comment macros ---
 \newcommand{\bmg}[1]{\textcolor{orange}{\textbf{[Brando: #1]}}}
 
 \title{Asymptotic Consistency of Reference-Free Evaluation\\
 with TVD-MI Judge Ensembles}
 
-\author{
+% TODO(authorship): Ask Rylan Schaeffer if he wants to be an author.
+\ifsupplementary
+\author{%
+  Brando Miranda \\
+  Department of Computer Science \\
+  Stanford University \\
+  \texttt{brando9@stanford.edu}
+  \And
+  Sanmi Koyejo \\
+  Department of Computer Science \\
+  Stanford University \\
+  \texttt{sanmi@stanford.edu}
+}
+\else
+\author{%
   Anonymous Author(s) \\
   Affiliation \\
   Address \\
   \texttt{email}
 }
+\fi
 
 \begin{document}
 
@@ -97,13 +115,17 @@ We introduce \emph{Redundancy-Balanced Spectral Peer TVD-MI} (\texttt{RB-Spec TV
 which balances collinear judge families unsupervised and achieves family-level
 $1/F$ error scaling and effective-family adversarial resilience up to
 $\delta_{\mathrm{fam}} < 1/2$. Across held-out evaluations on \textsc{SummEval}
-(1,600 summaries across 100 articles) and \textsc{MT-Bench} (2,575 human
-pairwise judgments across 80 questions), \texttt{RB-Spec TVD-MI} resists
-64-clone hijacking and 66.7\% cloned adversaries where uniform averaging,
-medians, and naive SVD degrade or invert. Forty-three theorems (28 core
-asymptotic/algebraic theorems plus 15 new theorems across finite-alphabet
-variational duality, double-centering invariance, clone-hijacking recovery,
-and optimal weights) are formally verified in Lean~4 with Mathlib without
+(1,600 summaries across 100 articles), \textsc{MT-Bench} (2,575 human
+pairwise judgments across 80 questions), and \textsc{RewardBench~2} (1,753
+prompts across 27 reward models), \texttt{RB-Spec TVD-MI} resists 64-clone
+hijacking, 66.7\% cloned adversaries, and naturally anti-correlated
+cost/reward models where uniform averaging, medians, and naive SVD degrade
+or invert; $m=5$--$20$ human anchor articles remove Likert severity bias
+($\mathrm{ICC(A,1)}: 0.334 \to 0.644$), while covariate-residualized
+\texttt{CR-RB-Spec} neutralizes universal cross-family length confounders.
+Fifty-four theorems (28 core asymptotic/algebraic theorems, 15 hierarchical/variational
+theorems, and 11 calibration, confounder-residualization, and Davis--Kahan
+perturbation theorems) are formally verified in Lean~4 with Mathlib without
 placeholders.
 \end{abstract}
 
@@ -120,9 +142,9 @@ placeholders.
 \input{11_related_work}
 \input{12_conclusion}
 
-\input{97_acknowledgments}
-
 \clearpage
+
+\input{97_acknowledgments}
 
 \bibliography{references}
 \bibliographystyle{neurips}

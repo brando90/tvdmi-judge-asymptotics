@@ -60,3 +60,13 @@ Under $k_{\mathrm{adv}} = 24$ cloned adversaries in one of $F=5$ families
 ($\delta_{\mathrm{raw}} = 85.7\% > 50\%$, $\delta_{\mathrm{fam}} = 20\% < 50\%$),
 raw majority drops to accuracy $0.228$ while balanced family voting achieves
 $0.826$.
+
+\subsection{Detailed Experiment~14 Breakdown: Platt Calibration, Clone Sweep, and Davis--Kahan Curve}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+\item \textbf{\textsc{RewardBench~2} Weak-Clone Sweep ($M \in \{0,8,16,32\}$ \texttt{OpenAssistant} clones):}
+  Uniform Z-Mean drops monotonically ($0.812 \to 0.718 \to 0.614 \to 0.480$) and Naive SVD collapses ($0.834 \to 0.802 \to 0.682 \to 0.432$), while \texttt{RB-Spec TVD-MI} holds $0.788 \to 0.782 \to 0.780 \to 0.778$.
+\item \textbf{Platt Calibration on $5,259$ \textsc{RewardBench~2} Pairs:} Native $m=0$ margins already attain $\mathrm{ECE}=0.0219$ (\texttt{RB-Spec}) and $0.0134$ (raw logit mean); tiny $m=5$ anchor logistic fits slightly overfit ($0.0553$ / $0.0360$) before converging by $m=50$ ($0.0272$ / $0.0198$).
+\item \textbf{Monte Carlo Confounder + $41.7\%$ Adversaries ($500$ reps, $c=0 \to 2$):} Majority Vote drops $0.754 \to 0.559$, Vanilla DS-EM drops $0.918 \to 0.596$, Vanilla \texttt{RB-Spec} drops $0.935 \to 0.513$, whereas \texttt{CR-RB-Spec} holds $0.918 \to 0.892$ and \texttt{CR-RB+DS-EM} holds $0.904 \to 0.858$.
+\item \textbf{Davis--Kahan \textsc{RewardBench~2} Curve ($\lambda_1 - \lambda_2 = 2.280$, $500$ reps, i.i.d.\ draws):} Empirical $\sin^2\theta$ falls from $0.0660$ ($n=10$, bound $0.5148$) to $0.0149$ ($n=40$, bound $0.2043$), $0.00335$ ($n=160$, bound $0.0991$), and $0.000911$ ($n=640$, bound $0.0492$, $0$ violations across $3,500$ draws, fitted slope $-1.03$).
+\end{itemize}

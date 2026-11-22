@@ -2,27 +2,10 @@
 \section{Discussion and Conclusion}
 \label{sec:conclusion}
 
-We have established a unified theoretical, formal, and empirical characterization
-of reference-free evaluation with TVD-MI judge ensembles. Separating
-\emph{statistical convergence} from \emph{semantic validity} reveals both why
-independent or diverse ensembles converge rapidly and exactly how naive
-reference-free pipelines fail in practice.
+Separating \emph{statistical convergence} from \emph{semantic validity} explains when reference-free TVD-MI ensembles work and when naive pipelines fail:
+(1)~double-centered oriented peer contrasts neutralize prompt copying and global inversions;
+(2)~split-sample cross-fitting eliminates null winner's-curse inflation and sets compute-optimal $K^\star(B)$;
+(3)~\texttt{RB-Spec TVD-MI} restores $1/F$ family scaling and clone/polarity robustness across \textsc{SummEval}, \textsc{MT-Bench}, and \textsc{RewardBench~2}; and
+(4)~$5$--$20$ anchors close the $\mathrm{ICC(A,1)}$--$\mathrm{ICC(C,1)}$ gap while \texttt{CR-RB-Spec} removes measured confounders under Davis--Kahan bounds.
 
-First, unconditional prompt--response TVD-MI is vulnerable to injective
-prompt copying and global label inversions; double-centered oriented peer
-contrasts neutralize additive prompt and verbosity shifts while preserving
-strict accuracy monotonicity. Second, finite-sample witness maximization creates
-substantial winner's-curse overfitting under the null unless decoupled via
-split-sample cross-fitting, which also determines the compute-optimal trade-off
-$K^\star(B)$ between judge count and sample size. Third, hierarchical cloning
-invalidates naive $1/K$ averaging and uniform majority thresholds, whereas our
-unsupervised \texttt{RB-Spec TVD-MI} estimator balances redundant families to
-recover $1/F$ variance scaling and effective-family robustness up to
-$\delta_{\mathrm{fam}} < 1/2$ on both \textsc{SummEval} and \textsc{MT-Bench}.
-
-\textbf{Limitations.} Without a small human anchor set to calibrate score
-location, linear/spectral ensembles inherit judge severity offsets (lowering
-absolute agreement $\mathrm{ICC(A,1)}$ despite high rank consistency). In addition,
-our Lean~4 formalization proves all finite-alphabet variational, invariance,
-clone-hijacking, and optimality theorems, while continuous measure-theoretic
-generalizations and end-to-end EM IRT fixed-point rates remain open directions.
+\textbf{Limitations.} Unmeasured shared confounders $W$ omitted from covariates require anchors; continuous measure-theoretic and full EM fixed-point rates remain open.

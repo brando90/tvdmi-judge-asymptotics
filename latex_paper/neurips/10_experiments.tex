@@ -5,46 +5,30 @@
 We test every theoretical prediction in two stages: controlled Monte Carlo
 verification of our closed-form bounds (including fixes for historical scaling
 and contamination artifacts detailed in Appendix~\ref{app:experiments}), followed
-by held-out validation on two public human-annotated LLM benchmarks using zero
+by held-out validation on three public human-annotated LLM benchmarks using zero
 human labels during unsupervised aggregation.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{figures/exp13_real_llm_and_theory_6panel.pdf}
-  \caption{\textbf{Real-LLM and theoretical verification (Experiment~13, 5-fold cluster-held-out evaluation).}
-  \textbf{(A)} On \textsc{SummEval}, verbatim prompt copying ($0.485$) scores above the strongest real summarizer ($0.328$) under prompt--response TVD-MI, whereas peer contrast restores separation ($0.329$ vs.\ $0.296$).
-  \textbf{(B)} Adding $M \in \{0,\dots,64\}$ prompt clones of \texttt{BART-CNN} causes uniform averaging ($0.985 \to 0.826$), itemwise medians ($0.988 \to 0.785$), and naive SVD ($0.985 \to 0.785$) to degrade, while \texttt{RB-Spec TVD-MI} remains flat ($0.988$).
-  \textbf{(C)} On \textsc{SummEval} null permutations ($n=20$ articles), naive in-sample maximization inflates to $+0.065$, while split-sample selection stays unbiased ($+0.001$, $p=0.992$).
-  \textbf{(D)} Under wild ($K=38$) and cloned-adversarial ($66.7\%$ raw adversaries in 1~family) pools, \texttt{RB-Spec TVD-MI} achieves $+0.689$ and $+0.703$ item Spearman while mean, median, and naive SVD collapse to $[-0.500, -0.201]$ under cloned adversaries.
-  \textbf{(E)} On \textsc{MT-Bench} ($K=17$ confounded pool, $2,575$ human pairs), \texttt{RB-Spec} reaches pairwise accuracy $0.795$ near the inter-human ceiling ($0.823$).
-  \textbf{(F)} Five-hundred-rep Monte Carlo simulations match Theorem~\ref{thm:balanced-1F} and Proposition~\ref{prop:clone-hijacking}.}
+  \includegraphics[width=0.76\textwidth]{figures/exp13_real_llm_and_theory_6panel.pdf}
+  \vspace{-7pt}
+  \caption{\textbf{Real-LLM and theoretical verification (Experiment~13, 5-fold CV).}
+  \textbf{(A)} On \textsc{SummEval}, prompt copying ($0.485$) outscores the best summarizer ($0.328$) under raw TVD-MI, whereas peer contrast restores separation ($0.329$ vs.\ $0.296$).
+  \textbf{(B)} With $M \le 64$ \texttt{BART-CNN} clones, uniform mean ($0.985 \to 0.826$), median ($0.988 \to 0.785$), and naive SVD ($0.985 \to 0.785$) degrade, while \texttt{RB-Spec} holds $0.988$.
+  \textbf{(C)} On \textsc{SummEval} null permutations ($n=20$), in-sample optimization inflates to $+0.065$ vs.\ $+0.001$ split-sample ($p=0.992$).
+  \textbf{(D)} Under wild ($K=38$) and cloned-adversarial ($66.7\%$ adversaries) pools, \texttt{RB-Spec} reaches $+0.689$ and $+0.703$ item Spearman while baselines collapse to $[-0.500, -0.201]$.
+  \textbf{(E)} On \textsc{MT-Bench} ($K=17$, $2,575$ pairs), \texttt{RB-Spec} achieves $0.795$ vs.\ human ceiling $0.823$.
+  \textbf{(F)} $500$-rep Monte Carlo matches Theorem~\ref{thm:balanced-1F} and Proposition~\ref{prop:clone-hijacking}.}
   \label{fig:exp13-overview}
+  \vspace{-4pt}
 \end{figure}
 
 % Provenance: experiments/13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026/results/summary_metrics.json, summeval_heldout_regimes.csv, mtbench_pairwise.csv
 \subsection{Real-LLM Benchmarks and Unsupervised Evaluation Protocol}
 
-\textbf{\textsc{SummEval} \citep{fabbri2021summeval}.} We evaluate $1,600$ summaries
-across $100$ articles and $16$ summarization systems against the three-expert mean
-across four quality dimensions (human overall mean $4.131$; leave-one-expert-out
-ceiling: item Spearman $0.758\,[0.729, 0.782]$, system Spearman $0.966$,
-$\mathrm{ICC(A,1)} = 0.806$). The reference-free judge pool combines $4$ single-sample
-GPT-4 G-Eval critics (\citealp{liu2023geval}; valid parses $31{,}809/32{,}000$ to
-$32{,}000/32{,}000$), $4$ diverse sequence-to-sequence models
-(\texttt{BARTScore}, \texttt{BART-para}, \texttt{BART-CNN}, \texttt{PRISM}),
-$70$ paraphrased \texttt{BART-CNN} prompt variants, and candidate word length.
-All unsupervised ensemble weights are fitted strictly within each training fold
-via 5-fold article-disjoint cross-validation, using raw training GPT-4 Likert
-means solely to anchor the $[1,5]$ output scale without accessing human scores.
+\textbf{\textsc{SummEval} \citep{fabbri2021summeval}.} We evaluate $1,600$ summaries ($100$ articles $\times 16$ systems; expert mean $4.131$, leave-one-expert-out item Spearman $0.758\,[0.729, 0.782]$, system $0.966$, $\mathrm{ICC(A,1)} = 0.806$). The reference-free pool pairs $4$ GPT-4 G-Eval critics (\citealp{liu2023geval}; parses $\ge 31{,}809/32{,}000$), $4$ seq2seq scorers (\texttt{BARTScore}, \texttt{BART-para}, \texttt{BART-CNN}, \texttt{PRISM}), $70$ \texttt{BART-CNN} prompt paraphrases, and word length. Weights fit via 5-fold article-disjoint CV, using training GPT-4 Likert means solely to set the $[1,5]$ scale without human labels.
 
-\textbf{\textsc{LMSYS MT-Bench} \citep{zheng2023judging}.} Over all $2,575$
-decisive human pairwise judgments spanning $80$ multi-turn questions and $6$ chat
-models (inter-human agreement $0.823$ across $779$ repeated pairs), we construct a
-$K=17$ confounded pairwise pool pairing the released GPT-4 pairwise judge, prompt-specificity
-TF-IDF similarity, lexical diversity, $11$ verbosity-length clones, and $3$
-sign-flipped adversarial critics via 5-fold question-disjoint cross-validation.
-Uncertainty is reported via $2,000$ article- or question-cluster bootstrap draws
-($x\,[l, u]$) and paired Wilcoxon tests across independent clusters.
+\textbf{\textsc{LMSYS MT-Bench} \citep{zheng2023judging}.} Over all $2,575$ decisive human pairs ($80$ questions, $6$ models; human agreement $0.823$ across $779$ repeats), a $K=17$ pool combines the GPT-4 judge, prompt TF-IDF similarity, lexical diversity, $11$ verbosity clones, and $3$ inverted critics under 5-fold question-disjoint CV ($2,000$ cluster bootstraps, paired Wilcoxon tests).
 
 \begin{table}[t]
 \centering
@@ -65,21 +49,17 @@ Naive Rank-1 SVD & $0.497\,[0.446, 0.547]$ & $-0.500\,[-0.550, -0.450]$ & $-0.80
 \bottomrule
 \end{tabular}}
 \vspace{2pt}
-{\footnotesize $^\dagger$Majority Vote on pairwise decisions. \texttt{RB-Spec} improves over Uniform Mean with Wilcoxon $p=1.21\times 10^{-9}$ (Wild), $p=4.40\times 10^{-18}$ (Adv-Flood), and $p=3.87\times 10^{-10}$ (\textsc{MT-Bench}).}
+{\footnotesize $^\dagger$Majority Vote on pairwise decisions. \texttt{RB-Spec} beats Uniform Mean with Wilcoxon $p=1.21\times 10^{-9}$ (Wild), $p=4.40\times 10^{-18}$ (Adv-Flood), and $p=3.87\times 10^{-10}$ (\textsc{MT-Bench}).}
+\vspace{-6pt}
 \end{table}
 
 \subsection{Headline Findings and Absolute Agreement Caveat}
 
-As shown in Figure~\ref{fig:exp13-overview} and Table~\ref{tab:real-llm-main}:
-(1)~\textbf{Pairwise residual correlation saturation} occurs sharply within model
-families ($\rho = 0.769$ across $20$ stochastic GPT-4 calls; $\rho = 1.000$ across
-$70$ \texttt{BART-CNN} prompts) compared to distinct families ($\rho = 0.558$);
-(2)~\textbf{Clone hijacking is reversible unsupervised}: adding $64$ redundant
-clones degrades Uniform Mean by $-0.159$ system Spearman and Naive SVD by $-0.200$
-(across $200$ repeated $50/50$ splits, \texttt{RB-Spec} obtains $0.970\,[0.935, 0.991]$
-vs.\ Uniform Mean $0.806\,[0.712, 0.874]$, $p=1.43\times 10^{-34}$); and
-(3)~\textbf{Raw uncalibrated level bias persists without human anchors}: while
-\texttt{RB-Spec TVD-MI} attains strong rank and linear tracking ($\mathrm{ICC(C,1)}=0.688$,
-item Pearson $0.726\,[0.702, 0.749]$ on Wild $K=38$), the pooled uncalibrated G-Eval
-anchor mean ($3.019$) sits below expert severity ($4.131$), yielding mean bias
-$-1.111\,[-1.168, -1.052]$ and $\mathrm{ICC(A,1)}=0.351$.
+Figure~\ref{fig:exp13-overview} and Table~\ref{tab:real-llm-main} show three findings:
+(1)~\textbf{Residual saturation} within model families ($\rho = 0.769$ across $20$ GPT-4 calls; $\rho = 1.000$ across $70$ \texttt{BART-CNN} prompts) vs.\ distinct families ($\rho = 0.558$);
+(2)~\textbf{Reversible clone hijacking}: $64$ clones drop Uniform Mean by $-0.159$ system Spearman and Naive SVD by $-0.200$ ($200$-split \texttt{RB-Spec} $0.970\,[0.935, 0.991]$ vs.\ Mean $0.806\,[0.712, 0.874]$, $p=1.43\times 10^{-34}$); and
+(3)~\textbf{Uncalibrated level bias}: \texttt{RB-Spec} achieves strong tracking ($\mathrm{ICC(C,1)}=0.688$, Pearson $0.726\,[0.702, 0.749]$), but uncalibrated GPT-4 mean ($3.019$) sits below expert severity ($4.131$), leaving bias $-1.111\,[-1.168, -1.052]$ and $\mathrm{ICC(A,1)}=0.351$.
+
+\subsection{Anchor Calibration, \textsc{RewardBench~2}, and Confounder Recovery (Experiment~14)}
+
+OLS affine calibration on $m=5$--$20$ anchor articles removes \textsc{SummEval} ($K=38$) bias ($-1.104 \to +0.007$), cuts MAE ($1.130 \to 0.370$), and lifts $\mathrm{ICC(A,1)}$ ($0.334 \to 0.644$; $\mathrm{ICC(C,1)}=0.648$, $p=4.27\times 10^{-18}$; Appendix~\ref{app:experiments}). Across $1,753$ non-ties prompts ($27$ models) on \textsc{RewardBench~2} \citep{malik2025rewardbench2}, \texttt{RB-Spec} resists $32$ \texttt{OpenAssistant} clones ($0.778$ vs.\ Naive SVD $0.432$, $p=1.65\times 10^{-124}$) and $54.9\%$ anti-correlated \texttt{PKU-beaver-v1.0-reward} judges ($0.796$ vs.\ $0.145$, $p=2.11\times 10^{-229}$); \texttt{CR-RB-Spec} removes length confounders ($0.594$ vs.\ $0.276$ \textsc{SummEval}, $0.771$ vs.\ $0.671$ \textsc{MT-Bench}, $0.892$ vs.\ $0.513$ MC) with zero Davis--Kahan violations ($\sin^2\theta \propto n^{-1.03}$).

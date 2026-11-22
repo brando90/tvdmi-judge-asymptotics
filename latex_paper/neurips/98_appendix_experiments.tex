@@ -67,3 +67,42 @@ lifts pairwise accuracy from $0.685$ (Uniform Mean) and $0.718$ (Naive SVD) to
 $0.795\,[0.769, 0.820]$ while preserving 6-model win-rate ranking
 ($\mathrm{Spearman}=0.943$, $\tau=0.867$, Pearson $r=0.978$, vs.\ Naive SVD
 $\mathrm{Spearman}=0.771$).
+
+\subsection{Affine Calibration, \textsc{RewardBench~2}, Confounder Recovery, and Davis--Kahan (Experiment~14)}
+
+% Provenance: experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/results/summary_metrics.json, summeval_calibration_curve.csv, rewardbench2_regimes.csv, confounder_sweep.csv, davis_kahan_curve.csv
+Figure~\ref{fig:exp14-overview} and Table~\ref{tab:app-exp14-main} summarize Experiment~14
+across $200$ 50/50 \textsc{SummEval} splits, $1,753$ deduplicated non-ties \textsc{RewardBench~2}
+prompts ($27$ open-source reward models), universal cross-family length confounders,
+and $500$-repetition Davis--Kahan subspace convergence.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/exp14_calibration_rb2_and_confounders_6panel.pdf}
+  \caption{\textbf{Experiment~14 empirical verification.}
+  \textbf{(A)} On \textsc{SummEval} ($K=38$), $m=2$--$50$ human anchor articles close $\mathrm{ICC(A,1)}$ ($0.334 \to 0.645$) into $\mathrm{ICC(C,1)}$ ($0.647$) and cut MAE ($1.130 \to 0.368$).
+  \textbf{(B)} On \textsc{RewardBench~2} ($1,753$ prompts), \texttt{RB-Spec TVD-MI} resists $32$ weak \texttt{OpenAssistant} clones ($0.778$ vs.\ $0.432$) and $54.9\%$ naturally anti-correlated \texttt{PKU-beaver-v1.0-reward} floods ($0.796$ vs.\ $0.145$).
+  \textbf{(C)} Native Bradley--Terry logits start well-calibrated ($\mathrm{ECE}=0.022$ for \texttt{RB-Spec}, $0.013$ raw at $m=0$).
+  \textbf{(D--E)} Under universal length confounders $c \in [0, 2]$, vanilla \texttt{RB-Spec} degrades while \texttt{CR-RB-Spec} holds flat on \textsc{SummEval} ($0.594$) and Monte Carlo ($0.892$).
+  \textbf{(F)} \textsc{RewardBench~2} empirical $\sin^2\theta$ decays at $n^{-1.03}$ with zero Lean bound violations.}
+  \label{fig:exp14-overview}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\caption{Experiment~14 summary across \textsc{SummEval} calibration ($200$ splits), \textsc{RewardBench~2} ($1,753$ prompts), and cross-family confounders ($c=2.0$).}
+\label{tab:app-exp14-main}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Task / Benchmark & Condition & Baseline / Uncalibrated & \texttt{RB-Spec} / \texttt{CR-RB-Spec} & Wilcoxon $p$-value \\
+\midrule
+\textsc{SummEval} Affine ($K=38$) & $m=0 \to 20$ anchors & $\mathrm{ICC(A,1)}=0.334$, $\mathrm{MAE}=1.130$ & $\mathrm{ICC(A,1)}=\mathbf{0.644}$, $\mathrm{MAE}=\mathbf{0.370}$ & $4.27\times 10^{-18}$ ($m=10$) \\
+\textsc{RewardBench~2} Natural ($K=23$) & Best Single $0.892$ & Mean $0.812$, Naive SVD $0.833$ & $0.787\,[0.768,0.806]$ & $1.31\times 10^{-6}$ (vs.\ Mean) \\
+\textsc{RewardBench~2} Weak Flood ($K=55$) & $32$ \texttt{OpenAssistant} clones & Mean $0.480$, Naive SVD $0.432$ & $\mathbf{0.778\,[0.758,0.795]}$ & $1.65\times 10^{-124}$ (vs.\ SVD) \\
+\textsc{RewardBench~2} PKU Flood ($K=51$) & $54.9\%$ \texttt{beaver-v1-reward} & Mean $0.311$, Naive SVD $0.145$ & $\mathbf{0.796\,[0.778,0.815]}$ & $2.11\times 10^{-229}$ (vs.\ SVD) \\
+\textsc{SummEval} Length Confounder ($c=2$) & $K=38$ universal bias & Mean $0.276$, Vanilla RB $0.276$ & \texttt{CR-RB}: $\mathbf{0.594}$ & $6.03\times 10^{-13}$ \\
+\textsc{MT-Bench} Length Confounder ($c=2$) & $K=17$ universal bias & Mean $0.676$, Vanilla RB $0.671$ & \texttt{CR-RB}: $\mathbf{0.771}$ & $1.59\times 10^{-4}$ \\
+\bottomrule
+\end{tabular}}
+\end{table}

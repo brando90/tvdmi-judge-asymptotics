@@ -1,0 +1,16 @@
+regime,method,prompt_acc,acc_lo,acc_hi,macro_acc,wilcoxon_vs_mean_p,wilcoxon_vs_svd_p
+natural_23,Best Single,0.8922,0.8774,0.9070,0.8473,1.060e-19,6.300e-13
+natural_23,Uniform Z-Mean,0.8118,0.7929,0.8306,0.7485,1.000e+00,2.327e-07
+natural_23,Itemwise Median,0.8300,0.8118,0.8471,0.7664,1.624e-04,4.142e-01
+natural_23,Naive SVD,0.8334,0.8157,0.8511,0.7660,2.327e-07,1.000e+00
+natural_23,RB-Spec TVD-MI,0.7872,0.7684,0.8060,0.7295,1.312e-06,6.595e-13
+weak_clone_flood_32,Best Single,0.8922,0.8776,0.9073,0.8473,2.738e-141,2.107e-160
+weak_clone_flood_32,Uniform Z-Mean,0.4803,0.4583,0.5054,0.4749,1.000e+00,1.994e-18
+weak_clone_flood_32,Itemwise Median,0.5174,0.4943,0.5411,0.5001,1.356e-06,4.751e-24
+weak_clone_flood_32,Naive SVD,0.4324,0.4104,0.4561,0.4304,1.994e-18,1.000e+00
+weak_clone_flood_32,RB-Spec TVD-MI,0.7781,0.7581,0.7947,0.7225,1.884e-107,1.654e-124
+natural_polarity_flood_51,Best Single,0.8922,0.8774,0.9064,0.8473,1.568e-204,1.784e-269
+natural_polarity_flood_51,Uniform Z-Mean,0.3109,0.2886,0.3320,0.3237,1.000e+00,4.740e-58
+natural_polarity_flood_51,Itemwise Median,0.1962,0.1780,0.2151,0.2193,2.926e-40,8.306e-19
+natural_polarity_flood_51,Naive SVD,0.1455,0.1295,0.1626,0.1741,4.740e-58,1.000e+00
+natural_polarity_flood_51,RB-Spec TVD-MI,0.7963,0.7781,0.8152,0.7375,5.632e-168,2.107e-229

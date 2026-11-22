@@ -1,0 +1,61 @@
+benchmark,c,method,metric
+SummEval_item_sp,0.0,Uniform Mean,0.5070
+SummEval_item_sp,0.0,Vanilla RB-Spec,0.6278
+SummEval_item_sp,0.0,CR-RB-Spec,0.5936
+SummEval_item_sp,0.0,RB-Spec + EM (5-anc),0.6551
+SummEval_item_sp,0.5,Uniform Mean,0.4601
+SummEval_item_sp,0.5,Vanilla RB-Spec,0.4783
+SummEval_item_sp,0.5,CR-RB-Spec,0.5936
+SummEval_item_sp,0.5,RB-Spec + EM (5-anc),0.5082
+SummEval_item_sp,1.0,Uniform Mean,0.3819
+SummEval_item_sp,1.0,Vanilla RB-Spec,0.3868
+SummEval_item_sp,1.0,CR-RB-Spec,0.5936
+SummEval_item_sp,1.0,RB-Spec + EM (5-anc),0.3885
+SummEval_item_sp,1.5,Uniform Mean,0.3210
+SummEval_item_sp,1.5,Vanilla RB-Spec,0.3213
+SummEval_item_sp,1.5,CR-RB-Spec,0.5936
+SummEval_item_sp,1.5,RB-Spec + EM (5-anc),0.3205
+SummEval_item_sp,2.0,Uniform Mean,0.2764
+SummEval_item_sp,2.0,Vanilla RB-Spec,0.2757
+SummEval_item_sp,2.0,CR-RB-Spec,0.5936
+SummEval_item_sp,2.0,RB-Spec + EM (5-anc),0.2737
+MTBench_acc,0.0,Uniform Mean,0.6847
+MTBench_acc,0.0,Vanilla RB-Spec,0.7973
+MTBench_acc,0.0,CR-RB-Spec,0.7709
+MTBench_acc,0.5,Uniform Mean,0.6699
+MTBench_acc,0.5,Vanilla RB-Spec,0.7957
+MTBench_acc,0.5,CR-RB-Spec,0.7709
+MTBench_acc,1.0,Uniform Mean,0.6730
+MTBench_acc,1.0,Vanilla RB-Spec,0.6113
+MTBench_acc,1.0,CR-RB-Spec,0.7709
+MTBench_acc,1.5,Uniform Mean,0.6750
+MTBench_acc,1.5,Vanilla RB-Spec,0.6540
+MTBench_acc,1.5,CR-RB-Spec,0.7709
+MTBench_acc,2.0,Uniform Mean,0.6761
+MTBench_acc,2.0,Vanilla RB-Spec,0.6707
+MTBench_acc,2.0,CR-RB-Spec,0.7709
+MC_500_acc,0.0,Majority Vote,0.7542
+MC_500_acc,0.0,Vanilla DS-EM,0.9177
+MC_500_acc,0.0,Vanilla RB-Spec,0.9350
+MC_500_acc,0.0,CR-RB-Spec,0.9176
+MC_500_acc,0.0,CR-RB + DS-EM,0.9037
+MC_500_acc,0.5,Majority Vote,0.6639
+MC_500_acc,0.5,Vanilla DS-EM,0.8701
+MC_500_acc,0.5,Vanilla RB-Spec,0.8993
+MC_500_acc,0.5,CR-RB-Spec,0.9170
+MC_500_acc,0.5,CR-RB + DS-EM,0.9048
+MC_500_acc,1.0,Majority Vote,0.6059
+MC_500_acc,1.0,Vanilla DS-EM,0.7142
+MC_500_acc,1.0,Vanilla RB-Spec,0.6549
+MC_500_acc,1.0,CR-RB-Spec,0.9142
+MC_500_acc,1.0,CR-RB + DS-EM,0.9022
+MC_500_acc,1.5,Majority Vote,0.5843
+MC_500_acc,1.5,Vanilla DS-EM,0.6436
+MC_500_acc,1.5,Vanilla RB-Spec,0.5321
+MC_500_acc,1.5,CR-RB-Spec,0.9102
+MC_500_acc,1.5,CR-RB + DS-EM,0.8940
+MC_500_acc,2.0,Majority Vote,0.5587
+MC_500_acc,2.0,Vanilla DS-EM,0.5960
+MC_500_acc,2.0,Vanilla RB-Spec,0.5131
+MC_500_acc,2.0,CR-RB-Spec,0.8915
+MC_500_acc,2.0,CR-RB + DS-EM,0.8583
