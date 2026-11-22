@@ -70,3 +70,11 @@ $0.826$.
 \item \textbf{Monte Carlo Confounder + $41.7\%$ Adversaries ($500$ reps, $c=0 \to 2$):} Majority Vote drops $0.754 \to 0.559$, Vanilla DS-EM drops $0.918 \to 0.596$, Vanilla \texttt{RB-Spec} drops $0.935 \to 0.513$, whereas \texttt{CR-RB-Spec} holds $0.918 \to 0.892$ and \texttt{CR-RB+DS-EM} holds $0.904 \to 0.858$.
 \item \textbf{Davis--Kahan \textsc{RewardBench~2} Curve ($\lambda_1 - \lambda_2 = 2.280$, $500$ reps, i.i.d.\ draws):} Empirical $\sin^2\theta$ falls from $0.0660$ ($n=10$, bound $0.5148$) to $0.0149$ ($n=40$, bound $0.2043$), $0.00335$ ($n=160$, bound $0.0991$), and $0.000911$ ($n=640$, bound $0.0492$, $0$ violations across $3,500$ draws, fitted slope $-1.03$).
 \end{itemize}
+
+\subsection{Detailed Experiment~15 Breakdown: \textsc{JudgeBench} Domains, Proxy Sweep, and \texttt{SRB-Spec} Selection}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+\item \textbf{\textsc{JudgeBench} ($33$ Official Judges $\times$ $350$ Pairs) Domain Breakdown (\texttt{CR-SRB-Spec}):} Clean domain accuracies reach $0.9286$ on Math (\textsc{LiveBench}), $0.7013$ on Knowledge (\textsc{MMLU-Pro}), $0.6837$ on Reasoning (\textsc{LiveBench}), and $0.5476$ on Coding (\textsc{LiveCodeBench}; macro average $0.7153$). Across all $33$ individual judges, strict two-pass accuracy spans $0.1314$ (\texttt{PandaLM-7B}) to $0.7486$ (\texttt{o1-preview}).
+\item \textbf{Unsupervised Inner-CV $\alpha$ Selection (\texttt{SRB-Spec Auto}):} Across all $5$ outer folds in clean ($K=23$), weak-clone ($K=55$), and PKU inverted-polarity ($K=51$) \textsc{RewardBench~2} regimes, maximizing held-out family-balanced $R^2$ strictly inside training splits consistently selects $\alpha = 0.50$, yielding $0.8311$, $0.8266$, and $0.8357$ Best-of-4 accuracy without human labels.
+\item \textbf{Real-LLM Partial-Proxy Sweep ($c=2.0$, $r = 0 \to 1$):} \texttt{CR-SRB-Spec} increases monotonically from $r=0$ to $r=1$ across \textsc{RewardBench~2} ($0.2925 \to 0.4037_{r=0.7} \to 0.6318_{r=0.95} \to 0.8426$), \textsc{JudgeBench} ($0.5174 \to 0.5489_{r=0.7} \to 0.6229_{r=0.95} \to 0.6943$), and \textsc{SummEval} ($0.1948 \to 0.2102_{r=0.7} \to 0.3048_{r=0.95} \to 0.6559$).
+\end{itemize}

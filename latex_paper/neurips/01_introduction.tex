@@ -52,12 +52,11 @@ framework connecting statistical convergence to semantic validity:
   tolerance $\delta_{\mathrm{fam}} < 1/2$.
 \item \textbf{Real-LLM verification and Lean~4 proofs}
   (Sections~\ref{sec:lean}--\ref{sec:experiments}): We validate every claim on
-  held-out \textsc{SummEval} \citep{fabbri2021summeval} (1,600 summaries),
-  \textsc{MT-Bench} \citep{zheng2023judging} (2,575 decisive human pairwise
-  votes), and \textsc{RewardBench~2} \citep{malik2025rewardbench2} (1,753
-  prompts across 27 open-source reward models), and machine-verify all 54
-  algebraic, variational, invariance, clone-hijacking, calibration, confounder,
-  and Davis--Kahan theorems (28 in \texttt{Basic.lean}, 15 in
-  \texttt{NewTheory.lean}, and 11 in \texttt{SpectralCalibration.lean}) in
-  Lean~4 without placeholders.
+  \textsc{SummEval} \citep{fabbri2021summeval} ($1,600$ summaries),
+  \textsc{MT-Bench} \citep{zheng2023judging} ($2,575$ human pairs),
+  \textsc{RewardBench~2} \citep{malik2025rewardbench2} ($1,753$ prompts, $27$ models),
+  and \textsc{JudgeBench} \citep{tan2025judgebench} ($350$ pairs, $33$ judges),
+  and verify $66$ theorems ($28$ \texttt{Basic}, $15$ \texttt{NewTheory},
+  $11$ \texttt{SpectralCalibration}, $12$ \texttt{MultiFactorContinuous})
+  in Lean~4 without placeholders.
 \end{enumerate}

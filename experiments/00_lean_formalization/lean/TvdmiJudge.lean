@@ -1,3 +1,4 @@
 import TvdmiJudge.Basic
 import TvdmiJudge.NewTheory
 import TvdmiJudge.SpectralCalibration
+import TvdmiJudge.MultiFactorContinuous

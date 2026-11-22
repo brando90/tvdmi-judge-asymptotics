@@ -106,3 +106,41 @@ Task / Benchmark & Condition & Baseline / Uncalibrated & \texttt{RB-Spec} / \tex
 \bottomrule
 \end{tabular}}
 \end{table}
+
+\clearpage
+\subsection{Experiment~15: Signal-Deconfounded Shrinkage (\texttt{SRB-Spec}), \textsc{JudgeBench}, Partial Proxies, and Rank-$r$ Spectral Bounds}
+
+Across \textsc{RewardBench~2} ($1,753$ prompts), \textsc{JudgeBench} ($33$ official judges $\times$ $350$ pairs), \textsc{SummEval}, and \textsc{MT-Bench}, \texttt{SRB-Spec} closes clean-pool gaps via residual clone balancing and tempered precision weighting while preserving robustness to $32$-clone and inverted-polarity floods, verifying the $(1-r^2)c^2 v_W$ partial-proxy law and rank-$r$ ($r=1,2,3$) spectral guarantees.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figures/exp15_srb_judgebench_proxies_and_multifactor_6panel.pdf}
+  \caption{\textbf{Experiment~15 empirical verification.}
+  \textbf{(A--B)} On \textsc{RewardBench~2}, \texttt{SRB-Spec} eliminates vanilla \texttt{RB-Spec}'s clean-pool gap ($0.787 \to 0.831$ Auto / $0.836$ $\alpha=1$) and strengthens clone ($0.832$) and PKU polarities ($0.837$); gains extend cleanly to \textsc{MT-Bench} ($0.803$).
+  \textbf{(C)} On $33$-judge \textsc{JudgeBench} ($350$ pairs), \texttt{SRB-Spec (Auto)} holds $0.697$ clean, $0.691$ under weak clones, and $0.694$ under $46\%$ inverted judges (adding length residualization, \texttt{CR-SRB-Spec}, reaches $0.714$ / $0.709$ / $0.711$; Table~\ref{tab:app-exp15-main}).
+  \textbf{(D--E)} Real-LLM and $500$-rep Monte Carlo partial-proxy sweeps match Lean formula $(1-r^2)c^2v_W+\mathrm{Var}_{\mathrm{bal}}$.
+  \textbf{(F)} Rank-$r$ ($r=1,2,3$) subspace leakage decays with $0$ bound violations across $10{,}500$ i.i.d.\ draws.}
+  \label{fig:exp15-overview}
+\end{figure}
+
+\begin{table}[h]
+\centering
+\caption{Experiment~15 summary across \textsc{RewardBench~2}, \textsc{SummEval}, \textsc{MT-Bench}, $33$-judge \textsc{JudgeBench}, proxy sweeps, and rank-$r$ perturbation.}
+\label{tab:app-exp15-main}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Task / Benchmark & Regime / Condition & Baseline / Vanilla & \texttt{SRB-Spec} / \texttt{CR-SRB} & Wilcoxon $p$ / Check \\
+\midrule
+\textsc{RewardBench~2} Clean ($K=23$) & Best-of-4 ($1,753$ prompts) & Naive SVD $0.833$, Vanilla RB $0.787$ & Auto $\mathbf{0.831}$, $\alpha=1$ $\mathbf{0.836}$ & $p=7.14\times 10^{-14}$ vs.\ RB \\
+\textsc{RewardBench~2} Weak ($K=55$) & $32$ \texttt{OpenAssistant} clones & Naive SVD $0.435$, Vanilla RB $0.776$ & Auto $\mathbf{0.827}$, $\alpha=1$ $\mathbf{0.832}$ & $p=1.99\times 10^{-137}$ vs.\ SVD \\
+\textsc{RewardBench~2} PKU ($K=51$) & $54.9\%$ \texttt{beaver-v1-reward} & Naive SVD $0.143$, Vanilla RB $0.799$ & Auto $\mathbf{0.836}$, $\alpha=1$ $\mathbf{0.837}$ & $p=2.91\times 10^{-248}$ vs.\ SVD \\
+\textsc{SummEval} Wild / \textsc{MT-Bench} & $K=38$ (Sp) / $K=17$ (Acc) & Vanilla RB $0.628$ / $0.794$ & $\alpha=1$: $\mathbf{0.647}$ / $\mathbf{0.803}$ & $5.42\times 10^{-4}$ / $0.046$ \\
+\textsc{JudgeBench} ($33$ judges, $350$ pairs) & Clean ($K=33$) / Adv ($K=61$) & Mean $0.700$ / $0.634$, SVD $0.694$ / $0.660$ & \texttt{CR-SRB}: $\mathbf{0.714}$ / $\mathbf{0.711}$ & $p=0.0038$ vs.\ Mean (Adv) \\
+Partial Proxy MC ($500$ reps, $c=1.5$) & $r = 0.0 \to 0.70 \to 1.00$ & Lean curve: $2.334 \to 1.231 \to 0.084$ & Empirical: $2.355 \to 1.231 \to \mathbf{0.086}$ & Exact fit ($\le 0.022$ MSE) \\
+Multi-Factor DK (\textsc{RewardBench~2}) & $r=1,2,3$ ($n=10 \to 640$) & Gaps $12.85 / 0.95 / 0.066$ & Slopes $\mathbf{-1.00} / \mathbf{-1.03} / \mathbf{-0.42}$ & $0/10{,}500$ bound violations \\
+\bottomrule
+\end{tabular}}
+\vspace{2pt}
+{\footnotesize Note: Tables~\ref{tab:app-exp14-main} and \ref{tab:app-exp15-main} use independent 5-fold outer CV permutations on \textsc{RewardBench~2}, accounting for the $\sim 0.002$--$0.003$ baseline difference in Naive SVD and Vanilla \texttt{RB-Spec}.}
+\end{table}

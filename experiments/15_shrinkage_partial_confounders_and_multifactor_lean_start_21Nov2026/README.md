@@ -1,0 +1,8 @@
+# Experiment 15: Signal-Deconfounded Shrinkage (`SRB-Spec`), `JudgeBench`, Partial Proxies & Multi-Factor / Continuous Lean 4
+
+- **Date:** `11-21-2026`
+- **Status:** COMPLETE (Empirical Suite, Lean 4.29.0 `66` Theorems, Typeset 3-Page PDF, NeurIPS/arXiv Paper Rebuild, and `agy gemini-4-neon-xhigh` Light QA Passed).
+- **Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/15_shrinkage_partial_confounders_and_multifactor_lean_start_21Nov2026/README.md>
+- **Reports & Code:** [RESULTS_11-21-2026.md](RESULTS_11-21-2026.md) | [SHRINKAGE_...pdf](SHRINKAGE_PARTIAL_CONFOUNDERS_JUDGEBENCH_AND_MULTIFACTOR_LEAN_11-21-2026.pdf) | [QA_REPORT_11-21-2026.md](QA_REPORT_11-21-2026.md) | [run_exp15_suite.py](run_exp15_suite.py)
+- **Drive Status:** Google Drive upload pending user OAuth refresh (`~/keys/gspread_authorized_user.json` expired `Nov 21 20:04 PST` with `invalid_grant`); Rule-91 HTML companion and typeset PDF are archived in git and attached directly by email.
+- **TLDR:** Formalized `12` new Lean 4.29.0 theorems in [`MultiFactorContinuous.lean`](../00_lean_formalization/lean/TvdmiJudge/MultiFactorContinuous.lean) (`66` total theorems in `TvdmiJudge`, zero `sorry`, `[propext, Classical.choice, Quot.sound]`), closed the clean `RewardBench 2` `RB-Spec` gap via `SRB-Spec` (`0.8311` Auto / `0.8363` `alpha=1` vs `0.7872` Vanilla `RB-Spec`, `p=6.96e-13`) while preserving clone (`0.8266`–`0.8323`) and `PKU` polarity (`0.8357`–`0.8374`) resilience, validated `CR-SRB-Spec` across `33` real `JudgeBench` judges (`0.7143` clean / `0.7114` adv-flood), verified the `(1 - r^2) c^2 v_W` partial-proxy floor across `500` MC reps and three real benchmarks, and confirmed `0/10,500` `rank-r` (`r=1,2,3`) subspace bound violations.

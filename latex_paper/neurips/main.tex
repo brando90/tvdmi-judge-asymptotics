@@ -116,17 +116,16 @@ which balances collinear judge families unsupervised and achieves family-level
 $1/F$ error scaling and effective-family adversarial resilience up to
 $\delta_{\mathrm{fam}} < 1/2$. Across held-out evaluations on \textsc{SummEval}
 (1,600 summaries across 100 articles), \textsc{MT-Bench} (2,575 human
-pairwise judgments across 80 questions), and \textsc{RewardBench~2} (1,753
-prompts across 27 reward models), \texttt{RB-Spec TVD-MI} resists 64-clone
-hijacking, 66.7\% cloned adversaries, and naturally anti-correlated
-cost/reward models where uniform averaging, medians, and naive SVD degrade
-or invert; $m=5$--$20$ human anchor articles remove Likert severity bias
-($\mathrm{ICC(A,1)}: 0.334 \to 0.644$), while covariate-residualized
-\texttt{CR-RB-Spec} neutralizes universal cross-family length confounders.
-Fifty-four theorems (28 core asymptotic/algebraic theorems, 15 hierarchical/variational
-theorems, and 11 calibration, confounder-residualization, and Davis--Kahan
-perturbation theorems) are formally verified in Lean~4 with Mathlib without
-placeholders.
+pairwise judgments across 80 questions), \textsc{RewardBench~2} (1,753
+prompts across 27 reward models), and \textsc{JudgeBench} (350 pairs across
+33 judges), signal-deconfounded shrinkage (\texttt{SRB-Spec}) eliminates clean-regime
+penalties (reaching 0.836 on \textsc{RewardBench~2}) while resisting clones and
+anti-correlated judges; $m=5$--$20$ anchors remove Likert severity bias
+($\mathrm{ICC(A,1)}: 0.334 \to 0.644$), while \texttt{CR-SRB-Spec} isolates
+shared confounders under observed proxy correlation $r^2$.
+Sixty-six theorems (28 core, 15 hierarchical/variational, 11 calibration/Davis--Kahan,
+and 12 shrinkage, partial-proxy, multi-factor, and continuous measure-theoretic TVD
+theorems) are verified in Lean~4 without placeholders.
 \end{abstract}
 
 \input{01_introduction}

@@ -64,18 +64,7 @@ estimator $\hat\tau_K$ satisfies $\Prob(\max_{l \le L} |\hat\tau_K(c_l) -
 probability approaching~$1$.
 \end{theorem}
 
-\begin{theorem}[Agreement ICC calibration, cross-family residualization, and Davis--Kahan rate]
+\begin{theorem}[Calibration, confounders, shrinkage, multi-factor DK, and continuous TVD]
 \label{thm:calibration-dk}
-(i)~Whenever rank covariance $\Cov(\widehat{Y}, Y) > 0$ pairs with nonzero mean
-bias ($\mu_{\widehat{Y}} \neq \mu_Y$), absolute agreement obeys
-$\mathrm{ICC}(A,1) < \mathrm{ICC}(C,1)$, closing identically once $m$-anchor
-affine calibration matches means ($\mu_{\widehat{Y}} = \mu_Y$) with excess
-calibration MSE vanishing at $O(1/m)$. (ii)~Under a shared cross-family
-confounder $cW$ ($\Var(W) = v_W > 0$), $1/F$ family balancing stalls at floor
-$c^2 v_W$, which covariate residualization $\widetilde{Z}^{\mathrm{CR}} = (I - P_W)\widetilde{Z}$
-removes. (iii)~For eigengap $\gamma_{\mathrm{gap}} = \lambda_1 - \lambda_2 > 0$
-and Rayleigh perturbation $\varepsilon_n = O(n^{-1/2})$ \citep{davis1970rotation},
-the empirical singular vector satisfies
-$\sin^2\theta(\hat{u}_n, u_1) \le 2\varepsilon_n / \gamma_{\mathrm{gap}} \to 0$
-(\texttt{SpectralCalibration.lean}).
+(i)~When $\Cov(\widehat{Y}, Y) > 0$ and $\mu_{\widehat{Y}} \neq \mu_Y$, $\mathrm{ICC}(A,1) < \mathrm{ICC}(C,1)$, closing via $m$-anchor OLS calibration at $O(1/m)$. (ii)~Under shared confounder $cW$ ($\Var(W) = v_W$), $1/F$ balancing retains floor $c^2 v_W$, which an $r$-correlated proxy reduces to $(1-r^2)c^2 v_W$ (\texttt{partial\_proxy\_residual\_confounder\_variance}), while interior shrinkage $\lambda^\star$ dominates uniform and balanced endpoints. (iii)~Rank-$r$ empirical projection leakage obeys $\sum_{k=1}^r \sin^2\theta_k \le 2r\varepsilon / (\lambda_r - \lambda_{r+1}) = O(r n^{-1/2})$ \citep{davis1970rotation}, and indicator witnesses on measurable spaces attain $|P_{\R}(S)-Q_{\R}(S)|$ monotonically under partition refinement (\texttt{SpectralCalibration.lean}, \texttt{MultiFactorContinuous.lean}).
 \end{theorem}

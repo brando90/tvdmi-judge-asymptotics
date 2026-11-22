@@ -5,12 +5,12 @@
 We test every theoretical prediction in two stages: controlled Monte Carlo
 verification of our closed-form bounds (including fixes for historical scaling
 and contamination artifacts detailed in Appendix~\ref{app:experiments}), followed
-by held-out validation on three public human-annotated LLM benchmarks using zero
+by held-out validation on four public human-annotated or objective LLM benchmarks using zero
 human labels during unsupervised aggregation.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.76\textwidth]{figures/exp13_real_llm_and_theory_6panel.pdf}
+  \includegraphics[width=0.69\textwidth]{figures/exp13_real_llm_and_theory_6panel.pdf}
   \vspace{-7pt}
   \caption{\textbf{Real-LLM and theoretical verification (Experiment~13, 5-fold CV).}
   \textbf{(A)} On \textsc{SummEval}, prompt copying ($0.485$) outscores the best summarizer ($0.328$) under raw TVD-MI, whereas peer contrast restores separation ($0.329$ vs.\ $0.296$).
@@ -60,6 +60,6 @@ Figure~\ref{fig:exp13-overview} and Table~\ref{tab:real-llm-main} show three fin
 (2)~\textbf{Reversible clone hijacking}: $64$ clones drop Uniform Mean by $-0.159$ system Spearman and Naive SVD by $-0.200$ ($200$-split \texttt{RB-Spec} $0.970\,[0.935, 0.991]$ vs.\ Mean $0.806\,[0.712, 0.874]$, $p=1.43\times 10^{-34}$); and
 (3)~\textbf{Uncalibrated level bias}: \texttt{RB-Spec} achieves strong tracking ($\mathrm{ICC(C,1)}=0.688$, Pearson $0.726\,[0.702, 0.749]$), but uncalibrated GPT-4 mean ($3.019$) sits below expert severity ($4.131$), leaving bias $-1.111\,[-1.168, -1.052]$ and $\mathrm{ICC(A,1)}=0.351$.
 
-\subsection{Anchor Calibration, \textsc{RewardBench~2}, and Confounder Recovery (Experiment~14)}
+\subsection{Anchor Calibration, \texttt{SRB-Spec} Shrinkage, \textsc{RewardBench~2}, and \textsc{JudgeBench} (Experiments~14--15)}
 
-OLS affine calibration on $m=5$--$20$ anchor articles removes \textsc{SummEval} ($K=38$) bias ($-1.104 \to +0.007$), cuts MAE ($1.130 \to 0.370$), and lifts $\mathrm{ICC(A,1)}$ ($0.334 \to 0.644$; $\mathrm{ICC(C,1)}=0.648$, $p=4.27\times 10^{-18}$; Appendix~\ref{app:experiments}). Across $1,753$ non-ties prompts ($27$ models) on \textsc{RewardBench~2} \citep{malik2025rewardbench2}, \texttt{RB-Spec} resists $32$ \texttt{OpenAssistant} clones ($0.778$ vs.\ Naive SVD $0.432$, $p=1.65\times 10^{-124}$) and $54.9\%$ anti-correlated \texttt{PKU-beaver-v1.0-reward} judges ($0.796$ vs.\ $0.145$, $p=2.11\times 10^{-229}$); \texttt{CR-RB-Spec} removes length confounders ($0.594$ vs.\ $0.276$ \textsc{SummEval}, $0.771$ vs.\ $0.671$ \textsc{MT-Bench}, $0.892$ vs.\ $0.513$ MC) with zero Davis--Kahan violations ($\sin^2\theta \propto n^{-1.03}$).
+OLS affine calibration on $m=5$--$20$ anchor articles removes \textsc{SummEval} ($K=38$) bias ($-1.104 \to +0.007$), cuts MAE ($1.130 \to 0.370$), and lifts $\mathrm{ICC(A,1)}$ ($0.334 \to 0.644$; $\mathrm{ICC(C,1)}=0.648$, $p=4.27\times 10^{-18}$; Appendix~\ref{app:experiments}). Across $1,753$ \textsc{RewardBench~2} prompts ($K=23$ \citep{malik2025rewardbench2}), two-stage \texttt{SRB-Spec} eliminates vanilla \texttt{RB-Spec}'s clean-pool gap ($0.831$ Auto, $0.836$ $\alpha=1$ vs.\ vanilla $0.787$, $p=6.96\times 10^{-13}$; Naive SVD $0.833$) while resisting $32$ \texttt{OpenAssistant} clones ($0.827$/$0.832$ vs.\ SVD $0.435$, $p=1.99\times 10^{-137}$) and $54.9\%$ anti-correlated \texttt{PKU-beaver-v1.0-reward} floods ($0.836$/$0.837$ vs.\ SVD $0.143$, $p=2.91\times 10^{-248}$). On \textsc{JudgeBench} ($33$ official judges $\times 350$ pairs \citep{tan2025judgebench}), \texttt{CR-SRB-Spec} reaches $0.714$ clean and $0.711$ under $46\%$ adversaries (vs.\ Mean $0.634$, SVD $0.660$, $p=0.0038$); partial-proxy residualization matches $(1-r^2)c^2 v_W + \mathrm{Var}_{\mathrm{bal}}$ across $500$ MC trials and three benchmarks, with $0/10{,}500$ multi-factor rank-$r$ ($r\in\{1,2,3\}$) subspace violations.

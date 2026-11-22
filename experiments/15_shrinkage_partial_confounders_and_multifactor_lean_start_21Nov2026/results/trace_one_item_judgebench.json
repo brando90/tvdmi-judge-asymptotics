@@ -1,0 +1,17 @@
+{
+  "pair_id": "e302b0a0-28d5-5a3c-b1af-fedcf5543e72",
+  "source": "mmlu-pro-law",
+  "label": "A>B",
+  "wlen_diff": 278,
+  "clen_diff": 1841,
+  "n_pairs": 350,
+  "n_judges": 33,
+  "sha256_aligned_json": "7ee1c9ab89eef240e1f8c1c4540d380899c950f9e1d461e5524d8b036fd81ab0",
+  "sample_judge_scores_pair0": {
+    "arena_hard::claude-3-5-sonnet-20240620": 1.0,
+    "arena_hard::o1-preview-2024-09-12": 1.0,
+    "panda_lm::WeOpenML_PandaLM-7B-v1": 0.0,
+    "reward_model::Skywork_Skywork-Reward-Gemma-2-27B": 1.0,
+    "vanilla::gpt-4o-2024-05-13": -1.0
+  }
+}

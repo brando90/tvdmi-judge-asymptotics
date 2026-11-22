@@ -69,7 +69,7 @@
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: All Lean~4 modules, synthetic simulation scripts, and evaluation runners over public \textsc{SummEval}, \textsc{LMSYS MT-Bench}, and \textsc{RewardBench~2} benchmarks are released with execution commands in the repository (anonymized for venue review).
+    \item[] Justification: All Lean~4 modules, synthetic simulation scripts, and evaluation runners over public \textsc{SummEval}, \textsc{LMSYS MT-Bench}, \textsc{RewardBench~2}, and \textsc{JudgeBench} benchmarks are released with execution commands in the repository (anonymized for venue review).
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that paper does not include experiments requiring code.
@@ -126,7 +126,7 @@
 \item {\bf Code of ethics}
     \item[] Question: Does the research conducted in the paper conform, in every respect, with the NeurIPS Code of Ethics \url{https://neurips.cc/public/EthicsGuidelines}?
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: We comply with the NeurIPS Code of Ethics; we evaluate only publicly released research benchmarks (\textsc{SummEval}, \textsc{LMSYS MT-Bench}, \textsc{RewardBench~2}) and synthetic simulations with no private user data.
+    \item[] Justification: We comply with the NeurIPS Code of Ethics; we evaluate only publicly released research benchmarks (\textsc{SummEval}, \textsc{LMSYS MT-Bench}, \textsc{RewardBench~2}, \textsc{JudgeBench}) and synthetic simulations with no private user data.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the authors have not reviewed the NeurIPS Code of Ethics.
@@ -164,7 +164,7 @@
 \item {\bf Licenses for existing assets}
     \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: We cite all source datasets and toolchains in Section~\ref{sec:experiments} and \texttt{experiments/README.md}, respecting their licenses: \textsc{SummEval} (MIT), \textsc{G-Eval} outputs (MIT), \textsc{MT-Bench} (CC-BY-4.0 / Apache-2.0), \textsc{RewardBench~2} (ODC-BY / Apache-2.0), and \texttt{Mathlib4} (Apache-2.0).
+    \item[] Justification: We cite all source datasets and toolchains in Section~\ref{sec:experiments} and \texttt{experiments/README.md}, respecting their licenses: \textsc{SummEval} (MIT), \textsc{G-Eval} outputs (MIT), \textsc{MT-Bench} (CC-BY-4.0 / Apache-2.0), \textsc{RewardBench~2} (ODC-BY / Apache-2.0), \textsc{JudgeBench} (Apache-2.0), and \texttt{Mathlib4} (Apache-2.0).
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not use existing assets.
@@ -216,7 +216,7 @@
     \item[] Question: Does the paper describe the usage of LLMs if it is an important, original, or non-standard component of the core methods in this research? Note that if the LLM is used only for writing, editing, or formatting purposes and does not impact the core methodology, scientific rigorousness, or originality of the research, declaration is not required.
     %this research? 
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: Released outputs from public LLM judges (\textsc{G-Eval} GPT-4, \textsc{MT-Bench} GPT-4) and open-source reward models (\textsc{RewardBench~2}) serve strictly as fixed evaluation inputs in Section~\ref{sec:experiments}; no new LLM inference runs were used for core methodology.
+    \item[] Justification: Released outputs from public LLM judges (\textsc{G-Eval} GPT-4, \textsc{MT-Bench} GPT-4, \textsc{JudgeBench}) and open-source reward models (\textsc{RewardBench~2}) serve strictly as fixed evaluation inputs in Section~\ref{sec:experiments}; no new LLM inference runs were used for core methodology.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the core method development in this research does not involve LLMs as any important, original, or non-standard components.

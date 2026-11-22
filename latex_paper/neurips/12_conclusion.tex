@@ -2,10 +2,6 @@
 \section{Discussion and Conclusion}
 \label{sec:conclusion}
 
-Separating \emph{statistical convergence} from \emph{semantic validity} explains when reference-free TVD-MI ensembles work and when naive pipelines fail:
-(1)~double-centered oriented peer contrasts neutralize prompt copying and global inversions;
-(2)~split-sample cross-fitting eliminates null winner's-curse inflation and sets compute-optimal $K^\star(B)$;
-(3)~\texttt{RB-Spec TVD-MI} restores $1/F$ family scaling and clone/polarity robustness across \textsc{SummEval}, \textsc{MT-Bench}, and \textsc{RewardBench~2}; and
-(4)~$5$--$20$ anchors close the $\mathrm{ICC(A,1)}$--$\mathrm{ICC(C,1)}$ gap while \texttt{CR-RB-Spec} removes measured confounders under Davis--Kahan bounds.
+Separating \emph{statistical convergence} from \emph{semantic validity} explains when TVD-MI ensembles succeed: (1)~double-centered peer contrasts neutralize copying and inversions; (2)~cross-fitting removes winner's-curse inflation and sets $K^\star(B)$; (3)~\texttt{RB-Spec} and \texttt{SRB-Spec} restore $1/F$ scaling, flood invariance, and clean-pool parity across \textsc{SummEval}, \textsc{MT-Bench}, \textsc{RewardBench~2}, and \textsc{JudgeBench}; and (4)~$5$--$20$ anchors close $\mathrm{ICC(A,1)}$--$\mathrm{ICC(C,1)}$ while \texttt{CR-SRB-Spec} removes confounders up to proxy $r^2$ under rank-$r$ bounds.
 
-\textbf{Limitations.} Unmeasured shared confounders $W$ omitted from covariates require anchors; continuous measure-theoretic and full EM fixed-point rates remain open.
+\textbf{Limitations.} Imperfect proxies ($r^2 < 1$) retain confounder variance $(1-r^2)c^2v_W$ without anchors; continuous measure-space TVD attainment and partition monotonicity are Lean-verified, while non-convex EM IRT fixed-point rates remain open.

@@ -1,0 +1,58 @@
+benchmark,regime,method,metric_name,metric,ci_lo,ci_hi,p_vs_vanilla_rb,p_vs_naive_svd
+RewardBench2,Natural (K=23),Uniform Z-Mean,best_of_4_acc,0.811751,0.794053,0.830006,9.568809320511216e-07,2.326639207602174e-07
+RewardBench2,Natural (K=23),Itemwise Median,best_of_4_acc,0.830006,0.812322,0.847704,4.0188275169147105e-11,0.4142161782425251
+RewardBench2,Natural (K=23),Naive SVD,best_of_4_acc,0.833428,0.815744,0.850542,4.32885330796184e-13,1.0
+RewardBench2,Natural (K=23),Vanilla RB-Spec,best_of_4_acc,0.787222,0.767827,0.805476,1.0,4.32885330796184e-13
+RewardBench2,Natural (K=23),SRB-Spec(a=0.00),best_of_4_acc,0.823731,0.805476,0.841985,2.343667071011339e-10,0.0010692127549193683
+RewardBench2,Natural (K=23),SRB-Spec(a=0.25),best_of_4_acc,0.827153,0.808329,0.844267,1.6308296616663365e-11,0.016377308341494895
+RewardBench2,Natural (K=23),SRB-Spec(a=0.50),best_of_4_acc,0.831147,0.812892,0.84826,6.95652185266799e-13,0.31731050786291415
+RewardBench2,Natural (K=23),SRB-Spec(a=0.75),best_of_4_acc,0.834569,0.817456,0.851112,1.1385367521414632e-13,0.5270892568655381
+RewardBench2,Natural (K=23),SRB-Spec(a=1.00),best_of_4_acc,0.836281,0.819167,0.853394,7.136257994423494e-14,0.19670560245894686
+RewardBench2,Natural (K=23),SRB-Spec(Auto),best_of_4_acc,0.831147,0.813463,0.847119,6.95652185266799e-13,0.31731050786291415
+RewardBench2,"Weak Clones (K=55, M=32)",Uniform Z-Mean,best_of_4_acc,0.479749,0.456361,0.503708,8.404714640270474e-107,2.0026756733836104e-16
+RewardBench2,"Weak Clones (K=55, M=32)",Itemwise Median,best_of_4_acc,0.520821,0.497989,0.543069,1.6965576631511653e-90,1.137935015477707e-24
+RewardBench2,"Weak Clones (K=55, M=32)",Naive SVD,best_of_4_acc,0.435254,0.412436,0.458642,8.166537761455744e-122,1.0
+RewardBench2,"Weak Clones (K=55, M=32)",Vanilla RB-Spec,best_of_4_acc,0.775813,0.756418,0.795208,1.0,8.166537761455744e-122
+RewardBench2,"Weak Clones (K=55, M=32)",SRB-Spec(a=0.00),best_of_4_acc,0.819167,0.800913,0.836851,3.9819925703018625e-12,7.90100247318975e-133
+RewardBench2,"Weak Clones (K=55, M=32)",SRB-Spec(a=0.25),best_of_4_acc,0.820308,0.802054,0.838562,1.6437341103868466e-12,2.9347179445900282e-133
+RewardBench2,"Weak Clones (K=55, M=32)",SRB-Spec(a=0.50),best_of_4_acc,0.826583,0.808899,0.843697,1.1883958640843129e-14,1.2633195433026707e-135
+RewardBench2,"Weak Clones (K=55, M=32)",SRB-Spec(a=0.75),best_of_4_acc,0.829435,0.811751,0.847119,3.0631896054530543e-15,2.367607843155761e-136
+RewardBench2,"Weak Clones (K=55, M=32)",SRB-Spec(a=1.00),best_of_4_acc,0.832288,0.814589,0.849401,3.204186135067409e-16,1.9906148658035546e-137
+RewardBench2,"Weak Clones (K=55, M=32)",SRB-Spec(Auto),best_of_4_acc,0.826583,0.808899,0.844267,1.1883958640843129e-14,1.2633195433026707e-135
+RewardBench2,PKU Polarity Flood (K=51),Uniform Z-Mean,best_of_4_acc,0.308043,0.286937,0.32915,1.2901531032432737e-170,4.740498388960414e-58
+RewardBench2,PKU Polarity Flood (K=51),Itemwise Median,best_of_4_acc,0.200228,0.181403,0.218483,2.8071161012465475e-210,9.112752285177485e-22
+RewardBench2,PKU Polarity Flood (K=51),Naive SVD,best_of_4_acc,0.142613,0.12664,0.159726,4.441265948088057e-232,1.0
+RewardBench2,PKU Polarity Flood (K=51),Vanilla RB-Spec,best_of_4_acc,0.798631,0.779236,0.817456,1.0,4.441265948088057e-232
+RewardBench2,PKU Polarity Flood (K=51),SRB-Spec(a=0.00),best_of_4_acc,0.829435,0.811751,0.846549,4.9021446491897744e-08,1.304967180173856e-245
+RewardBench2,PKU Polarity Flood (K=51),SRB-Spec(a=0.25),best_of_4_acc,0.833428,0.816315,0.851112,2.632866749333951e-09,3.995201157621721e-247
+RewardBench2,PKU Polarity Flood (K=51),SRB-Spec(a=0.50),best_of_4_acc,0.83571,0.819167,0.853394,6.849459195246075e-10,5.449158383808611e-248
+RewardBench2,PKU Polarity Flood (K=51),SRB-Spec(a=0.75),best_of_4_acc,0.837422,0.819153,0.855106,1.9053330682648596e-10,1.2229469795490865e-248
+RewardBench2,PKU Polarity Flood (K=51),SRB-Spec(a=1.00),best_of_4_acc,0.837422,0.819738,0.855106,1.017884560073058e-09,2.909036791555333e-248
+RewardBench2,PKU Polarity Flood (K=51),SRB-Spec(Auto),best_of_4_acc,0.83571,0.818026,0.852824,6.849459195246075e-10,5.449158383808611e-248
+SummEval,SummEval Wild (K=38),Uniform Z-Mean,item_spearman,0.507615,0.488585,0.574429,8.451646604920484e-09,
+SummEval,SummEval Wild (K=38),Naive SVD,item_spearman,0.486145,0.470528,0.558807,1.6663074309408602e-09,
+SummEval,SummEval Wild (K=38),Vanilla RB-Spec,item_spearman,0.628422,0.612054,0.685544,1.0,
+SummEval,SummEval Wild (K=38),SRB-Spec(a=0.00),item_spearman,0.633236,0.623097,0.694701,0.007910032068977797,
+SummEval,SummEval Wild (K=38),SRB-Spec(a=0.25),item_spearman,0.636069,0.624564,0.695954,0.005404991998599329,
+SummEval,SummEval Wild (K=38),SRB-Spec(a=0.50),item_spearman,0.639412,0.625271,0.696822,0.0018641995168274274,
+SummEval,SummEval Wild (K=38),SRB-Spec(a=0.75),item_spearman,0.64315,0.628836,0.699445,0.00016056709208597228,
+SummEval,SummEval Wild (K=38),SRB-Spec(a=1.00),item_spearman,0.646807,0.631117,0.701328,0.000542416302736362,
+SummEval,SummEval Wild (K=38),SRB-Spec(Auto),item_spearman,0.632576,0.619833,0.693161,0.012886811312853602,
+SummEval,SummEval Adv-Flood (K=24),Uniform Z-Mean,item_spearman,-0.297205,-0.367859,-0.25872,4.01592930870838e-18,
+SummEval,SummEval Adv-Flood (K=24),Naive SVD,item_spearman,-0.500749,-0.572894,-0.484725,3.89655984509591e-18,
+SummEval,SummEval Adv-Flood (K=24),Vanilla RB-Spec,item_spearman,0.646307,0.63213,0.701882,1.0,
+SummEval,SummEval Adv-Flood (K=24),SRB-Spec(a=0.00),item_spearman,0.639907,0.625218,0.696559,0.046965458724111724,
+SummEval,SummEval Adv-Flood (K=24),SRB-Spec(a=0.25),item_spearman,0.641969,0.627669,0.698638,0.45951393801271745,
+SummEval,SummEval Adv-Flood (K=24),SRB-Spec(a=0.50),item_spearman,0.643979,0.628259,0.699171,0.2929266263142267,
+SummEval,SummEval Adv-Flood (K=24),SRB-Spec(a=0.75),item_spearman,0.646596,0.632785,0.701626,0.8384761227508892,
+SummEval,SummEval Adv-Flood (K=24),SRB-Spec(a=1.00),item_spearman,0.649496,0.634304,0.703848,0.6758247661618944,
+SummEval,SummEval Adv-Flood (K=24),SRB-Spec(Auto),item_spearman,0.639907,0.627221,0.695273,0.046965458724111724,
+MT-Bench,Confounded (K=17),Uniform Z-Mean,pair_acc,0.684272,0.652288,0.719739,8.705889857331079e-10,
+MT-Bench,Confounded (K=17),Naive SVD,pair_acc,0.718835,0.682999,0.754372,1.0402562455174193e-07,
+MT-Bench,Confounded (K=17),Vanilla RB-Spec,pair_acc,0.794175,0.773726,0.823217,1.0,
+MT-Bench,Confounded (K=17),SRB-Spec(a=0.00),pair_acc,0.784078,0.760957,0.815569,0.0018871793085090975,
+MT-Bench,Confounded (K=17),SRB-Spec(a=0.25),pair_acc,0.786408,0.763209,0.815322,0.003345618115850882,
+MT-Bench,Confounded (K=17),SRB-Spec(a=0.50),pair_acc,0.789515,0.76747,0.817996,0.011718685599768632,
+MT-Bench,Confounded (K=17),SRB-Spec(a=0.75),pair_acc,0.79534,0.774347,0.824332,0.7353166906373405,
+MT-Bench,Confounded (K=17),SRB-Spec(a=1.00),pair_acc,0.803107,0.781461,0.831016,0.04626601747284679,
+MT-Bench,Confounded (K=17),SRB-Spec(Auto),pair_acc,0.787961,0.765145,0.817417,0.004285695299481487,
