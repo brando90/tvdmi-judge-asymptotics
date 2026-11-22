@@ -2,9 +2,13 @@
 
 Date: 11-21-2026
 
-**Status:** VERIFIED POST-QA (`11-21-2026 19:23 PST`; ready for GitHub `main` push & Drive/Google Doc upload)
-**Last updated:** 11-21-2026 19:23 PST
-**Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026/RESULTS_11-21-2026.md>
+**Status:** COMPLETE (`11-21-2026 19:25 PST`; published to GitHub `main`, Google Drive, and Google Docs)
+**Last updated:** 11-21-2026 19:25 PST
+**Doc link:** <https://docs.google.com/document/d/1ObShZ0GCxgpH_Di4DS46tvJc05Jggl2RuRo5JmI18Go/edit?usp=drivesdk>
+**Drive Derivation PDF:** <https://drive.google.com/file/d/1-XyUnWIX-B6MTyC7QVlIwXgBYmRYVIcc/view?usp=drivesdk>
+**Drive NeurIPS Venue / arXiv PDFs:** <https://drive.google.com/file/d/1x8TjkHtVkEbC3XTmY1PWZM9Vk_JpOlB4/view?usp=drivesdk> · <https://drive.google.com/file/d/1tygAthFmh6kBakFjnCEVjXJvg9crlD7Z/view?usp=drivesdk>
+**Drive Folder:** <https://drive.google.com/drive/folders/1lsRCjER2ZBguuQ59eYqgDpK3fS5WHZcr>
+**Primary Implementation Commit (`main`):** <https://github.com/brando90/tvdmi-judge-asymptotics/commit/6820a39>
 
 **TLDR:** Completed pre-registered real-LLM validation (`SummEval` + `MT-Bench`), 15 new Lean 4.29.0 proofs (`NewTheory.lean`, 43 total in `TvdmiJudge`, `3,288` jobs, standard axioms only), historical script reconciliations (`01`–`11`), NeurIPS Rule 89 venue (`main.pdf`) + arXiv (`main_arxiv.pdf`) builds, Rule 91 PDF + 8 220 DPI equation PNGs, and Tier 2 Light QA via `agy gemini-4-neon-xhigh --effort xhigh` (`QA_REPORT_11-21-2026.md`). Full numerical tables and p-values live in [`RESULTS_11-21-2026.md`](RESULTS_11-21-2026.md).
 

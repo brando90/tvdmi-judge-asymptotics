@@ -1,8 +1,11 @@
 # Experiment 13: Real-LLM Validation, RB-Spec TVD-MI Theory, and Lean 4 Proofs
 
 - **Date:** `11-21-2026`
-- **Status:** Empirically & formally executed (`seed=42`, `Lean v4.29.0`); awaiting final Drive link population in post-QA update.
-- **Doc link:** Pending Drive upload (see `RB_SPEC_TVDMI_THEORY_LEAN_AND_REAL_LLM_11-21-2026.pdf` and `RESULTS_11-21-2026.md` locally).
+- **Status:** COMPLETE (`11-21-2026 19:25 PST`; `seed=42`, `Lean v4.29.0`, Light QA `gemini-4-neon-xhigh --effort xhigh` reconciled, Drive/Doc & `main` published).
+- **Doc link:** <https://docs.google.com/document/d/1ObShZ0GCxgpH_Di4DS46tvJc05Jggl2RuRo5JmI18Go/edit?usp=drivesdk>
+- **Primary Drive Derivation PDF:** <https://drive.google.com/file/d/1-XyUnWIX-B6MTyC7QVlIwXgBYmRYVIcc/view?usp=drivesdk>
+- **Drive NeurIPS Venue PDF / arXiv PDF:** <https://drive.google.com/file/d/1x8TjkHtVkEbC3XTmY1PWZM9Vk_JpOlB4/view?usp=drivesdk> · <https://drive.google.com/file/d/1tygAthFmh6kBakFjnCEVjXJvg9crlD7Z/view?usp=drivesdk>
+- **Google Drive Experiment 13 Folder:** <https://drive.google.com/drive/folders/1lsRCjER2ZBguuQ59eYqgDpK3fS5WHZcr>
 - **TLDR:** Unconditional prompt-response TVD-MI fails on real `SummEval` data (`0.4851` verbatim prompt copy beats every real model `<= 0.3277`), and naive `1/K` judge ensembles suffer clone hijacking (`0.9853 -> 0.8265` across `64` BART-CNN prompt paraphrases) and flip sign (`-0.5001` naive SVD, `-0.2008` uniform mean) under cloned adversaries. Our proposed redundancy-balanced spectral conditional peer estimator (`RB-Spec TVD-MI`) achieves `+0.6890` item Spearman (`+0.9265` system) in wild `SummEval` (`K=38`), `+0.7033` (`+0.9735` system) under `66.7%` raw adversarial flooding, and `0.7950` held-out pairwise accuracy (`+0.9429` model win-rate Spearman) on `LMSYS MT-Bench`, backed by 15 new Lean 4 theorems (`TvdmiJudge/NewTheory.lean`, zero `sorry`, standard axioms `[propext, Classical.choice, Quot.sound]`).
 
 ---
