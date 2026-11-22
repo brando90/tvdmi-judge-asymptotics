@@ -1,4 +1,9 @@
-# tvdmi-judge-asymptotics
+# Reference-Free Evaluation with Judge Ensembles: Scaling Laws, Consistency Proofs and Lean 4 (TVD-MI)
+
+> **TLDR (11-21-2026)**
+> - **What it is:** a research repo on reference-free evaluation with judge ensembles (scoring with TVD-MI, Total Variation Distance–Mutual Information): does the aggregated score converge to a gold target as the number of judges K grows, at what rate, and when does it break (dependent or adversarial judges)?
+> - **Status:** theory and simulations are written up; the Lean 4 formalization is in progress (`experiments/00_lean_formalization/README.md`). Experiment 01 (best-of-K scaling) reports fitted exponents that match the predicted K^(-1/beta); see each experiment's `results_summary/` for the rest.
+> - **Where things are:** `experiments/` (numbered folders 00–11, plan in `experiments/README.md` and `experiments/EXPERIMENT_PLAN.md`), `theory/assumptions.md` (assumptions), `latex_paper/neurips/main.tex` (NeurIPS 2025 paper), `experiments/00_lean_formalization/` (natural-language proofs in `main_theorem.tex`, Lean 4 project in `lean/`), `CLAUDE.md` and `agents.md` (agent rules).
 
 This repository studies the mathematics of reference-free evaluation with judge
 ensembles, with a focus on Total Variation Distance–Mutual Information
