@@ -43,6 +43,7 @@ Use 500 Monte Carlo repetitions per configuration unless noted otherwise.
 | 09 | Pairwise comparisons | Bradley-Terry | K, m | Ranking error | Decreasing |
 | 10 | Diversity metrics | Correlation | Diversity | α | Predictive |
 | 11 | Finite-sample bounds | Concentration | K | Bound vs error | Tight/loose |
+| 12 | `12_repo_audit_bugfixes_and_next_theory_roadmap_start_21Nov2026` | Repo audit & fixes | K, B, rho, delta | Gap / RMSE / bias | Corrected `1/beta`, split-sample `K*`, oriented peer TVD-MI |
 
 Experiments 01–05 are the core synthetic experiments that directly validate
 the theorems. Experiment 06 validates on real data. Experiments 07–11 are
