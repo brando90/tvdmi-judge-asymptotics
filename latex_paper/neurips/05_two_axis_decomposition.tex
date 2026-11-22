@@ -1,5 +1,5 @@
 %=============================================================================
-\section{Two-Axis Error Decomposition}
+\section{Two-Axis Error Decomposition and Split-Sample Allocation}
 \label{sec:two-axis}
 
 In practice, each judge's population-level witness value $\Delta_c(h_j)$ is
@@ -7,8 +7,9 @@ estimated from finite data.
 
 \begin{assumption}[Finite-sample estimation]
 \label{asm:finite-sample}
-Each judge $j$'s critic value is estimated from $n$ i.i.d.\ positive/negative
-examples, giving $\widehat\Delta_c(h_j)$.
+Each judge $j$'s critic value is estimated from $n$ i.i.d.\ joint samples
+from~$P^{(c)}_{UV}$ and $n$ independent product samples from
+$P^{(c)}_U \otimes P^{(c)}_V$, giving $\widehat\Delta_c(h_j)$.
 \end{assumption}
 
 \begin{theorem}[Two-axis decomposition]
@@ -20,7 +21,7 @@ for any $\varepsilon > 0$ and $\eta > 0$:
 \Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j)
 > \varepsilon + \eta\Big)
 \le \underbrace{e^{-K\,p_\varepsilon(c)}}_{\text{judge approx.}}
- + \underbrace{2K\,e^{-2n\eta^2}}_{\text{sample estimation}}.
+ + \underbrace{2K\,e^{-n\eta^2}}_{\text{sample estimation}}.
 \end{equation}
 \end{theorem}
 
@@ -29,9 +30,15 @@ Define the good event $G = \{|\widehat\Delta_c(h_j) - \Delta_c(h_j)| \le \eta,
 \;\forall\, j\}$.
 
 \textbf{Step 1 (Concentration per judge).}
-Since critics map to $[0,1]$, Hoeffding's inequality gives
-$\Prob(|\widehat\Delta_c(h_j) - \Delta_c(h_j)| > \eta) \le 2e^{-2n\eta^2}$.
-By a union bound: $\Prob(G^c) \le 2K\,e^{-2n\eta^2}$.
+For a fixed critic~$h_j : \cU \times \cV \to [0,1]$, $\widehat\Delta_c(h_j)$
+is the difference of two independent $n$-sample empirical averages, i.e., a sum
+of $2n$ independent random variables each bounded in an interval of width $1/n$
+($[0, 1/n]$ for joint terms and $[-1/n, 0]$ for product terms). Thus the sum of
+squared ranges is $n(1/n)^2 + n(1/n)^2 = 2/n$, and Hoeffding's inequality
+gives $\Prob(|\widehat\Delta_c(h_j) - \Delta_c(h_j)| > \eta) \le
+2\exp(-2\eta^2 / (2/n)) = 2e^{-n\eta^2}$ (formally verified in Lean~4 as
+\texttt{hoeffding\_two\_sample\_exponent}). By a union bound,
+$\Prob(G^c) \le 2K\,e^{-n\eta^2}$.
 
 \textbf{Step 2 (Judge approximation on $G$).}
 On $G$, $\widehat\Delta_c(h_j) \ge \Delta_c(h_j) - \eta$ for all~$j$, so
@@ -41,19 +48,43 @@ then $\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon$, which by
 Theorem~\ref{thm:coverage} has probability at most $e^{-K\,p_\varepsilon(c)}$.
 
 \textbf{Step 3 (Combine).}
-\begin{equation}
-\Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j)
-> \varepsilon + \eta\Big)
-\le \Prob\!\big(\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon\big)
-   + \Prob(G^c)
-\le e^{-K\,p_\varepsilon(c)} + 2K\,e^{-2n\eta^2}. \qedhere
-\end{equation}
+Combining Steps~1--2 yields the bound in~\eqref{eq:two-axis}. \qedhere
 \end{proof}
 
+\begin{theorem}[Split-sample cross-fitted two-axis bound and compute-optimal frontier]
+\label{thm:split-sample}
+Let each judge be evaluated on disjoint selection ($n_{\mathrm{sel}}$) and
+evaluation ($n_{\mathrm{eval}}$) sample splits with $n = n_{\mathrm{sel}} +
+n_{\mathrm{eval}}$. Let $\hat{j}_K = \arg\max_{j \le K} \widehat\Delta^{\mathrm{sel}}_c(h_j)$
+and define the split-sample estimator
+$\hat\tau^{\mathrm{split}}_{K,n}(c) := \widehat\Delta^{\mathrm{eval}}_c(h_{\hat{j}_K})$.
+Then for any $\varepsilon, \eta_{\mathrm{sel}}, \eta_{\mathrm{eval}} > 0$:
+\begin{equation}
+\label{eq:split-sample}
+\Prob\!\Big(\big|\hat\tau^{\mathrm{split}}_{K,n}(c) - \tau(c)\big|
+> \varepsilon + 2\eta_{\mathrm{sel}} + \eta_{\mathrm{eval}}\Big)
+\le e^{-K\,p_\varepsilon(c)}
+ + 2K\,e^{-n_{\mathrm{sel}}\eta_{\mathrm{sel}}^2}
+ + 2\,e^{-n_{\mathrm{eval}}\eta_{\mathrm{eval}}^2}.
+\end{equation}
+Conditioned on $\hat{j}_K$, $\E[\hat\tau^{\mathrm{split}}_{K,n}(c) \mid \hat{j}_K]
+= \Delta_c(h_{\hat{j}_K})$, eliminating the in-sample $+\Omega_p(\sqrt{(\log K)/n})$
+winner's-curse maximization inflation present in $\max_j \widehat\Delta_c(h_j)$.
+Moreover, under tail geometry $p_\varepsilon(c) \asymp \varepsilon^\beta$ and a
+fixed total judge-call budget $B = K n$, balancing $K^{-1/\beta}$ against
+$\sqrt{(\log K)/n}$ yields an interior compute-optimal frontier:
+\begin{equation}
+K^\star(B) \asymp \left(\frac{B}{\log B}\right)^{\frac{\beta}{\beta+2}},
+\qquad
+n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}},
+\qquad
+\mathrm{Error}^\star(B) \asymp \left(\frac{\log B}{B}\right)^{\frac{1}{\beta+2}}.
+\end{equation}
+\end{theorem}
+
 \begin{remark}
-This cleanly separates two independent error sources:
-(i)~\emph{judge approximation error}, controlled by ensemble size~$K$ and the
-geometry of the judge distribution via $p_\varepsilon(c)$; and
-(ii)~\emph{finite-sample estimation error}, controlled by the per-judge sample
-size~$n$. Both terms vanish as $K, n \to \infty$, and the rates are independent.
+Because an in-sample empirical maximum selects positively correlated estimation
+noise, $\max_j \widehat\Delta_c(h_j)$ systematically overestimates null targets
+($\tau(c) = 0$) as $K$ grows. Disjoint sample splitting decouples selection noise
+from evaluation noise, ensuring two-sided convergence cleanly without clipping.
 \end{remark}

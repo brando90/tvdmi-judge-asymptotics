@@ -107,12 +107,15 @@ def agg_dawid_skene(votes, n_iter=20):
     """Dawid-Skene EM for binary labels. votes: (K, d, d) of 0/1.
     Returns aggregated binary labels (d, d). Fully vectorized."""
     K, d1, d2 = votes.shape
+    if K == 1:
+        return votes[0].astype(float)
     N = d1 * d2
     # Flatten to (K, N) for EM
     V = votes.reshape(K, N)
 
-    # Initialize true labels from majority vote
-    T = (V.mean(axis=0) >= 0.5).astype(float)
+    # Initialize true labels from rank-1 spectral projection rather than raw majority vote
+    # (prevents adversarial contamination or noisy draws from trapping EM at a bad local optimum).
+    T = agg_spectral(votes).reshape(N)
 
     for _ in range(n_iter):
         # M-step: estimate judge error rates (vectorized over judges)
@@ -154,6 +157,8 @@ def agg_spectral(votes):
     (K x N) matrix, take leading right singular vector as the
     aggregated label."""
     K, d1, d2 = votes.shape
+    if K == 1:
+        return votes[0].astype(float)
     N = d1 * d2
     V = votes.reshape(K, N).astype(np.float64)  # (K, N)
 
@@ -401,7 +406,7 @@ def build_comparison_table(all_errors, k_sweep, scenario_names):
     for sc_name in scenario_names:
         for method_name, _ in AGGREGATORS:
             e = all_errors[sc_name][method_name]
-            alpha, a, b, R2 = fit_power_law(k_sweep, e)
+            alpha, a, b, R2 = fit_power_law(k_sweep, e, allow_negative_alpha=True)
             rows.append({
                 "Scenario": sc_name,
                 "Method": method_name,

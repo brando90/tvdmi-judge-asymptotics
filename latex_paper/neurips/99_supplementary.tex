@@ -1,0 +1,62 @@
+%=============================================================================
+% Trigger Rule 89: Extended Supplementary Material (compiled only in main_arxiv.pdf)
+\section{Supplementary Details: Clone Sweep, Cost Frontier, and Historical Audits}
+\label{sec:supplementary}
+
+\subsection{Full Clone-Hijacking Sweep on \textsc{SummEval} ($M=0,\dots,64$)}
+
+\begin{table}[h]
+\centering
+\caption{Effect of adding $M$ redundant \texttt{BART-CNN} prompt variants to $4$ single-call GPT-4 judges (5-fold article-disjoint CV).}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}rcccc@{}}
+\toprule
+Clones $M$ ($K$) & \texttt{RB-Spec} Sys (Item) & Uniform Mean Sys (Item) & Naive SVD Sys (Item) & Median Sys (Item) \\
+\midrule
+0 (4) & $0.985\,(0.675)$ & $0.985\,(0.675)$ & $0.985\,(0.676)$ & $0.988\,(0.654)$ \\
+4 (8) & $0.985\,(0.707)$ & $0.991\,(0.693)$ & $0.950\,(0.630)$ & $0.879\,(0.555)$ \\
+8 (12) & $0.985\,(0.708)$ & $0.950\,(0.635)$ & $0.868\,(0.544)$ & $0.785\,(0.459)$ \\
+16 (20) & $0.988\,(0.707)$ & $0.897\,(0.564)$ & $0.826\,(0.498)$ & $0.791\,(0.451)$ \\
+32 (36) & $0.988\,(0.707)$ & $0.865\,(0.511)$ & $0.791\,(0.480)$ & $0.785\,(0.447)$ \\
+64 (68) & $0.988\,(0.706)$ & $0.826\,(0.484)$ & $0.785\,(0.470)$ & $0.785\,(0.451)$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{200-Split Repeated $50/50$ Stability and Asymmetric Adversaries}
+
+Across $200$ repeated $50/50$ random article splits:
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+\item \textbf{64-Clone Panel:} \texttt{RB-Spec TVD-MI} obtains system Spearman
+  $0.970\,[0.935, 0.991]$ vs.\ Uniform Mean $0.806\,[0.712, 0.874]$
+  (paired Wilcoxon $p = 1.43\times 10^{-34}$) and Naive SVD $0.774\,[0.682, 0.850]$.
+\item \textbf{Wild $K=38$ Panel:} \texttt{RB-Spec TVD-MI} obtains $0.899\,[0.824, 0.958]$
+  vs.\ Uniform Mean $0.855\,[0.738, 0.950]$ ($p = 2.24\times 10^{-21}$) and
+  Naive SVD $0.798\,[0.691, 0.903]$.
+\item \textbf{Independent Adversaries ($\delta_{\mathrm{raw}} \in [0.091, 0.444]$):}
+  On 10 honest plus $k_{\mathrm{adv}} \in \{1,3,5,8\}$ inverted judges, \texttt{RB-Spec}
+  holds system Spearman $\ge 0.944$ and item Spearman $\ge 0.693$ across all levels,
+  whereas Uniform Mean drops to $0.712$ at $k_{\mathrm{adv}} = 5$.
+\end{itemize}
+
+\subsection{Real \textsc{SummEval} Null-Permutation Table and Cost-Aware Pareto Frontier}
+
+On $n=20$ articles under full $(d,s)$ permutation null ($500$ draws), Naive
+Max grows monotonically ($-0.003$ at $K=1$ to $+0.065$ at $K=80$), whereas
+Split-Sample remains unbiased ($+0.001$, $p=0.992$; Wilcoxon vs.\ Naive
+$p=0.0027$). Under budget cost ratio $c_{\mathrm{GPT4}}/c_{\mathrm{Seq2Seq}} = 20$,
+a $10$-article Nitzan--Paroush anchor estimator achieves $0.879$ system Spearman
+at cost~$22$ ($1$ GPT-4 + $2$ Seq2Seq) and $0.991$ at cost~$60$ ($3$ GPT-4),
+matching Lean Theorem~\ref{thm:optimal-weights}.
+
+\subsection{Monte Carlo Verification of Lean~4 Hierarchical \& Breakdown Identities}
+
+Across $500$ Monte Carlo realizations of $F=6$ hierarchical families, flooding
+weak Family~1 with $M \in \{1,\dots,128\}$ clones raises uniform ensemble
+variance from $0.0186$ to $0.2332$ (theory $0.2319$, limit $\tau_1^2 = 0.25$), while
+balanced $1/F$ weighting remains invariant at $0.0157$ (theory $0.0153$, uniform bound $B/F = 0.0500$).
+Under $k_{\mathrm{adv}} = 24$ cloned adversaries in one of $F=5$ families
+($\delta_{\mathrm{raw}} = 85.7\% > 50\%$, $\delta_{\mathrm{fam}} = 20\% < 50\%$),
+raw majority drops to accuracy $0.228$ while balanced family voting achieves
+$0.826$.

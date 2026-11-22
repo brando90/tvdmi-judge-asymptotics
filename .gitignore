@@ -218,6 +218,8 @@ __marimo__/
 *.synctex(busy)
 _build/
 !latex_paper/neurips/main.pdf
+!latex_paper/neurips/main_arxiv.pdf
+!latex_paper/neurips/figures/*.pdf
 !experiments/*/*.pdf
 !experiments/*/*/*.pdf
 

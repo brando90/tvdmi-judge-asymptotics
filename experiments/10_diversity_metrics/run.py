@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 # ---------------------------------------------------------------------------
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from utils import (
-    fit_power_law,
+    compute_local_elasticity,
     COLORS,
 )
 
@@ -225,10 +225,11 @@ for gamma in GAMMA_VALUES:
         print(f"  Error curve: {[f'{e:.4f}' for e in error_curve]}")
 
         # ------------------------------------------------------------------
-        # 2. Fit power law to get alpha
+        # 2. Compute unclipped local scaling elasticity across K in [8, 64]
         # ------------------------------------------------------------------
-        alpha_hat, a_fit, b_fit, R2 = fit_power_law(K_SWEEP, error_curve)
-        print(f"  Fitted alpha={alpha_hat:.4f}, R^2={R2:.4f}")
+        alpha_hat = compute_local_elasticity(K_SWEEP, error_curve, k_lo=8, k_hi=64)
+        R2 = np.nan
+        print(f"  Local elasticity alpha_eff(8..64)={alpha_hat:.4f}")
 
         # ------------------------------------------------------------------
         # 3. Compute diversity metrics at K=K_MAX

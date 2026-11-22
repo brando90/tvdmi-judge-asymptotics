@@ -1,9 +1,10 @@
 %=============================================================================
-\section{Judge Dependence and Diversity}
+\section{Judge Dependence, Clone Hijacking, and Balanced Spectral Recovery}
 \label{sec:dependence}
 
-The preceding results assume independence across judges. We now analyze what
-happens when judges share systematic biases.
+The preceding sections assume independence across judges. We now analyze how
+shared correlation---especially redundant cloning of a single model family or
+prompt template---affects aggregation.
 
 \begin{definition}[Equicorrelated judge scores]
 \label{def:equicorrelated}
@@ -23,22 +24,14 @@ Let $\bar{S}_K := \frac{1}{K}\sum_{j=1}^K S_j$. Then
 \end{equation}
 \end{proposition}
 
-\begin{proof}
-\begin{equation}
-\Var(\bar{S}_K \mid c)
-= \frac{1}{K^2}\sum_{i,j} \Cov(S_i, S_j \mid c)
-= \frac{1}{K^2}\big[K\sigma^2 + K(K{-}1)\rho_K\sigma^2\big]
-= \frac{\sigma^2}{K}\big[1 + (K{-}1)\rho_K\big]. \qedhere
-\end{equation}
-\end{proof}
-
 \begin{corollary}[Scaling regimes]
 \label{cor:scaling-regimes}
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
 \item If $\rho_K(c) = 0$ (independent judges):
   $\RMSE \sim K^{-1/2}$.
 \item If $\rho_K(c) = \rho_0 > 0$ (constant dependence):
-  irreducible error floor $\sigma\sqrt{\rho_0}$.
+  irreducible error floor $\sigma\sqrt{\rho_0}$, with vanishing local elasticity
+  $\alpha_{\mathrm{eff}}(K) := -d\log\RMSE / d\log K = \frac{1-\rho_0}{2(1+(K-1)\rho_0)}$.
 \item If $\rho_K(c) \sim K^{-\beta}$ for $\beta > 0$ (decaying dependence):
   $\RMSE \sim K^{-\alpha}$ with $\alpha = \tfrac{1}{2}\min(1,\beta)$.
 \end{enumerate}
@@ -48,20 +41,67 @@ Let $\bar{S}_K := \frac{1}{K}\sum_{j=1}^K S_j$. Then
 \label{thm:impossibility-dependence}
 If residual pairwise dependence does not vanish, i.e.,
 $\liminf_{K \to \infty} \rho_K(c) > 0$, then averaging-based aggregation
-cannot be asymptotically consistent:
+cannot be asymptotically consistent: $\liminf_{K \to \infty} \Var(\bar{S}_K \mid c) \ge \sigma^2\rho_0 > 0$.
+\end{theorem}
+
+\subsection{Hierarchical Clone Hijacking and Redundancy-Balanced Spectral TVD-MI}
+\label{sec:rb-spec}
+
+Equicorrelated panels understate a harsher practical failure mode: real LLM
+juries routinely mix $F$ genuinely distinct model families with unbalanced
+multiplicities $K_1, \dots, K_F$ (e.g., many paraphrased prompts or stochastic
+samples of one cheap model alongside a few diverse judges).
+
+\begin{assumption}[Hierarchical random-effects judge panel]
+\label{asm:hierarchical}
+Each judge $j \in \mathcal{G}_f$ in family $f \in \{1,\dots,F\}$ satisfies
+$S_j = \mu + u_f + e_j$, where family biases $u_f$ are independent with
+$\Var(u_f) = \tau_f^2$, idiosyncratic errors $e_j$ are independent with
+$\Var(e_j) = \sigma_f^2$, and $|\mathcal{G}_f| = K_f$.
+\end{assumption}
+
+\begin{proposition}[Clone-hijacking falsification of $K$-monotonicity]
+\label{prop:clone-hijacking}
+Suppose two families ($F=2$) are combined by the uniform mean
+$\bar{S}^{\mathrm{unif}}_{K_1, K_2}$. Then
 \begin{equation}
-\liminf_{K \to \infty} \Var(\bar{S}_K \mid c) > 0.
+\label{eq:clone-hijack}
+\Var\!\big(\bar{S}^{\mathrm{unif}}_{K_1, K_2}\big)
+= \frac{K_1^2 \tau_1^2 + K_1 \sigma_1^2 + K_2^2 \tau_2^2 + K_2 \sigma_2^2}{(K_1 + K_2)^2}
+\;\xrightarrow[K_1 \to \infty]{}\; \tau_1^2.
+\end{equation}
+Whenever $\tau_1^2 > \Var(\bar{S}^{\mathrm{unif}}_{1, K_2})$ (a weaker model
+family is cloned repeatedly), adding judges strictly \emph{increases}
+ensemble error (formally verified in Lean~4 as
+\texttt{clone\_hijacking\_strict\_increase\_counterexample}).
+\end{proposition}
+
+\begin{theorem}[Family-balanced $1/F$ recovery]
+\label{thm:balanced-1F}
+Under Assumption~\ref{asm:hierarchical}, let $\bar{S}^{\mathrm{bal}}_{F, \{K_f\}}$
+weight every judge in family $f$ by $1 / (F K_f)$. Then for \emph{all}
+positive clone multiplicities $K_1, \dots, K_F \ge 1$,
+\begin{equation}
+\label{eq:balanced-inv-F}
+\Var\!\big(\bar{S}^{\mathrm{bal}}_{F, \{K_f\}}\big)
+= \frac{1}{F^2}\sum_{f=1}^F \left(\tau_f^2 + \frac{\sigma_f^2}{K_f}\right)
+\le \frac{\max_f(\tau_f^2 + \sigma_f^2)}{F}
+\;\xrightarrow[F \to \infty]{}\; 0.
 \end{equation}
 \end{theorem}
 
-\begin{proof}
-From Proposition~\ref{prop:variance-floor}: if $\rho_K(c) \ge \rho_0 > 0$
-for all~$K$, then $\Var(\bar{S}_K \mid c) \ge \sigma^2 \rho_0 > 0$.
-\end{proof}
-
-\begin{remark}
-This negative result aligns with CARE's observation \citep{chen2026care} that
-shared latent confounders can make naive judge aggregation fail. ``Diversity''
-in judge ensembles is precisely the condition $\rho_K \to 0$: judges must
-disagree in their errors, not just in their surface behavior.
-\end{remark}
+\paragraph{Unsupervised Algorithm: \texttt{RB-Spec TVD-MI}.}
+Because true family partitions $\mathcal{G}_f$ are unknown in practice, we
+estimate redundancy unsupervised strictly on held-out training prompts. Given a
+within-prompt centered judge matrix $\widetilde{Z}_{i,j}$ (columns standardized to
+unit training variance), let $\widehat{R} \in \R^{K \times K}$ denote the empirical
+judge correlation matrix. We define each judge's \emph{effective redundancy mass}
+$m_j := \sum_{j'=1}^K |\widehat{R}_{j,j'}|^6 \ge 1$ and column-balance weights
+$d_j := m_j^{-1/2}$. Notice that within a block of $K_f$ near-collinear clones
+($|\widehat{R}_{jj'}| \approx 1$), $m_j \approx K_f$ and $\sum_{j \in \mathcal{G}_f} d_j^2 \approx 1$.
+Taking the leading right singular vector $v_1$ of the balanced matrix
+$Z^{\mathrm{bal}}_{i,j} = d_j \widetilde{Z}_{i,j}$ yields weights
+$w^{\mathrm{RB}}_j \propto d_j v_{1,j}$, oriented unsupervised by the balanced
+sign $\mathrm{sign}(\sum_{j=1}^K d_j w^{\mathrm{RB}}_j)$. This construction aligns
+with \citet{chen2026care} while requiring neither label supervision nor known
+family identities.

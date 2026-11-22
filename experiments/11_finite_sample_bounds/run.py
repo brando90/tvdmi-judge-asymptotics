@@ -4,9 +4,10 @@ Empirically validate finite-sample concentration inequalities from the
 consistency theorem. Compare theoretical error bounds vs actual observed
 error across K and n.
 
-The main consistency theorem gives:
-    Pr(tau(c) - max_{j<=K} Delta_hat_c(h_j) > eps + eta)
-        <= exp(-K * p_eps) + 2K * exp(-2n * eta^2)
+The main consistency theorem (with n joint and n product samples, sum of
+squared bounded increments 2/n) gives:
+    Pr(|tau_hat_split(c) - tau(c)| > eps + 2*eta_sel + eta_eval)
+        <= exp(-K * p_eps) + 2K * exp(-n_sel * eta_sel^2) + 2 * exp(-n_eval * eta_eval^2)
 
 This decomposes into:
 - Approximation error (eps): controlled by K and witness mass p_eps.
@@ -82,8 +83,8 @@ diff_flat = (P_UV - P_indep).flatten().astype(np.float32)
 
 
 def build_judges(K):
-    """Build K random-witness judges. Returns h_judges of shape (K, D*D)."""
-    q_vals = np.random.beta(BETA, 1, size=K)
+    """Build K random-witness judges from Beta(1, BETA) so P(Q >= 1 - u) = u^BETA. Returns (K, D*D)."""
+    q_vals = np.random.beta(1.0, BETA, size=K)
     masks = np.random.rand(K, D * D) < q_vals[:, None]
     rand_bits = (np.random.rand(K, D * D) < 0.5).astype(np.float32)
     return np.where(masks, h_star_flat[None, :], rand_bits)
@@ -243,10 +244,13 @@ for K in K_VALS_C:
         for rep in range(N_REPS_C):
             h_judges = build_judges(K)  # (K, D*D)
 
-            # Estimate delta from n samples (shared evaluation set)
-            delta_hats = empirical_deltas_multinomial(h_judges, n)
-            best_delta_hat = np.max(delta_hats)
-            total_gaps[rep] = max(0.0, delta_star - best_delta_hat)
+            # Disjoint split-sample cross-fitting (n_sel + n_eval = n) eliminates winner's-curse bias
+            n_sel = max(1, n // 2)
+            n_eval = max(1, n - n_sel)
+            delta_sel = empirical_deltas_multinomial(h_judges, n_sel)
+            j_star = int(np.argmax(delta_sel))
+            best_delta_hat = float(empirical_deltas_multinomial(h_judges[j_star : j_star + 1], n_eval)[0])
+            total_gaps[rep] = abs(delta_star - best_delta_hat)
 
         mean_total_gap = np.mean(total_gaps)
 

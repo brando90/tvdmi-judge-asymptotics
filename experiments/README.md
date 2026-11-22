@@ -11,7 +11,9 @@ its own folder.
 - `compute_true_tvd(P_UV, P_U, P_V)` — exact TVD on a grid
 - `optimal_critic(P_UV, P_U, P_V)` — Bayes-optimal binary critic h*
 - `compute_delta(h, P_UV, P_U, P_V)` — Δ_c(h) for a given critic
-- `fit_power_law(K_vals, errors)` — fit error = aK^{-α} + b
+- `fit_power_law(K_vals, errors, allow_negative_alpha=False)` — fit error = aK^{-α} + b
+- `fit_loglog_power_law(K_vals, errors, k_min=8)` — pure log-log OLS without free offset artifact
+- `compute_local_elasticity(K_vals, rmse_vals, k_lo=16, k_hi=256)` — unclipped local scaling elasticity
 - `fit_exponential_decay(K_vals, errors)` — fit error = a·exp(-bK) + c
 - Consistent matplotlib styling and color palette
 
@@ -44,6 +46,7 @@ Use 500 Monte Carlo repetitions per configuration unless noted otherwise.
 | 10 | Diversity metrics | Correlation | Diversity | α | Predictive |
 | 11 | Finite-sample bounds | Concentration | K | Bound vs error | Tight/loose |
 | 12 | `12_repo_audit_bugfixes_and_next_theory_roadmap_start_21Nov2026` | Repo audit & fixes | K, B, rho, delta | Gap / RMSE / bias | Corrected `1/beta`, split-sample `K*`, oriented peer TVD-MI |
+| 13 | `13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026` | Real-LLM & Lean `NewTheory` | M clones, delta, budget | Spearman / Acc / ICC(A,1) | Clone hijacking vs `RB-Spec` `1/F` recovery on SummEval & MT-Bench |
 
 Experiments 01–05 are the core synthetic experiments that directly validate
 the theorems. Experiment 06 validates on real data. Experiments 07–11 are

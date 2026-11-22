@@ -1,37 +1,65 @@
 %=============================================================================
-\section{Gold-Metric Rank Consistency}
+\section{Semantic Validity: Injection Blindness, Double-Centering, and Gold Consistency}
 \label{sec:gold}
+
+Consistency to~$\tau(c)$ only transfers to gold quality $g(c)$ when $\tau(c)$
+tracks task semantics rather than surface prompt mutual information. We now
+characterize both the failure modes of unconditional TVD-MI and the exact
+structural remedies.
+
+\begin{theorem}[Finite-alphabet variational duality and injection blindness]
+\label{thm:injection-blindness}
+For any distributions $p, q$ over a finite alphabet $\mathcal{A}$ with equal
+total mass, every bounded critic $h : \mathcal{A} \to [0,1]$ obeys
+$\sum_x (p(x)-q(x))h(x) \le \frac{1}{2}\sum_x |p(x)-q(x)|$ with equality at the
+Scheff\'e critic $h^\star(x) = \mathbf{1}\{p(x) \ge q(x)\}$. Consequently, for
+any prompt distribution $P_X$ and any injective map $Y = f(X)$,
+\begin{equation}
+\label{eq:injection-blindness}
+\tvd\!\big(P_{X,f(X)},\; P_X \otimes P_{f(X)}\big)
+= 1 - \sum_{x \in \cU} P_X(x)^2,
+\end{equation}
+which depends solely on prompt collision entropy and assigns higher
+unconditional TVD-MI to verbatim prompt copying ($Y = X$) than to non-injective
+semantic reasoning (verified in Lean~4 as \texttt{injection\_tvd\_blindness}).
+Similarly, global label inversion $Y = 1 - Z^\star$ preserves the joint--product
+total variation distance identically.
+\end{theorem}
+
+\begin{theorem}[Double-centering invariance and oriented peer recovery]
+\label{thm:double-centering}
+Under any joint distribution $P_{XY}$ with marginals $P_X, P_Y$, additive
+prompt-difficulty and response-verbosity shifts vanish identically inside the
+TVD-MI witness contrast: for any $h(x,y) = a(x) + b(y) + \gamma\,\psi(x,y)$,
+\begin{equation}
+\Delta(h) := \E_{P_{XY}}[h] - \E_{P_X \otimes P_Y}[h] = \gamma\,\Delta(\psi).
+\end{equation}
+Moreover, when conditionally independent semantic peer predictors $W_j$
+($W_j \perp Y_c \mid Z^\star$, symmetric accuracy
+$\Prob(W_j = Z^\star \mid Z^\star) = q_j$) replace unconditional
+prompt--response comparisons on binary latent correctness $Z^\star$ via the
+oriented witness
+$\Delta^{\mathrm{orient}}_{c,j} := \E[\mathbf{1}\{W_j=Y_c\} - \mathbf{1}\{W_j=\widetilde{Y}_c\}] = \E[(\mathbf{1}\{W_j=1\}-\mathbf{1}\{W_j=0\})(Y_c - \widetilde{Y}_c)]$,
+we obtain $\Delta^{\mathrm{orient}}_{c,j} = 2(2q_j - 1)(2p_c - 1)\Var(Z^\star)$,
+which separates oracles ($p_c=1$), prompt-copiers/guessing ($p_c=1/2$, zero),
+and systematic inverters ($p_c < 1/2$, strictly negative) whenever $q_j > 1/2$.
+\end{theorem}
+
+\begin{theorem}[Optimal heterogeneous judge weights via Cauchy--Schwarz]
+\label{thm:optimal-weights}
+Let unbiased judges have competences $\mu_j > 0$ and residual variances
+$v_j > 0$. Across all normalized linear ensembles satisfying $\sum_{j=1}^K w_j \mu_j = 1$,
+$\sum_{j=1}^K w_j^2 v_j \ge (\sum_{j=1}^K \mu_j^2 / v_j)^{-1}$, with unique
+equality at the Nitzan--Paroush inverse-variance weights $w_j^\star \propto \mu_j / v_j$.
+\end{theorem}
 
 \begin{theorem}[Rank consistency with gold metric]
 \label{thm:gold-consistency}
-Suppose a monotone validity link holds (Definition~\ref{def:gold-metric}).
-Let $\{c_1, \ldots, c_L\}$ be a finite set of candidates with distinct
-gold scores, and let $\Delta_{\min} := \min_{l \neq l'} |\tau(c_l) - \tau(c_{l'})|
-> 0$. If the ensemble estimator $\hat\tau_K(c)$ satisfies
-\begin{equation}
-\Prob\!\Big(\max_{l \le L} |\hat\tau_K(c_l) - \tau(c_l)| > \varepsilon\Big) \to 0
-\quad\text{as } K \to \infty,
-\end{equation}
-then for $\varepsilon < \Delta_{\min}/2$, the ranking induced by $\hat\tau_K$
-agrees with the gold ranking with probability approaching~$1$.
+Suppose a monotone validity link holds (Definition~\ref{def:gold-metric}) over a
+finite candidate set $\{c_1, \ldots, c_L\}$ with distinct gold scores and
+$\Delta_{\min} := \min_{l \neq l'} |\tau(c_l) - \tau(c_{l'})| > 0$. If an
+estimator $\hat\tau_K$ satisfies $\Prob(\max_{l \le L} |\hat\tau_K(c_l) -
+\tau(c_l)| > \varepsilon) \to 0$ as $K \to \infty$, then for $\varepsilon <
+\Delta_{\min}/2$ the induced candidate ranking matches the gold ranking with
+probability approaching~$1$.
 \end{theorem}
-
-\begin{proof}
-On the event $\{\max_l |\hat\tau_K(c_l) - \tau(c_l)| \le \varepsilon\}$ with
-$\varepsilon < \Delta_{\min}/2$: for any $l \neq l'$ with $\tau(c_l) < \tau(c_{l'})$,
-\begin{equation}
-\hat\tau_K(c_{l'}) - \hat\tau_K(c_l)
-\ge (\tau(c_{l'}) - \varepsilon) - (\tau(c_l) + \varepsilon)
-= \tau(c_{l'}) - \tau(c_l) - 2\varepsilon
-> 0.
-\end{equation}
-So the estimated ranking agrees with the $\tau$-ranking, which by the monotone
-link agrees with the gold ranking.
-\end{proof}
-
-\begin{remark}
-The separation condition $\Delta_{\min} > 0$ is necessary: if two candidates
-have identical $\tau$-values but different gold scores, the validity link is
-violated. In practice, $\Delta_{\min}$ can be estimated and used to determine
-the sample size needed for reliable ranking.
-\end{remark}

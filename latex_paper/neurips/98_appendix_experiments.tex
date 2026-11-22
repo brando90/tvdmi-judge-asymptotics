@@ -1,5 +1,69 @@
 %=============================================================================
-\section{Additional Experiments}
+\section{Controlled Verification, Bugfix Audits, and Extended Real-LLM Metrics}
 \label{app:experiments}
 
-% TODO: Add figures and detailed experimental results once simulations are run.
+% Provenance: experiments/12_repo_audit_bugfixes_and_next_theory_roadmap_start_21Nov2026/results/summary_metrics.json and experiments/13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026/results/summary_metrics.json
+
+\subsection{Reconciled Synthetic Scaling and Bugfix Verification (Experiment~12)}
+
+Auditing the early simulation suite (\texttt{experiments/01}--\texttt{11}) uncovered
+four subtle implementation defects alongside the factor-of-2 Hoeffding exponent
+in Theorem~\ref{thm:two-axis}. Table~\ref{tab:exp12-fixes} summarizes the verified
+500-repetition Monte Carlo reconciliations (95\% seed-bootstrap intervals):
+
+\begin{table}[h]
+\centering
+\caption{Summary of synthetic bugfixes verified in Experiment~12 (500~reps, $95\%$ seed-bootstrap CIs).}
+\label{tab:exp12-fixes}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lll@{}}
+\toprule
+Historical Module & Defect Diagnosed & Verified Post-Fix Behavior \\
+\midrule
+Exp~01 ($\mathrm{Beta}(1,\beta)$) & Sampled $\mathrm{Beta}(\beta,1)$ (exponent always $1$) & $K\ge 8$ OLS slopes: $1.960, 0.987, 0.491, 0.246$ ($R^2\ge 0.997$) \\
+Exp~03/11 (Split-Sample) & Clipped $\max(0, \cdot)$ hid $+0.316$ null inflation & Split-sample null: $+0.006\,[-0.006,+0.018]$ ($p=0.448$); optimal $K^\star=8$ \\
+Exp~04/10 (Elasticity) & Free offset $b$ fit $K^{-1}$ remainder ($\hat\alpha\to 1$) & Local elasticity $[16,256]$: $0.499$ ($\rho=0$) down to $0.016$ ($\rho=0.8$) \\
+Exp~05B (Huber Bias) & Set $\tau_c=0.50=1-\tau_c$ (identical adversaries) & At $\tau_c=0.80,\delta=0.15$: Mean RMSE $0.086$, Median $0.030$ (bias $-0.029$) \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\subsection{Extended Real-LLM Agreement and Calibration Metrics (Experiment~13)}
+
+Table~\ref{tab:app-summeval-full} expands Table~\ref{tab:real-llm-main} with the
+full agreement checklist on \textsc{SummEval} (Clean $K=13$ and Wild $K=38$)
+and \textsc{MT-Bench} model-level empirical win-rate correlations. Notice that
+while \texttt{RB-Spec TVD-MI} dominates rank correlation ($+0.689$ item,
+$p=1.21\times 10^{-9}$) and consistency ($\mathrm{ICC(C,1)} = 0.688$), its
+uncalibrated severity offset ($-1.111$ vs.\ human mean $4.131$) degrades
+absolute $\mathrm{ICC(A,1)} = 0.351$, directly illustrating why absolute
+agreement checks must accompany correlation headlines.
+
+\begin{table}[h]
+\centering
+\caption{Full \textsc{SummEval} 5-fold out-of-sample agreement ($N=100$ articles, $1,600$ summaries).}
+\label{tab:app-summeval-full}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Regime & Method & Item Sp. & Kendall $\tau$ & Pearson $r$ & $\mathrm{ICC(A,1)}$ & Mean Bias \\
+\midrule
+Clean ($K=13$) & Single GPT-4 & $0.596\,[0.555,0.635]$ & $0.476$ & $0.642$ & $0.493$ & $-0.476$ \\
+Clean ($K=13$) & Uniform Mean & $0.643\,[0.608,0.675]$ & $0.471$ & $0.703$ & $0.441$ & $-0.652$ \\
+Clean ($K=13$) & Naive SVD & $0.570\,[0.528,0.611]$ & $0.410$ & $0.617$ & $0.299$ & $-1.112$ \\
+Clean ($K=13$) & \textbf{\texttt{RB-Spec TVD-MI}} & $\mathbf{0.688\,[0.657,0.715]}$ & $\mathbf{0.510}$ & $\mathbf{0.725}$ & $0.351$ & $-1.111$ \\
+\midrule
+Wild ($K=38$) & Best-Spread Split & $0.007\,[-0.041,0.057]$ & $0.005$ & $-0.011$ & $-0.005$ & $-1.148$ \\
+Wild ($K=38$) & Uniform Mean & $0.515\,[0.466,0.561]$ & $0.367$ & $0.582$ & $0.275$ & $-0.758$ \\
+Wild ($K=38$) & Itemwise Median & $0.457\,[0.398,0.513]$ & $0.323$ & $0.517$ & $0.397$ & $-0.523$ \\
+Wild ($K=38$) & Naive SVD & $0.497\,[0.446,0.547]$ & $0.353$ & $0.544$ & $0.264$ & $-1.115$ \\
+Wild ($K=38$) & \textbf{\texttt{RB-Spec TVD-MI}} & $\mathbf{0.689\,[0.659,0.718]}$ & $\mathbf{0.511}$ & $\mathbf{0.726}$ & $0.351$ & $-1.111$ \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+In \textsc{MT-Bench} (Table~\ref{tab:real-llm-main}), \texttt{RB-Spec Pairwise}
+lifts pairwise accuracy from $0.685$ (Uniform Mean) and $0.718$ (Naive SVD) to
+$0.795\,[0.769, 0.820]$ while preserving 6-model win-rate ranking
+($\mathrm{Spearman}=0.943$, $\tau=0.867$, Pearson $r=0.978$, vs.\ Naive SVD
+$\mathrm{Spearman}=0.771$).

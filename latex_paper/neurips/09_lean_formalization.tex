@@ -2,38 +2,48 @@
 \section{Lean~4 Formalization}
 \label{sec:lean}
 
-We formally verify the core algebraic, order-theoretic, and convergence results
-in Lean~4 using the Mathlib library \citep{mathlib2020}. The formalization covers:
+We formally verify all algebraic, finite-alphabet variational, invariance,
+concentration-scaling, and optimality results in Lean~4 (\texttt{leanprover/lean4:v4.29.0})
+with Mathlib \citep{mathlib2020} across two modules in
+\texttt{experiments/00\_lean\_formalization/lean/TvdmiJudge/}:
 
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
-\item \textbf{Variance algebra} (Proposition~\ref{prop:variance-floor}): The
-  two forms of the equicorrelated variance formula are equal, and the variance
-  floor $\sigma^2\rho$ is tight.
-
-\item \textbf{Adversarial thresholds} (Theorem~\ref{thm:adversarial}): Both the
-  always-wrong and sign-flip breakdown conditions are verified as biconditionals
-  over~$\R$.
-
-\item \textbf{Ranking preservation} (Theorem~\ref{thm:gold-consistency}): If
-  all estimates are within~$\varepsilon$ of truth and all true values are
-  separated by more than $2\varepsilon$, the induced ranking is preserved.
-
-\item \textbf{Random-witness convergence}: $(1-p)^K \to 0$ for $p \in (0,1]$,
-  established via Mathlib's \texttt{tendsto\_pow\_atTop\_nhds\_zero\_of\_lt\_one}.
-
-\item \textbf{Exponential bound}: $1 - x \le e^{-x}$ for all $x \in \R$, and
-  the corollary $(1-p)^K \le e^{-Kp}$ for $p \in [0,1]$.
-
-\item \textbf{Consensus convergence structure}: The Hoeffding exponent
-  $-2K\gamma_0^2$ is verified negative, and $2e^{-2K\gamma_0^2} \to 0$.
-
-\item \textbf{Two-axis structure}: If both error sequences converge to zero,
-  their sum converges to zero.
-
-\item \textbf{Variance convergence}: For constant $\rho_0 > 0$,
-  $\Var(\bar{S}_K) \to \sigma^2\rho_0$; for $\rho = 0$,
-  $\sigma^2/K \to 0$.
+\item \textbf{Variational duality and injection blindness} (\texttt{NewTheory.lean},
+  Theorem~\ref{thm:injection-blindness}): Finite-alphabet TVD variational upper
+  bound (\texttt{finite\_tvd\_variational\_le}), Scheff\'e attainment
+  (\texttt{finite\_tvd\_variational\_eq}), and exact injection blindness
+  $\tvd = 1 - \sum_x P_X(x)^2$ for arbitrary injective maps
+  $f:\alpha \to \beta$ (\texttt{injection\_tvd\_blindness}).
+\item \textbf{Double-centering invariance and oriented peer recovery}
+  (\texttt{NewTheory.lean}, Theorem~\ref{thm:double-centering}): Exact
+  cancellation of additive prompt/verbosity shifts $a(x) + b(y)$ inside the
+  TVD-MI witness contrast (\texttt{tvdmi\_double\_centering\_invariance}), plus
+  strict monotonicity and negative inversion rejection of the oriented peer
+  formula (\texttt{oriented\_peer\_strict\_mono}, \texttt{oriented\_peer\_rejects\_inverter}).
+\item \textbf{Equicorrelated variance, clone hijacking, and $1/F$ recovery}
+  (\texttt{Basic.lean} and \texttt{NewTheory.lean}): Equicorrelated variance
+  identities and persistent floor (\texttt{variance\_equicorrelated\_mean},
+  \texttt{variance\_floor}), concrete clone-hijacking strict variance-increase
+  counterexample (\texttt{clone\_hijacking\_strict\_increase\_counterexample}),
+  asymptote to $\tau_1^2$ (\texttt{clone\_hijacking\_tendsto}), and uniform
+  $B/F$ upper bound independent of clone counts (\texttt{var\_family\_balanced\_le\_inv\_F},
+  \texttt{inv\_F\_rate\_vanishes}).
+\item \textbf{Two-axis Hoeffding correction and split-sample convergence}
+  (\texttt{NewTheory.lean}, Theorem~\ref{thm:two-axis}--\ref{thm:split-sample}):
+  Exact two-sample Hoeffding exponent reduction to $n\eta^2$
+  (\texttt{hoeffding\_two\_sample\_exponent}), vanishing three-axis split bound
+  (\texttt{split\_sample\_bound\_vanishes}), and witness exponential decay.
+\item \textbf{Adversarial thresholds and Nitzan--Paroush optimality}
+  (\texttt{Basic.lean} and \texttt{NewTheory.lean}): Always-wrong and
+  sign-flip biconditionals (\texttt{adversarial\_threshold\_div}),
+  effective-family breakdown $\delta_{\mathrm{fam}} < 1/2$ invariant to clone floods
+  (\texttt{effective\_family\_adversarial\_threshold}), ranking preservation
+  (\texttt{ranking\_preserved}), and weighted Cauchy--Schwarz variance optimality
+  with exact equality attainment (\texttt{optimal\_judge\_weights\_cauchy\_schwarz},
+  \texttt{optimal\_judge\_weights\_equality}).
 \end{enumerate}
 
-All proofs compile without \texttt{sorry}. The formalization is available in
-\texttt{experiments/00\_lean\_formalization/lean/}.
+The entire Lean~4 project builds cleanly (\texttt{lake build}, 3,288~jobs) with
+zero \texttt{sorry} placeholders, and \texttt{\#print axioms} checks verify
+that all headline theorems depend exclusively on the standard Lean axioms
+\texttt{[propext, Classical.choice, Quot.sound]}.

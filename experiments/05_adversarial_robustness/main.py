@@ -77,11 +77,11 @@ DELTA_STAR = 2 * GAMMA / (1 + 2 * GAMMA)  # ~0.1667
 K_BINARY = [16, 64, 256, 1024]
 DELTA_BINARY = [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.45]
 
-# Part B config
-TAU_C_SCALAR = 0.5
-SIGMA2 = 0.1
+# Part B config (use non-degenerate TAU_C_SCALAR != 0.5 so adversaries N(1-tau_c) differ from honest N(tau_c))
+TAU_C_SCALAR = 0.8
+SIGMA2 = 0.04
 SIGMA = np.sqrt(SIGMA2)
-DELTA_SCALAR = [0, 0.05, 0.1, 0.2, 0.3, 0.45]
+DELTA_SCALAR = [0, 0.05, 0.1, 0.15, 0.2, 0.3, 0.45]
 
 # ---------------------------------------------------------------------------
 # Output directories

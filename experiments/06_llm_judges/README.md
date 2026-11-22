@@ -1,5 +1,7 @@
 # Experiment 06 — End-to-End Scaling Law with LLM Judges (Optional)
 
+**As of 11-21-2026:** `experiments/06_llm_judges/main.py` remains a historical synthetic Gaussian simulation. Real LLM-as-judge validation (on `SummEval` `1,600` summaries x `224` reference-free judge outputs and `LMSYS MT-Bench` `3,355` human + `2,400` GPT-4 pairwise judgments) is implemented in [`experiments/13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026/`](../13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026/).
+
 **Tests:** All theorems on real data
 
 ## Purpose

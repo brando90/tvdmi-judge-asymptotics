@@ -23,7 +23,7 @@ from datetime import datetime
 # ---------------------------------------------------------------------------
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from utils import (
-    fit_power_law,
+    compute_local_elasticity,
     COLORS,
     K_SWEEP,
 )
@@ -157,30 +157,24 @@ def rmse_theory(K, rho):
 fitted_rows = []
 for rho in RHO_VALUES:
     rmse_vals = results_dict[rho]
-    if rho == 0:
-        # Use all K values for the fit
-        K_fit = K_SWEEP
-        rmse_fit = rmse_vals
-    else:
-        # Use first 8 K values (or fewer if K_SWEEP is shorter)
-        n_fit = min(8, len(K_SWEEP))
-        K_fit = K_SWEEP[:n_fit]
-        rmse_fit = rmse_vals[:n_fit]
-
-    alpha_hat, a, b, R2 = fit_power_law(K_fit, rmse_fit)
+    # Measure exact unclipped local log-log elasticity across K in [16, 256]
+    # instead of free-offset power-law fitting (which fits the 1/K remainder toward 1.0).
+    alpha_hat = compute_local_elasticity(K_SWEEP, rmse_vals, k_lo=16, k_hi=256)
+    theory_vals = [rmse_theory(K, rho) for K in K_SWEEP]
+    alpha_theory = compute_local_elasticity(K_SWEEP, theory_vals, k_lo=16, k_hi=256)
     fitted_rows.append({
         "rho": rho,
         "alpha_hat": alpha_hat,
-        "R2": R2,
+        "alpha_theory": alpha_theory,
         "floor_theory": np.sqrt(SIGMA2 * rho),
     })
-    print(f"rho={rho:.2f}: alpha_hat={alpha_hat:.4f}, R^2={R2:.4f}, "
-          f"floor_theory={np.sqrt(SIGMA2 * rho):.4f}")
+    print(f"rho={rho:.2f}: local_elasticity_16_256={alpha_hat:.4f} "
+          f"(theory={alpha_theory:.4f}), floor_theory={np.sqrt(SIGMA2 * rho):.4f}")
 
 # Save CSV
 csv_path = os.path.join(RESULTS_DIR, "exp4_fitted_exponents.csv")
 with open(csv_path, "w", newline="") as f:
-    writer = csv.DictWriter(f, fieldnames=["rho", "alpha_hat", "R2",
+    writer = csv.DictWriter(f, fieldnames=["rho", "alpha_hat", "alpha_theory",
                                            "floor_theory"])
     writer.writeheader()
     writer.writerows(fitted_rows)
@@ -189,9 +183,9 @@ print(f"Saved fitted exponents to {csv_path}")
 # Log fitted exponents table to W&B
 try:
     if wandb_run is not None:
-        table = wandb.Table(columns=["rho", "alpha_hat", "R2", "floor_theory"])
+        table = wandb.Table(columns=["rho", "alpha_hat", "alpha_theory", "floor_theory"])
         for row in fitted_rows:
-            table.add_data(row["rho"], row["alpha_hat"], row["R2"],
+            table.add_data(row["rho"], row["alpha_hat"], row["alpha_theory"],
                            row["floor_theory"])
         wandb.log({"fitted_exponents": table})
 except Exception as e:
@@ -322,11 +316,11 @@ try:
                 caption="Fitted power-law exponent alpha_hat vs rho.",
             ),
             wr.H2("Exponent Table"),
-            wr.P("| rho | alpha_hat | R^2 | floor_theory |\n"
-                  "|-----|-----------|------|--------------|\n" +
+            wr.P("| rho | alpha_hat | alpha_theory | floor_theory |\n"
+                  "|-----|-----------|--------------|--------------|\n" +
                   "\n".join(
                       f"| {r['rho']} | {r['alpha_hat']:.4f} | "
-                      f"{r['R2']:.4f} | {r['floor_theory']:.4f} |"
+                      f"{r['alpha_theory']:.4f} | {r['floor_theory']:.4f} |"
                       for r in fitted_rows
                   )),
         ]
@@ -367,13 +361,13 @@ summary_lines = [
     "",
     "## Fitted Exponents",
     "",
-    "| rho | alpha_hat | R^2 | floor_theory |",
-    "|-----|-----------|------|--------------|",
+    "| rho | alpha_hat | alpha_theory | floor_theory |",
+    "|-----|-----------|--------------|--------------|",
 ]
 for r in fitted_rows:
     summary_lines.append(
         f"| {r['rho']} | {r['alpha_hat']:.4f} | "
-        f"{r['R2']:.4f} | {r['floor_theory']:.4f} |"
+        f"{r['alpha_theory']:.4f} | {r['floor_theory']:.4f} |"
     )
 summary_lines += [
     "",

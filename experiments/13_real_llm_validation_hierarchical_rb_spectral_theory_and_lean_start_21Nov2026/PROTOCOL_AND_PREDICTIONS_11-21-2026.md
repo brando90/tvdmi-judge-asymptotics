@@ -1,0 +1,31 @@
+# Protocol & Pre-Registered Predictions: Experiment 13 — Real-LLM Validation, Hierarchical Redundancy-Balanced Spectral TVD-MI, and Lean 4 Verification (11-21-2026)
+
+Date: 11-21-2026
+
+**Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026/PROTOCOL_AND_PREDICTIONS_11-21-2026.md>
+
+**TLDR:** Pre-registered evaluation contract (`11-21-2026`) before running real-LLM tests on cached `SummEval` (`1,600` summaries x `224` reference-free judge outputs) and `LMSYS MT-Bench` (`3,355` human + `2,400` GPT-4 pairwise judgments), explicitly predicting where naive prompt-response TVD-MI, majority vote, and naive spectral SVD fail and how Cross-Fitted Redundancy-Balanced Spectral Peer TVD-MI (`RB-Spec TVD-MI`) should behave.
+
+---
+
+## 1. Hypotheses Tested (Falsification & Publishable Positive Result)
+
+1. **H1 (Bijection & Length Falsification on Real Text):** On real `SummEval` news articles and summaries, unconditional prompt–response TF-IDF TVD-MI will rank **verbatim article copying** (`Y = X`, zero human summarization merit) strictly above every real candidate system, and uncentered raw score averaging will be shifted by **additive item leniency / verbosity** (`b(Y)`). Double-centered contrast (`h(X,Y) - E_Y[h] - E_X[h] + E[h]`, operationalized via within-prompt centering plus standardization) and cross-family peer contrast reject verbatim prompt copying and are invariant to any additive prompt/verbosity shift.
+2. **H2 (Within-Family Saturation vs. Cross-Family Diversity):** On real `SummEval`, repeated stochastic GPT-4 calls (`K = 20`) and prompt-template perturbations of BARTScore (`K = 70`) will exhibit high positive pairwise residual error correlation (`rho ~ 0.70–1.00`), causing simple ensemble accuracy to saturate by `K ~ 8`, whereas combining distinct model families (`GPT-4`, `BART-large`, `BART-para`, `BART-CNN`, `PRISM`) reduces residual correlation (`rho ~ 0.40–0.50`) and strictly improves held-out correlation over every single family.
+3. **H3 (Clone-Hijacking Falsification & `RB-Spec TVD-MI` Recovery — Headline Positive Contribution):**
+   - *Falsification of naive `K -> infty` claims:* Flooding a heterogeneous panel of `4` GPT-4 judges with `M` cloned prompt-variants (`M = 2..64`) of a weaker Seq2Seq judge breaks **Uniform Mean**, **Itemwise Median**, and **Naive Rank-1 SVD** (causing system-level and item-level correlation to *decrease* with `K`, violating Theorem 2 / Proposition 5's `1/K` intuition).
+   - *Positive Result (`RB-Spec TVD-MI`):* Unsupervised column collinearity-mass deweighting (`m_j = sum_{j'} |R_{jj'}|^6`, column weight `m_j^{-1/2}` inside within-prompt centered SVD, fitted strictly on held-out training articles with zero human labels) preserves cross-family `1/F` scaling across `M = 0..64` clones, survives up to `44%` sign-flipped adversarial judges on held-out `SummEval`, and outperforms Uniform Mean / Majority Vote / Naive SVD on the wild mixed `MT-Bench` pairwise panel (`80` questions, `6` LLMs).
+4. **H4 (Split-Sample Null Debiasing & Nitzan–Paroush Cost Frontier):** Selecting the maximum-spread witness critic in-sample inflates zero-signal article-permutation null TVD-MI upward (`> +0.10`), whereas disjoint split-sample selection eliminates null bias (`~ 0`). Under unequal API costs (`c_GPT4 / c_Seq2Seq = 20`), Nitzan–Paroush inverse-variance competence weighting dominates uniform averaging at fixed dollar budgets.
+
+---
+
+## 2. Pre-Registered Measurement Contract & Expected Ranges
+
+| Probe / Regime | Target Metric | Exact Code Path | Predicted Oracle / Human Ceiling | Predicted Intended System / Estimator | Predicted Literal Compliance | Predicted Degenerate Control |
+|---|---|---|---|---|---|---|
+| `SummEval` Leave-One-Expert-Out | Spearman / Pearson vs other 2 experts | `Module 1` (`model_annotations.aligned.jsonl`) | Item `r ~ 0.60–0.85` (1 rater vs 2) | Ensemble approaches item `0.62–0.66`, sys `0.95+` | Honest parseable 1–5 ratings (valid >99%) | Shuffled article pairing gives Spearman `~ 0.0` |
+| `SummEval` Verbatim Copy & Swap Controls | Prompt TVD-MI vs Peer / Centered TVD-MI | `Module 2` (`TfidfVectorizer` on `X_docs, Y_cand`) | Best human/top system `M22`: Peer > Prompt-Copy | Real summaries beat cross-article swap (`~ 0`) | Summarizer following brevity prompt loses to `Y=X` on raw Prompt TVD | Verbatim copy `Y = X` scores `~ 0.485` (> max real system `~ 0.328`) on Prompt TVD; additive shift changes raw mean but leaves double-centered contrast unchanged (`0.000` delta) |
+| `SummEval` 50/50 Article Splits (`200` splits, `$0` human labels used in fitting) | Item Spearman/Kendall/Pearson, 16-Sys Spearman, `ICC(A,1)`, `MAE`, Mean Bias (`judge - human`), paired Wilcoxon vs Uniform Mean | `Module 4` (`run_real_llm_and_theory_suite.py`) | Leave-one-expert-out ceiling on `[1,5]` | Clean (`K=13`): `RB-Spec` sys Spearman `>= 0.88`, item `>= 0.60`; Cloned (`4 GPT-4 + 64 BART`): Naive SVD & Mean drop toward BART (`sys ~ 0.78–0.82`), while `RB-Spec` holds `>= 0.90+`; Wild/Adv (`delta=0.33`): Mean collapses, `RB-Spec` retains `sys >= 0.88` | Single honest judge maintains positive correlation unless inverted | Pure uniform noise (`6` judges) gets ~0 SVD loading; cross-article shuffle collapses correlation to `~ 0` |
+| `LMSYS MT-Bench` 40/40 Question Splits (`200` splits, `80` questions, `6` LLMs) | Pairwise Accuracy (non-tie human pairs) & 6-LLM Bradley–Terry Spearman | `Module 5` (`human.parquet`, `gpt4.parquet`) | Inter-human pairwise agreement ~`0.78–0.85` | Mixed messy panel (`GPT-4 + semantic overlap + 10 verbosity clones + 3 sign-flip adversaries`): Majority & Uniform Mean fall toward verbosity/random (`acc ~ 0.55–0.70`), `RB-Spec` recovers GPT-4/semantic direction (`acc >= 0.78`, `p-val < 1e-10`) | GPT-4 tie-aware comparison matches human ties | Length-only clone votes blindly for longer response (`acc ~ 0.55–0.62`); sign-flip adversary gets `< 0.30` |
+
+**Fail-fast audit criteria:** Verify zero access to human ratings during unsupervised judge weight fitting (`counts` and `H_4` never enter `fit_rb_spec` or any baseline aggregator). Check `1` single traced item (`results/trace_one_item.json`) byte-for-byte before interpreting aggregate scores.

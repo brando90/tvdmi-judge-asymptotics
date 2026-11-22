@@ -1,7 +1,7 @@
 """Experiment 01 — Random-Witness Scaling Law.
 
 Tests Theorem 1: when judges are random witnesses with quality distribution
-Beta(alpha_shape, 1), the best-of-K gap scales as O_p(K^{-1/beta}).
+Beta(1, beta) (so P(Q >= 1 - u) = u^beta), the best-of-K gap scales as O_p(K^{-1/beta}).
 
 See README.md for full specification.
 """
@@ -24,7 +24,7 @@ from utils import (
     optimal_critic,
     make_joint_distribution,
     compute_delta,
-    fit_power_law,
+    fit_loglog_power_law,
     COLORS,
     K_SWEEP,
     N_REPS,
@@ -122,7 +122,7 @@ except Exception as e:
 results_dict = {}
 
 for beta in BETA_VALUES:
-    alpha_shape = beta  # Beta(alpha_shape, 1) has CDF F(q)=q^alpha_shape
+    # Beta(1, beta) gives P(Q >= 1 - u) = u^beta, yielding asymptotic E[gap] = Theta(K^{-1/beta}).
     mean_gaps = []
     std_gaps = []
 
@@ -130,8 +130,8 @@ for beta in BETA_VALUES:
         gaps = np.empty(N_REPS)
 
         for rep in range(N_REPS):
-            # Draw K quality values
-            q_vals = np.random.beta(alpha_shape, 1, size=K)
+            # Draw K quality values from Beta(1, beta)
+            q_vals = np.random.beta(1.0, beta, size=K)
 
             # Compute delta for each judge
             deltas = np.empty(K)
@@ -169,7 +169,7 @@ fitted_rows = []
 for beta in BETA_VALUES:
     alpha_pred = 1.0 / beta
     mean_gaps = results_dict[beta]["mean_gap"]
-    alpha_fitted, a, b, R2 = fit_power_law(K_SWEEP, mean_gaps)
+    alpha_fitted, a, b, R2 = fit_loglog_power_law(K_SWEEP, mean_gaps, k_min=8)
     fitted_rows.append({
         "beta": beta,
         "alpha_predicted": alpha_pred,

@@ -51,6 +51,14 @@
 \newcommand{\cU}{\mathcal{U}}
 \newcommand{\cV}{\mathcal{V}}
 
+% Trigger Rule 89: toggle between venue submission (main.pdf, no-supp) and arXiv (main_arxiv.pdf, with-supp).
+\newif\ifsupplementary
+\ifdefined\withsupplementary
+  \supplementarytrue
+\else
+  \supplementaryfalse
+\fi
+
 % --- Author comment macros ---
 \newcommand{\bmg}[1]{\textcolor{orange}{\textbf{[Brando: #1]}}}
 
@@ -69,21 +77,34 @@ with TVD-MI Judge Ensembles}
 \maketitle
 
 \begin{abstract}
-We study the asymptotic behavior of reference-free evaluation with ensembles of
-TVD-MI judges. Each judge is modeled as a stochastic critic for the binary
-hypothesis test distinguishing joint from product distributions. We prove two
-complementary judge-scaling results. In a \emph{coverage regime}, where judges
-are random witnesses drawn from a critic distribution, the best-of-$K$ ensemble
-converges to the optimal TVD witness at a rate controlled by the near-optimal
-witness mass. In a \emph{consensus regime}, where judges are independently
-better than chance relative to the Bayes critic, majority vote converges
-exponentially fast to the optimal critic. Combining these with bounded-score
-concentration yields a two-axis error decomposition in judge count~$K$ and
-per-judge sample size~$n$. We further show that residual judge dependence
-induces an irreducible variance floor, and adversarial contamination induces an
-unavoidable additive bias. Under a monotone validity link between TVD-MI and an
-inaccessible gold metric, these results imply asymptotic rank consistency with
-gold evaluation. All core results are formally verified in Lean~4 with Mathlib.
+We study the asymptotic and finite-sample behavior of reference-free evaluation
+with ensembles of Total Variation Distance--Mutual Information (TVD-MI) judges.
+Each judge is modeled as a bounded witness critic distinguishing joint from
+product distributions. Under independent critics, random-witness best-of-$K$
+converges at rate $O_p(K^{-1/\beta})$, consensus majority vote converges at
+rate $2e^{-2K\gamma_0^2}$, and disjoint split-sample cross-fitting eliminates
+finite-sample winner's-curse inflation while yielding an interior
+compute-optimal judge allocation $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$.
+Crucially, we establish three failure mechanisms of naive TVD-MI ensembles:
+(i)~unconditional prompt--response TVD-MI is blind to injective prompt-copying
+($\mathrm{TV} = 1 - \sum_x P_X(x)^2$) and label inversions, whereas
+double-centered oriented conditional peer TVD-MI is invariant to additive
+prompt and verbosity shifts and restores rank monotonicity; (ii)~hierarchical
+clone correlation violates naive $K^{-1}$ variance scaling, allowing redundant
+judge clones to hijack linear averages, itemwise medians, and naive SVD; and
+(iii)~correlated latent confounders lock uncalibrated consensus error above zero.
+We introduce \emph{Redundancy-Balanced Spectral Peer TVD-MI} (\texttt{RB-Spec TVD-MI}),
+which balances collinear judge families unsupervised and achieves family-level
+$1/F$ error scaling and effective-family adversarial resilience up to
+$\delta_{\mathrm{fam}} < 1/2$. Across held-out evaluations on \textsc{SummEval}
+(1,600 summaries across 100 articles) and \textsc{MT-Bench} (2,575 human
+pairwise judgments across 80 questions), \texttt{RB-Spec TVD-MI} resists
+64-clone hijacking and 66.7\% cloned adversaries where uniform averaging,
+medians, and naive SVD degrade or invert. Forty-three theorems (28 core
+asymptotic/algebraic theorems plus 15 new theorems across finite-alphabet
+variational duality, double-centering invariance, clone-hijacking recovery,
+and optimal weights) are formally verified in Lean~4 with Mathlib without
+placeholders.
 \end{abstract}
 
 \input{01_introduction}
@@ -111,6 +132,10 @@ gold evaluation. All core results are formally verified in Lean~4 with Mathlib.
 \input{98_appendix_proofs}
 \input{98_appendix_experiments}
 \input{99_neurips_paper_checklist}
+\ifsupplementary
+\clearpage
+\input{99_supplementary}
+\fi
 \clearpage
 
 \end{document}

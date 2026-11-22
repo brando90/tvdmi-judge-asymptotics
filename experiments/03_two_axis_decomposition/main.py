@@ -1,13 +1,11 @@
 """Experiment 03 — Two-Axis Decomposition (K x n).
 
-Tests Theorem 3: the error decomposes into judge approximation error
-(controlled by K) and finite-sample estimation error (controlled by n).
+Tests Theorem 3 / Theorem 3' (split-sample): with n joint and n product
+samples per split, Hoeffding gives 2K * exp(-n_sel * eta^2), and disjoint
+split-sample evaluation eliminates in-sample maximization bias:
 
-    Pr(tau(c) - max_{j<=K} Delta_hat_c(h_j) > eps + eta)
-        <= exp(-K * p_eps) + 2K * exp(-2n * eta^2)
-
-Sweeps over a (K, n) grid and records the mean gap between the true
-population-level TVD critic value and the empirical max across judges.
+    Pr(|tau_hat_split - tau(c)| > eps + 2*eta_sel + eta_eval)
+        <= exp(-K * p_eps) + 2K * exp(-n_sel * eta_sel^2) + 2 * exp(-n_eval * eta_eval^2)
 """
 
 import os
@@ -134,20 +132,25 @@ def run_experiment():
                 qualities = np.random.beta(ALPHA_SHAPE, BETA_PARAM, size=K)
                 judges = [generate_noisy_critic(h_star, q, D) for q in qualities]
 
-                # for each judge, estimate delta_hat from n samples
-                delta_hats = np.zeros(K)
+                # Split-sample cross-fitting (n_sel + n_eval = n) eliminates winner's-curse bias
+                n_sel = max(1, n // 2)
+                n_eval = max(1, n - n_sel)
+                delta_sel = np.zeros(K)
                 for j_idx, h_j in enumerate(judges):
-                    # positive samples from P_UV
-                    u_pos, v_pos = sample_from_joint(P_UV, n, D)
-                    # negative samples from P_U x P_V
-                    u_neg, v_neg = sample_from_product(P_U, P_V, n)
-                    # empirical delta estimate
-                    delta_hats[j_idx] = (
+                    u_pos, v_pos = sample_from_joint(P_UV, n_sel, D)
+                    u_neg, v_neg = sample_from_product(P_U, P_V, n_sel)
+                    delta_sel[j_idx] = (
                         np.mean(h_j[u_pos, v_pos]) - np.mean(h_j[u_neg, v_neg])
                     )
 
-                tau_hat = np.max(delta_hats)
-                gaps[rep] = max(0.0, tau_c_critic - tau_hat)
+                j_star = int(np.argmax(delta_sel))
+                u_ev_p, v_ev_p = sample_from_joint(P_UV, n_eval, D)
+                u_ev_n, v_ev_n = sample_from_product(P_U, P_V, n_eval)
+                tau_hat_split = (
+                    np.mean(judges[j_star][u_ev_p, v_ev_p])
+                    - np.mean(judges[j_star][u_ev_n, v_ev_n])
+                )
+                gaps[rep] = abs(tau_c_critic - tau_hat_split)
 
             mean_gap = np.mean(gaps)
             gap_matrix[ki, ni] = mean_gap

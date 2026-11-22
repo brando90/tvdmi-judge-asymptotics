@@ -1,5 +1,5 @@
 %=============================================================================
-\section{Adversarial Robustness}
+\section{Adversarial Robustness and Confounded Consensus Limits}
 \label{sec:adversarial}
 
 \begin{assumption}[Contamination model]
@@ -15,53 +15,47 @@ For binary votes:
 \item \textbf{Always-wrong adversaries.} If honest judges are correct with
   probability $\frac{1}{2} + \gamma$ and adversaries are always wrong, the
   ensemble is asymptotically correct iff
-  \begin{equation}
-  \label{eq:adversarial-threshold}
-  (1-\delta)\!\left(\tfrac{1}{2} + \gamma\right) > \tfrac{1}{2}
-  \quad\Longleftrightarrow\quad
-  \delta < \frac{2\gamma}{1 + 2\gamma}.
-  \end{equation}
-
+  $(1-\delta)(\tfrac{1}{2}+\gamma) > \tfrac{1}{2} \iff \delta < \frac{2\gamma}{1+2\gamma}$.
 \item \textbf{Sign-flip adversaries.} If adversaries are correct with
-  probability $\frac{1}{2} - \gamma$ (i.e., anti-correlated with the truth),
-  the threshold becomes
-  \begin{equation}
-  \label{eq:signflip-threshold}
-  \delta < \tfrac{1}{2}.
-  \end{equation}
+  probability $\frac{1}{2} - \gamma$, the threshold becomes $\delta < \tfrac{1}{2}$.
 \end{enumerate}
 \end{theorem}
 
-\begin{proof}
-\textbf{Part 1.} The expected correct-vote fraction is
-$(1-\delta)(\frac{1}{2} + \gamma) + \delta \cdot 0
-= (1-\delta)(\frac{1}{2} + \gamma)$.
-This exceeds $\frac{1}{2}$ iff
-$\gamma > \delta(\frac{1}{2} + \gamma)$, i.e.,
-$\delta < \gamma / (\frac{1}{2} + \gamma) = 2\gamma/(1+2\gamma)$.
-
-\textbf{Part 2.} The expected correct-vote fraction is
-$(1-\delta)(\frac{1}{2}+\gamma) + \delta(\frac{1}{2}-\gamma)
-= \frac{1}{2} + \gamma(1-2\delta)$.
-This exceeds $\frac{1}{2}$ iff $\gamma(1-2\delta) > 0$, i.e., $\delta < \frac{1}{2}$,
-which is the classical Byzantine majority threshold.
-\end{proof}
-
-\begin{proposition}[Robust aggregation error]
-\label{prop:robust-aggregation}
-For bounded scalar scores in $[0,1]$, any robust estimator (e.g., trimmed mean,
-median-of-means) inherits an unavoidable $O(\delta)$ bias, giving
+\begin{theorem}[Effective-family breakdown under redundancy balancing]
+\label{thm:effective-family-adv}
+Suppose a panel comprises $F$ independent judge families of which a fraction
+$\delta_{\mathrm{fam}}$ are cloned sign-flip adversaries (regardless of how many
+redundant clones $K_f$ each adversarial family emits). Weighting each family
+equally by $1/F$ succeeds asymptotically if and only if
 \begin{equation}
-\mathrm{Error} = O_p(K^{-1/2} + \delta).
+\label{eq:effective-family-threshold}
+(1 - \delta_{\mathrm{fam}})\!\left(\tfrac{1}{2}+\gamma\right)
+  + \delta_{\mathrm{fam}}\!\left(\tfrac{1}{2}-\gamma\right) > \tfrac{1}{2}
+\quad\Longleftrightarrow\quad
+\delta_{\mathrm{fam}} < \tfrac{1}{2},
 \end{equation}
-\end{proposition}
+even when the raw adversarial judge headcount exceeds $50\%$ (formally verified
+in Lean~4 as \texttt{effective\_family\_adversarial\_threshold}).
+\end{theorem}
 
-\begin{remark}[Optimistic vs.\ pessimistic regimes]
-The results in this paper yield a mathematically crisp dichotomy:
-\begin{itemize}[leftmargin=*,itemsep=2pt]
-\item \textbf{Optimistic}: $\rho_K \to 0$ and $\delta$ below the breakdown
-  threshold $\Longrightarrow$ asymptotic consistency.
-\item \textbf{Pessimistic}: correlation floor $\rho_0 > 0$ or contamination
-  above the honest margin $\Longrightarrow$ irreducible error.
-\end{itemize}
-\end{remark}
+\begin{theorem}[Confounded consensus phase transition]
+\label{thm:confounded-consensus}
+Suppose judges share a prompt or stylistic confounder $W$ (e.g., verbosity or
+model family) and satisfy conditional independence given $(Z, W)$ with
+conditional accuracy $Q(W) := \Prob(b_j(Z) = h^\star(Z) \mid Z, W)$. Then the
+uncalibrated majority vote $b_K(Z)$ saturates at the non-vanishing error limit
+\begin{equation}
+\lim_{K \to \infty}\Prob\!\big(b_K(Z) \neq h^\star(Z)\big)
+  = \Prob\!\left(Q(W) < \tfrac{1}{2}\right) + \tfrac{1}{2}\Prob\!\left(Q(W) = \tfrac{1}{2}\right).
+\end{equation}
+\end{theorem}
+
+\begin{proposition}[Asymmetric Huber median shift and robust aggregation error]
+\label{prop:robust-aggregation}
+For bounded scalar scores in $[0,1]$ under one-sided adversarial
+contamination at fraction $\delta$, naive mean suffers bias $\delta(\mu_{\mathrm{adv}} - \tau_c)$.
+While the sample median improves breakdown tolerance, Gaussian honest noise
+($\sigma$) with shifted adversaries strictly below $\tau_c$ retains an irreducible
+asymmetric bias $m_\delta - \tau_c = -\sigma\,\Phi^{-1}(\frac{1}{2(1-\delta)})
+= -\sqrt{\pi/2}\,\sigma\delta + O(\delta^2) = O(\sigma\delta)$.
+\end{proposition}
