@@ -28,8 +28,10 @@ True cross-company 3-stage sequential Mega Quality Assurance (`OpenAI Codex -> A
   - `experiments/17_cross_company_mega_qa_and_collaborator_brief_start_23Nov2026/TVDMI_SUMMARY_SLIDE_11-23-2026.pdf`: `1` page (`0` warnings/overfulls, `94,440` bytes).
 - **Hygiene, Diff & Security Scans:** `0` temporary `.aux/.log/.nav/.out/.snm/.toc/.vrb/.bbl/.blg/.pyc/.fls/.fdb_latexmk` files or `__pycache__` dirs; `git -c core.whitespace=cr-at-eol diff --check` passed on both `cb2a2c0` and `7ea00af`; `0` secret regex hits; `0` Rule-91 forbidden characters across HTML companions and the email brief.
 
-## 4. External Artifacts & Pending Dispatch
+## 4. External Artifacts & Dispatch Outcomes
 
-- **`collaborators.py` (`~/ultimate-utils`):** Added `hbosch@stanford.edu`, `"Henry B"`, and `"Stanford"` for `Henry Bosch` via detached worktree and pushed to `brando90/ultimate-utils` (`8b8246b`); `resolve("Henry B")` verified.
-- **`~/agent-sync/coding/log.md`:** Surgically removed Stage 1 Codex's premature unstaged line while preserving all other concurrent writers' unstaged edits; clean Experiment 17 entry to be committed via detached worktree once `tvdmi-judge-asymptotics` lands on `origin/main`.
-- **Next Action:** Stage all modified files (including `experiments/13_.../mtbench_features.py`) + Experiment 17 docs, rebase/push to `origin/main`, verify HTTP `200` on GitHub links, push `~/agent-sync` entry, and dispatch email to `Sanmi Koyejo <sanmi@stanford.edu>` and `Henry Bosch <hbosch@stanford.edu>` (`BCC: brando.science@gmail.com`) plus internal Rule 14 receipt.
+- **`collaborators.py` (`~/ultimate-utils`):** Added `hbosch@stanford.edu`, `"Henry B"`, and `"Stanford"` for `Henry Bosch` (`8b8246b`) and added `"Ethan H"` alias to `Ethan Hersch` (`ehersch@stanford.edu`, `3171bb8`) via detached worktrees on `brando90/ultimate-utils`; `resolve("Henry B")` and `resolve("Ethan H")` verified.
+- **`tvdmi-judge-asymptotics` & `~/agent-sync`:** Pushed `12c0771` to `origin/main` (HTTP `200` confirmed on all 4 linked GitHub URLs); surgically removed Stage 1 Codex's premature unstaged line from `~/agent-sync/coding/log.md` preserving concurrent entries, and logged Exp 17 via detached worktree (`8bb650b`).
+- **Dispatched Collaborator Emails (plus internal Rule 14 receipts to `brando.science@gmail.com`):**
+  - `Sanmi Koyejo <sanmi@stanford.edu>, Henry Bosch <hbosch@stanford.edu>` (`BCC: brando.science@gmail.com`), attachments `TVDMI_SUMMARY_SLIDE_11-23-2026.pdf` + `main_arxiv.pdf`: `Message-ID=<179546458245.60794.7492552956154424024@gmail.com>` (Rule 14 receipt `<179546458246.60794.14250693798573697056@gmail.com>`).
+  - Follow-up `Ethan Hersch <ehersch@stanford.edu>` (`BCC: brando.science@gmail.com`, standalone without duplicate send to Sanmi/Henry), attachments `TVDMI_SUMMARY_SLIDE_11-23-2026.pdf` + `main_arxiv.pdf`: `Message-ID=<179546477648.61503.14514811252898834304@gmail.com>` (Rule 14 receipt `<179546477648.61503.4577546329141733005@gmail.com>`).
