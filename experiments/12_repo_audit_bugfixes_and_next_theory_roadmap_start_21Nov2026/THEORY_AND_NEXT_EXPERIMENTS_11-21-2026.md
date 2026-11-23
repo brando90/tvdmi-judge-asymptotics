@@ -65,7 +65,7 @@ $$\alpha_{\mathrm{eff}}(K) := -\frac{d \log \mathrm{RMSE}}{d \log K} = \frac{1 -
 
 Under asymmetric contamination ($\tau_c = 0.80, \mu_{\mathrm{adv}} = 0.20 < \tau_c, \sigma = 0.20, \delta = 0.15$), simple mean suffers bias $\delta(\mu_{\mathrm{adv}} - \tau_c) \approx -0.0861$, while the large-$K$ unclipped sample median bias is:
 
-$$m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right) = -\sqrt{\frac{\pi}{2}}\,\frac{\sigma\delta}{2} + O(\delta^2) \approx -0.0446 \quad (\text{clipped measured } -0.0289).$$
+$$m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right) = -\sqrt{\frac{\pi}{2}}\,\sigma\delta + O(\delta^2) \approx -0.0446 \quad (\text{clipped measured } -0.0289).$$
 
 ### 2.4 New Theorems Recommended for the Paper
 

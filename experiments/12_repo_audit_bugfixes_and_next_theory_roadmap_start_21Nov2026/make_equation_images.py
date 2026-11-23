@@ -42,7 +42,7 @@ n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}}, \qquad
 \mathrm{Bias}\!\left(\bar S_K\right) = \delta\left(\mu_{\mathrm{adv}} - \tau(c)\right), \\
 \mathrm{Bias}\!\left(\mathrm{Med}(S_{1:K})\right)
 \xrightarrow{K\to\infty} -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right)
-= -\sqrt{\frac{\pi}{2}}\,\frac{\sigma\,\delta}{2} + O(\delta^2) \quad (\mu_{\mathrm{adv}} \ll \tau(c))
+= -\sqrt{\frac{\pi}{2}}\,\sigma\,\delta + O(\delta^2) \quad (\mu_{\mathrm{adv}} \ll \tau(c))
 """,
     "eq06_bijection_peer_recovery": r"""
 \mathrm{TV}\!\left(P_{X, f(X)},\, P_X \otimes P_{f(X)}\right) = 1 - \sum_y P_Y(y)^2, \\

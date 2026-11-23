@@ -9,7 +9,6 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
-import os
 import pickle
 import re
 import time
@@ -778,7 +777,6 @@ def module5_mt_bench_pairwise(rng: np.random.Generator) -> dict:
         te_mask = np.isin(q_ids, q_te)
         tr_mask = ~te_mask
         X_tr, X_te = X_raw[tr_mask], X_raw[te_mask]
-        sd = np.maximum(X_tr.std(axis=0), 1e-8)
         # Note: pairwise differences naturally center around 0 under symmetry; scale by train RMS
         rms = np.maximum(np.sqrt(np.mean(X_tr ** 2, axis=0)), 1e-8)
         Z_tr = X_tr / rms

@@ -32,7 +32,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from utils import (  # noqa: E402
     COLORS,
     compute_delta,
-    compute_true_tvd,
     fit_power_law,
     make_joint_distribution,
     optimal_critic,
@@ -167,7 +166,7 @@ def run_check_a() -> Dict:
             "Systematic Inverter (g=0.00)": (y_invert, y_invert, True),
         }
 
-        for name, (y_raw, y_bin, is_valid_task_space) in cands_raw.items():
+        for name, (y_raw, y_bin, _) in cands_raw.items():
             # Empirical prompt-response TVD plug-in on joint (X, Y_raw)
             if name == "Prompt-Copier Y=X (g=0.00)":
                 # 20 x 20 joint contingency
@@ -186,9 +185,6 @@ def run_check_a() -> Dict:
             peer_signed = np.empty(k_peers)
             for j in range(k_peers):
                 wj = w_peers[j]
-                if not is_valid_task_space:
-                    # Prompt copier fails task-format parse / carries zero task answer beyond chance
-                    pass
                 p_vw = np.zeros((2, 2))
                 np.add.at(p_vw, (y_bin, wj), 1.0 / n_items)
                 p_ind_vw = np.outer(p_vw.sum(axis=1), p_vw.sum(axis=0))
@@ -567,9 +563,8 @@ def run_check_d() -> Dict:
         # Note clipping at [0,1] slightly shifts honest mean below tau_c=0.80
         # Let's compute exact E[clip(N(tau_c, sigma^2), 0, 1)] by MC with 200k draws
         honest_pop = np.clip(rng.normal(tau_c, sigma, size=200000), 0.0, 1.0)
-        adv_pop = np.clip(rng.normal(mu_adv, sigma, size=200000), 0.0, 1.0)
+        _ = np.clip(rng.normal(mu_adv, sigma, size=200000), 0.0, 1.0)
         honest_mean_clipped = float(honest_pop.mean())
-        adv_mean_clipped = float(adv_pop.mean())
         # Analytical asymptotic unclipped Huber median shift for one-sided extreme shift:
         # (1-delta)*Phi((m - tau)/sigma) = 1/2 => m = tau + sigma * Phi^{-1}(0.5/(1-delta)) (if adv < tau, -shift)
         # For Gaussian shifted opposite, sign is minus:

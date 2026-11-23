@@ -32,6 +32,7 @@
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
+\emergencystretch=1.5em
 
 \begin{document}
 
@@ -53,7 +54,7 @@
 \item \textbf{Unconditional prompt--response TVD-MI is blind to bijections and label inversions.} Because $\TV(P_{X,Y}, P_X \otimes P_Y)$ maximizes over \emph{all} bounded critics $h:\cU\times\cV\to[0,1]$, it measures mutual dependence rather than task correctness. Any deterministic injection (including copying the prompt $Y = X$ or systematically inverting the binary answer $Y = 1 - Z^\star(X)$) achieves maximal or near-maximal TVD-MI while attaining $0\%$ gold task accuracy (Section~\ref{sec:bijection}, Check~A).
 \item \textbf{Naive empirical best-of-$K$ overfits finite samples $n$.} Maximizing an in-sample empirical gap $\max_{j \le K} \widehat{\Delta}_c(h_j)$ without sample splitting exhibits positive winner's-curse bias of order $+\Omega_p(\sqrt{(\log K)/n})$ even under the null $\tau(c)=0$. Experiment~03 and Experiment~11 clipped $\max(0, \tau(c) - \hat{\tau})$ and therefore hid this upward inflation (Section~\ref{sec:hoeffding_split}, Check~C).
 \item \textbf{Linear averaging is blind to shared judge bias and saturates at $\sigma\sqrt{\rho}$.} Equicorrelated scalar judges with pairwise error correlation $\rho > 0$ cannot be rescued by scaling $K \to \infty$ under any linear average; furthermore, the existing paper assumes conditional independence across judges in Theorem~2 (Consensus) and does not characterize the correlated-consensus threshold (Section~\ref{sec:confounded_consensus}).
-\item \textbf{Single-item median and trimmed mean retain $O(\sigma\delta)$ bias under asymmetric contamination.} Under one-sided Huber contamination $\delta$, static order statistics remove gross outliers only if the trimming fraction exceeds $\delta$ and still shift by $\approx -\sqrt{\pi/2}\,\sigma\delta/2$ for the sample median; cross-item Dawid--Skene / Item Response Theory (IRT) calibration across $n$ items is required to break the $O(\delta)$ single-item floor, and continuous cross-item IRT convergence rates remain \textbf{untested empirically} for continuous TVD-MI panels (Section~\ref{sec:adversarial_bias}).
+\item \textbf{Single-item median and trimmed mean retain $O(\sigma\delta)$ bias under asymmetric contamination.} Under one-sided Huber contamination $\delta$, static order statistics remove gross outliers only if the trimming fraction exceeds $\delta$ and still shift by $\approx -\sqrt{\pi/2}\,\sigma\delta$ for the sample median; cross-item Dawid--Skene / Item Response Theory (IRT) calibration across $n$ items is required to break the $O(\delta)$ single-item floor, and continuous cross-item IRT convergence rates remain \textbf{untested empirically} for continuous TVD-MI panels (Section~\ref{sec:adversarial_bias}).
 \item \textbf{Real LLM validation is currently synthetic-only.} \texttt{experiments/06\_llm\_judges/main.py} uses Gaussian noise around uniform gold scores with zero real LLM outputs; cross-domain real-LLM judge scaling curves remain \textbf{untested} inside this repository.
 \end{enumerate}
 
@@ -75,7 +76,7 @@ Unconditional prompt--response TVD-MI & Joint-vs-product dependence $\TV(P_{X,Y}
 \midrule
 Unsigned task-semantic peer TVD-MI & Alignment magnitude with latent task peer reports $W_j$ & Rejects prompt copy, but remains invariant under global label inversion & Derived (Sec.~\ref{sec:bijection}); measured in Check~A \\
 \midrule
-Oriented conditional peer TVD-MI ($\Delta^{\mathrm{orient}}_{c,j}$) & Signed agreement $(2q_j-1)(2p_c-1)\Var(Z^\star)$ & Fails if \emph{every} peer shares a prompt-copying artifact or anchor is absent & Derived (Sec.~\ref{sec:bijection}); measured in Check~A \\
+Oriented conditional peer TVD-MI ($\Delta^{\mathrm{orient}}_{c,j}$) & Signed agreement $2(2q_j-1)(2p_c-1)\Var(Z^\star)$ & Fails if \emph{every} peer shares a prompt-copying artifact or anchor is absent & Derived (Sec.~\ref{sec:bijection}); measured in Check~A \\
 \midrule
 Random-witness best-of-$K$ ($\mathrm{Beta}(1,\beta)$) & Approximates $\tau(c)$ at exact rate $\Theta(K^{-1/\beta})$ & Naive in-sample $\max$ inflates by $\sqrt{(\log K)/n}$ when $K \gg e^n$ & Fixed \& derived (Sec.~\ref{sec:beta_fix}); measured in Check~B \\
 \midrule
@@ -331,10 +332,10 @@ In Experiment~05B (\texttt{experiments/05\_adversarial\_robustness/main.py}, lin
 \item \textbf{Sample Median ($K \to \infty$):} The population median $m_\delta$ satisfies $F_\delta(m_\delta) = 1/2$. When $\mu_{\mathrm{adv}} \ll \tau_c$ so $F_{\mathrm{adv}}(m_\delta) \approx 1$, this becomes $(1 - \delta)\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) + \delta = \frac{1}{2}$, i.e.\ $\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) = \frac{1/2 - \delta}{1 - \delta} = 1 - \frac{1}{2(1-\delta)}$. Using $\Phi^{-1}(1 - p) = -\Phi^{-1}(p)$:
 \begin{equation}
 \boxed{m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right)
-= -\sqrt{\frac{\pi}{2}}\,\frac{\sigma\,\delta}{2} + O(\delta^2),}
+= -\sqrt{\frac{\pi}{2}}\,\sigma\,\delta + O(\delta^2),}
 \end{equation}
-where we used $\frac{d}{du}\Phi^{-1}(u)\big|_{u=1/2} = \frac{1}{\phi(0)} = \sqrt{2\pi}$ and $\frac{1}{2(1-\delta)} = \frac{1}{2} + \frac{\delta}{2} + O(\delta^2)$. Note this bias is \emph{nonzero} ($\approx -0.0446$ unclipped before accounting for truncation skew at $[0,1]$, measured $-0.0289~[-0.0297, -0.0282]$ at $K=1024$, outperforming Mean $-0.0861$, Wilcoxon $p = 1.26 \times 10^{-83}$).
-\item \textbf{Two-sided $\alpha_{\mathrm{trim}}$-Trimmed Mean:} If $\alpha_{\mathrm{trim}} < \delta$ (e.g.\ Experiment~05B's $10\%$ trim at $\delta = 0.15$), fraction $\delta - \alpha_{\mathrm{trim}} = 0.05$ of adversaries survives inside the kept $(1 - 2\alpha_{\mathrm{trim}}) = 0.80$ mass, yielding non-vanishing bias even if $\mu_{\mathrm{adv}} \to -\infty$ ($-0.0509$ measured at $K=1024$). Setting $\alpha_{\mathrm{trim}} > \delta$ ($20\%$ trim) removes all adversaries from the lower tail ($-0.0369$), leaving only asymmetric upper-tail winsorization/trimming shift.
+where we used $\frac{d}{du}\Phi^{-1}(u)\big|_{u=1/2} = \frac{1}{\phi(0)} = \sqrt{2\pi}$ and $\frac{1}{2(1-\delta)} = \frac{1}{2} + \frac{\delta}{2} + O(\delta^2)$. Note this bias is \emph{nonzero} ($\approx -0.0446$ unclipped before $[0,1]$ truncation skew, measured $-0.0289~[-0.0297, -0.0282]$ at $K=1024$, outperforming Mean $-0.0861$, Wilcoxon $p = 1.26 \times 10^{-83}$).
+\item \textbf{Two-sided $\alpha_{\mathrm{trim}}$-Trimmed Mean:} If $\alpha_{\mathrm{trim}} < \delta$ (e.g.\ Experiment~05B's $10\%$ trim at $\delta = 0.15$), fraction $\delta - \alpha_{\mathrm{trim}} = 0.05$ of adversaries survives inside the kept $(1 - 2\alpha_{\mathrm{trim}}) = 0.80$ mass, yielding non-vanishing bias even if $\mu_{\mathrm{adv}} \to -\infty$ ($-0.0509$ measured at $K=1024$). Setting $\alpha_{\mathrm{trim}} > \delta$ ($20\%$ trim) removes all adversaries from the lower tail ($-0.0369$), leaving only asymmetric upper-tail winsorization and trimming shift.
 \end{enumerate}
 
 % ============================================================================
@@ -426,7 +427,7 @@ In \path{experiments/00_lean_formalization/lean/TvdmiJudge/Basic.lean}, all 14 f
 \end{enumerate}
 
 % ============================================================================
-\section{Measured Verification Results and Ranked Next-Experiments Roadmap}
+\section{Measured Verification Results and Next-Experiments Roadmap}
 \label{sec:results_roadmap}
 
 \begin{figure}[t]

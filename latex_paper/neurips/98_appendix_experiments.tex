@@ -11,7 +11,7 @@ four subtle implementation defects alongside the factor-of-2 Hoeffding exponent
 in Theorem~\ref{thm:two-axis}. Table~\ref{tab:exp12-fixes} summarizes the verified
 500-repetition Monte Carlo reconciliations (95\% seed-bootstrap intervals):
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Summary of synthetic bugfixes verified in Experiment~12 (500~reps, $95\%$ seed-bootstrap CIs).}
 \label{tab:exp12-fixes}
@@ -39,7 +39,7 @@ uncalibrated severity offset ($-1.111$ vs.\ human mean $4.131$) degrades
 absolute $\mathrm{ICC(A,1)} = 0.351$, directly illustrating why absolute
 agreement checks must accompany correlation headlines.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Full \textsc{SummEval} 5-fold out-of-sample agreement ($N=100$ articles, $1,600$ summaries).}
 \label{tab:app-summeval-full}
@@ -72,11 +72,11 @@ $\mathrm{Spearman}=0.771$).
 
 % Provenance: experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/results/summary_metrics.json, summeval_calibration_curve.csv, rewardbench2_regimes.csv, confounder_sweep.csv, davis_kahan_curve.csv
 Figure~\ref{fig:exp14-overview} and Table~\ref{tab:app-exp14-main} summarize Experiment~14
-across $200$ 50/50 \textsc{SummEval} splits, $1,753$ deduplicated non-ties \textsc{RewardBench~2}
+across $200$ 50/50 \textsc{SummEval} splits, $1,753$ deduplicated non-tie \textsc{RewardBench~2}
 prompts ($27$ open-source reward models), universal cross-family length confounders,
 and $500$-repetition Davis--Kahan subspace convergence.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/exp14_calibration_rb2_and_confounders_6panel.pdf}
   \caption{\textbf{Experiment~14 empirical verification.}
@@ -88,7 +88,7 @@ and $500$-repetition Davis--Kahan subspace convergence.
   \label{fig:exp14-overview}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Experiment~14 summary across \textsc{SummEval} calibration ($200$ splits), \textsc{RewardBench~2} ($1,753$ prompts), and cross-family confounders ($c=2.0$).}
 \label{tab:app-exp14-main}
@@ -112,7 +112,7 @@ Task / Benchmark & Condition & Baseline / Uncalibrated & \texttt{RB-Spec} / \tex
 
 Across \textsc{RewardBench~2} ($1,753$ prompts), \textsc{JudgeBench} ($33$ official judges $\times$ $350$ pairs), \textsc{SummEval}, and \textsc{MT-Bench}, \texttt{SRB-Spec} closes clean-pool gaps via residual clone balancing and tempered precision weighting while preserving robustness to $32$-clone and inverted-polarity floods, verifying the $(1-r^2)c^2 v_W$ partial-proxy law and rank-$r$ ($r=1,2,3$) spectral guarantees.
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
   \includegraphics[width=\textwidth]{figures/exp15_srb_judgebench_proxies_and_multifactor_6panel.pdf}
   \caption{\textbf{Experiment~15 empirical verification.}
@@ -123,7 +123,7 @@ Across \textsc{RewardBench~2} ($1,753$ prompts), \textsc{JudgeBench} ($33$ offic
   \label{fig:exp15-overview}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Experiment~15 summary across \textsc{RewardBench~2}, \textsc{SummEval}, \textsc{MT-Bench}, $33$-judge \textsc{JudgeBench}, proxy sweeps, and rank-$r$ perturbation.}
 \label{tab:app-exp15-main}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mega QA Report: Full-Repo 3-Stage Sequential agy Audit (11-23-2026)</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 920px; margin: 40px auto; padding: 0 20px; line-height: 1.55; color: #1b1f23; }
+  h1, h2 { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; color: #0f2942; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; }
+  th, td { border: 1px solid #d0d7de; padding: 6px 10px; text-align: left; }
+  th { background: #f3f6fa; }
+  .note { background: #f6f8fa; border-left: 4px solid #0969da; padding: 10px 14px; margin: 16px 0; }
+  .fig-img { display: block; margin: 16px auto; max-width: 780px; width: 100%; border: 1px solid #d0d7de; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>Mega QA Report: Full-Repo 3-Stage Sequential agy Audit (11-23-2026)</h1>
+<p><strong>Date:</strong> 11-23-2026 | <strong>Authors:</strong> Brando Miranda and Sanmi Koyejo (Rylan Schaeffer co-authorship invite TODO) | <strong>Repository:</strong> brando90/tvdmi-judge-asymptotics</p>
+
+<div class="note">
+<strong>TLDR:</strong> Executed a 3-stage sequential <code>agy</code> Mega Quality Assurance (QA) chain over <code>tvdmi-judge-asymptotics</code> from base commit <code>cb2a2c0</code> through <code>a3583e7</code>. Anthropic models in <code>agy</code> (Claude Opus 5.5 and Claude Sonnet 5.5) hit HTTP 429 individual quota (resetting in roughly 59h 18m to 59h 43m), so Stages 1 and 3 ran in fresh contexts on <code>gemini-pro-orchestrator-neon</code> (recording missing cross-company diversity) and Stage 2 ran on <code>gemini-4-neon-xhigh</code> (xhigh). Stages 1 and 2 caught and fixed a factor-of-2 Huber median Taylor error, missing table factor 2, stale appendix Proposition proof, Exp 14 HTML link labels and subscript/superscript formatting, JudgeBench acknowledgments parity, LaTeX overfull/float warnings, and dead imports/temp files; Stage 3 returned PASS (0 critical, 0 major), and all deterministic orchestrator checks passed cleanly.
+</div>
+
+<h2>1. Sequential Stage Results (QA Base cb2a2c0 through a3583e7)</h2>
+<table>
+  <tr><th>Stage</th><th>Requested Model</th><th>Actual Executed Model and Fallback Note</th><th>Verdict</th><th>Counts (Critical / Major / Fixes / Structural)</th></tr>
+  <tr><td>Stage 1 (Clean-Eyes Pass 1)</td><td><code>claude-opus-5-5-high</code> (high)</td><td><code>gemini-pro-orchestrator-neon</code> (after Opus and Sonnet HTTP 429)</td><td>FIXED</td><td>0 / 4 / 9 / IMPROVED</td></tr>
+  <tr><td>Stage 2 (Builder Reconciliation)</td><td><code>gemini-4-neon-xhigh</code> (xhigh)</td><td><code>gemini-4-neon-xhigh</code> (xhigh)</td><td>FIXED</td><td>0 / 0 / 3 / PASS</td></tr>
+  <tr><td>Stage 3 (Clean-Eyes Final Pass)</td><td><code>claude-opus-5-5-high</code> (high)</td><td>Fresh <code>gemini-pro-orchestrator-neon</code> (Opus HTTP 429)</td><td>PASS</td><td>0 / 0 / 0 / PASS</td></tr>
+</table>
+
+<h2>2. Major Reconciliations Verified</h2>
+<ul>
+  <li><strong>Huber Median Bias Taylor Expansion (Experiment 12):</strong> Corrected the asymptotic Gaussian one-sided median shift formula from an extraneous divided-by-2 typo to negative square-root(pi/2) times sigma times delta plus O(delta<sup>2</sup>), restored factor 2 in Table 1 oriented peer variance reduction, and re-rendered the equation PNG cleanly.</li>
+  <li><strong>Appendix Robustness Proof and Acknowledgements (NeurIPS / arXiv):</strong> Updated the stale Proposition 7.4 proof in <code>98_appendix_proofs.tex</code> to match Section 7, added JudgeBench to <code>97_acknowledgments.tex</code>, and eliminated every Overfull hbox and float warning across <code>main.pdf</code> (21 pages, strictly anonymous, Limitations ending on Page 9) and standalone PDFs.</li>
+  <li><strong>Experiment 14 HTML Links/Subscripts and Experiment 15 CI Clarity:</strong> Fixed misleading Drive labels and 3 subscript/superscript formulas in the Experiment 14 HTML companion, documented pooled vs. per-cluster mean confidence intervals in Experiment 15 Results, removed dead Python imports while preserving identical random streams, and purged 36 stale temp files.</li>
+</ul>
+
+<h2>3. Re-Rendered Equation Verification (Huber Median Bias Fix)</h2>
+<img class="fig-img" src="https://raw.githubusercontent.com/brando90/tvdmi-judge-asymptotics/main/experiments/12_repo_audit_bugfixes_and_next_theory_roadmap_start_21Nov2026/doc_equation_images_11-21-2026/eq05_huber_median_bias.png" alt="Re-rendered Equation 5 showing corrected Huber median bias formula">
+
+<h2>4. Orchestrator Deterministic Verification</h2>
+<ul>
+  <li><strong>Lean 4.29.0:</strong> Clean build (3,290 jobs), 66/66 theorems verified with 0 placeholders and strictly standard Lean axioms.</li>
+  <li><strong>Python, HTML, Security:</strong> 20/20 scripts compile cleanly, zero CV/label leakage, all Rule-91 HTML companions free of forbidden math tokens, clean diff formatting, zero secret hits.</li>
+</ul>
+</body>
+</html>

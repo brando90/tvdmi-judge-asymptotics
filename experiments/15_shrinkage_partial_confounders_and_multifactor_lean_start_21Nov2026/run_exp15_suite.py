@@ -20,7 +20,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import spearmanr, wilcoxon
-from sklearn.model_selection import KFold
 
 EXP15_DIR = Path(__file__).resolve().parent
 EXP14_DIR = (
@@ -869,7 +868,6 @@ def module4_multifactor_davis_kahan(rb2: dict, rng: np.random.Generator) -> dict
     idx_main = [rb2["all_models"].index(m) for m in r14.RB2_MAIN_MODELS]
     S_main = rb2["S_centered"][:, idx_main]
     n_p = rb2["n_prompts"]
-    c_pidx = rb2["cand_prompt_idx"]
 
     # Pre-slice candidate arrays by prompt for super-fast i.i.d. resampling
     slices = rb2["slices"]

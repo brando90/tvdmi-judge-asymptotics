@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from scipy.special import expit
-from scipy.stats import kendalltau, pearsonr, spearmanr, wilcoxon
+from scipy.stats import spearmanr, wilcoxon
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
@@ -147,7 +147,6 @@ def expected_calibration_error(probs: np.ndarray, y: np.ndarray, n_bins: int = 1
 
 def fit_rb_spec_weights(C_tr: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Fit redundancy-balanced spectral weight vector w_rb strictly from unlabeled centered C_tr."""
-    K = C_tr.shape[1]
     sd = np.maximum(C_tr.std(axis=0), 1e-8)
     C_std = C_tr / sd
     R = np.nan_to_num(np.corrcoef(C_std, rowvar=False), nan=0.0)
@@ -924,7 +923,6 @@ def module4_davis_kahan_rate(rb2: dict, rng: np.random.Generator) -> dict:
     for n_p in n_grid:
         sin_sqs = []
         bounds_lean = []
-        eps_vals = []
         for _ in range(N_MC):
             # Sample i.i.d. with replacement from the empirical population (exact Sigma_pop) to avoid finite-population slope inflation
             sel_p = rng.choice(n_prompts, size=n_p, replace=True)
@@ -943,7 +941,6 @@ def module4_davis_kahan_rate(rb2: dict, rng: np.random.Generator) -> dict:
             eps = max(abs(qh_u1 - q_u1), abs(qh_uh - q_uh))
             bound = 2.0 * eps / gamma_gap
             sin_sqs.append(sin_sq)
-            eps_vals.append(eps)
             bounds_lean.append(bound)
         rb2_dk_rows.append({
             "n_prompts": n_p,

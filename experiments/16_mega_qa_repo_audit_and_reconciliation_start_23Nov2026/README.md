@@ -1,0 +1,8 @@
+# Experiment 16: Full-Repo Sequential Mega QA Audit & Reconciliation (`11-23-2026`)
+
+- **Date:** `11-23-2026`
+- **Status:** COMPLETE (`11-23-2026 09:59 PST`; 3 sequential `agy` stages + full deterministic post-QA gate PASSED; Anthropic `429` quota fallback cleanly recorded).
+- **Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/16_mega_qa_repo_audit_and_reconciliation_start_23Nov2026/README.md>
+- **Reports:** [MEGA_QA_REPORT_11-23-2026.md](MEGA_QA_REPORT_11-23-2026.md) | [Rule-91 HTML Companion](MEGA_QA_REPORT_11-23-2026_gdoc_companion.html) | [results.md](results.md) | [CKPT_mega_qa.md](CKPT_mega_qa.md)
+- **Drive Status:** Google Drive upload pending user OAuth refresh (`~/keys/gspread_authorized_user.json` unchanged at `Nov 14 20:04`, expired `Nov 21 20:04 PST` with `invalid_grant`); Rule-91 HTML companion archived in git and verification report delivered by email.
+- **TLDR:** Completed a 3-stage sequential `agy` Mega Quality Assurance (`QA`) audit (`gemini-pro-orchestrator-neon` fallback on Anthropic `429` -> `gemini-4-neon-xhigh` `xhigh` -> fresh `gemini-pro-orchestrator-neon`) across the `tvdmi-judge-asymptotics` repository from `QA_BASE = cb2a2c0`. Fixed the Huber median Taylor factor-of-2 error and missing table factor `2` in Experiment 12, updated the stale appendix Proposition proof, resolved all LaTeX warnings across `main.pdf`/`main_arxiv.pdf`/standalone PDFs, fixed Exp 14 HTML link/subscript formatting and Exp 15 CI note, added `JudgeBench` acknowledgments, removed unused Python imports and `36` temp files, and passed all deterministic checks (`lake build` `3,290` jobs, `66/66` Lean theorem axiom checks, `20/20` `py_compile`, anonymous Page-9 `main.pdf`, HTML/secret scans).

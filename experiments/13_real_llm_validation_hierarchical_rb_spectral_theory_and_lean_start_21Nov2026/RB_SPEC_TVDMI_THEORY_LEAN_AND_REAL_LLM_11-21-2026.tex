@@ -30,6 +30,7 @@ and Real-LLM Falsification \& Recovery}
 \date{Date: 11-21-2026 \quad(\emph{As of 11-21-2026 19:06 PST})}
 
 \newcommand{\lident}[1]{{\small\texttt{#1}}}
+\emergencystretch=1.5em
 
 \begin{document}
 \maketitle
@@ -163,12 +164,12 @@ symmetric accuracy $q_j = \Prob(W_j = Z^\star \mid Z^\star)$, and
 $Y_c \in \{0,1\}$ a candidate output with symmetric accuracy
 $p_c = \Prob(Y_c = Z^\star \mid Z^\star)$ under independent copy
 $\widetilde{Y}_c \sim P_{Y_c}$. Defining the oriented contrast
-\[
+\begin{align*}
   \Delta^{\mathrm{orient}}_{c,j}
-  := \E\!\big[\mathbf{1}\{W_j = Y_c\} - \mathbf{1}\{W_j = \widetilde{Y}_c\}\big]
-  = \E\!\big[(\mathbf{1}\{W_j = 1\} - \mathbf{1}\{W_j = 0\})(Y_c - \widetilde{Y}_c)\big]
-  = 2(2q_j - 1)(2p_c - 1)\,\Var(Z^\star),
-\]
+  &:= \E\!\big[\mathbf{1}\{W_j = Y_c\} - \mathbf{1}\{W_j = \widetilde{Y}_c\}\big]
+  = \E\!\big[(\mathbf{1}\{W_j = 1\} - \mathbf{1}\{W_j = 0\})(Y_c - \widetilde{Y}_c)\big] \\
+  &= 2(2q_j - 1)(2p_c - 1)\,\Var(Z^\star),
+\end{align*}
 whenever peer competence satisfies $q_j > 1/2$ and $\Var(Z^\star) > 0$:
 $\Delta^{\mathrm{orient}}_{c,j}$ is strictly increasing in $p_c$, equals $0$ for
 prompt-copying/guessing ($p_c = 1/2$), and is strictly negative for inverters ($p_c < 1/2$).
@@ -259,7 +260,7 @@ family spectral mass equals $1$, matching the $1/F$ weighting of Theorem~4.2.
 \includegraphics[width=\textwidth]{results/exp13_real_llm_and_theory_6panel.pdf}
 \end{center}
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{\textbf{Held-out 5-fold CV summary on \textsc{SummEval} ($100$ articles, $1,600$ items; item Spearman across regimes) and \textsc{MT-Bench} ($80$ questions, $2,575$ decisive pairs); $95\%$ cluster-bootstrap CIs.}}
 \resizebox{\textwidth}{!}{%
@@ -276,8 +277,9 @@ Naive SVD & $0.570\,[0.528,0.611]$ & $0.497\,[0.446,0.547]$ & $-0.500\,[-0.550,-
 \end{tabular}}
 \end{table}
 
-\noindent\textbf{Sources.} Lean~4 proofs: \texttt{experiments/00\_\allowbreak lean\_\allowbreak formalization/\allowbreak lean/TvdmiJudge/NewTheory.lean}.
-Python validation suite: \texttt{experiments/13\_\allowbreak ...\_\allowbreak 21Nov2026/\allowbreak run\_\allowbreak real\_\allowbreak llm\_\allowbreak and\_\allowbreak theory\_\allowbreak suite.py} and
-\texttt{results/summary\_\allowbreak metrics.json}. Primary benchmarks: Fabbri et al.\ (TACL 2021, \textsc{SummEval}),
-Liu et al.\ (EMNLP 2023, \textsc{G-Eval}), Zheng et al.\ (NeurIPS 2023, \textsc{MT-Bench}).
+{\footnotesize\noindent\textbf{Sources.} Lean~4 proofs: \texttt{experiments/00\_lean\_formalization/lean/TvdmiJudge/NewTheory.lean}.\\
+Python validation suite:\\
+\texttt{experiments/13\_real\_llm\_validation\_hierarchical\_rb\_spectral\_theory\_and\_lean\_start\_21Nov2026/}\\
+\texttt{run\_real\_llm\_and\_theory\_suite.py} and \texttt{results/summary\_metrics.json}.\\
+Primary benchmarks: Fabbri et al.\ (TACL 2021, \textsc{SummEval}), Liu et al.\ (EMNLP 2023, \textsc{G-Eval}), Zheng et al.\ (NeurIPS 2023, \textsc{MT-Bench}).}
 \end{document}
