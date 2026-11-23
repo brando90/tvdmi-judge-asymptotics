@@ -18,20 +18,20 @@ Reference-free evaluation using Total Variation Distance–Mutual Information (T
 
 **Explicit metric limits:**
 1. **Unconditional prompt–response TVD-MI is blind to bijections and label inversions.** $\mathrm{TV}(P_{X,Y}, P_X \otimes P_Y)$ maximizes over *all* bounded critics $h: \mathcal{U}\times\mathcal{V}\to[0,1]$, measuring mutual dependence rather than correctness. Copying the prompt ($Y = X$) attains $1 - 1/d = 0.95$, strictly exceeding the binary oracle ($0.50$), while inverting every label attains $0.50$.
-2. **Naive empirical best-of-$K$ overfits finite samples $n$.** Selecting $\max_{j \le K} \widehat{\Delta}_c(h_j)$ in-sample incurs upward bias $+\Omega_p(\sqrt{(\log K)/n})$ under the null $\tau(c) = 0$ (`+0.3155` at $K=1024, n=50$). Experiments 03 and 11 clipped $\max(0, \tau - \hat{\tau})$, hiding this inflation.
+2. **Naive empirical best-of-$K$ overfits finite samples $n$.** Selecting $\max_{j \le K} \widehat{\Delta}_c(h_j)$ in-sample can inflate a null score. A union bound limits the inflation, and the amount depends on dependence among the critics. The measured null mean was `+0.3155` at $K=1024, n=50$. Experiments 03 and 11 clipped $\max(0, \tau - \hat{\tau})$, hiding this inflation.
 3. **Linear averaging saturates at $\sigma\sqrt{\rho}$ and is blind to shared bias.** Any equicorrelated average stalls at $\Var(\bar{S}_K) \ge \sigma^2 \rho$; furthermore, Paper Theorem 2 (Consensus) assumes conditional independence and does not characterize confounded consensus failure.
-4. **Single-item median and trimmed mean retain $O(\sigma\delta)$ asymmetric bias.** Under one-sided Huber contamination $\delta$, static order statistics shift by $-\sigma \Phi^{-1}(\frac{1}{2(1-\delta)}) \approx -0.0289$ at $K=1024$ ($\tau_c = 0.80, \delta = 0.15$). Cross-item continuous TVD-MI IRT/Dawid–Skene scaling rates remain **untested empirically**.
-5. **Real LLM scaling remains untested in this repo.** `experiments/06_llm_judges/main.py` is currently a synthetic Gaussian proxy.
+4. **Single-item median and trimmed mean retain $O(\sigma\delta)$ asymmetric bias.** Under one-sided Huber contamination $\delta$, static order statistics shift by $-\sigma \Phi^{-1}(\frac{1}{2(1-\delta)})$ when all contamination falls below the mixture median. The finite Gaussian simulation measured a median bias of $-0.0289$ relative to the clipped honest mean at $K=1024$ ($\tau_c = 0.80, \delta = 0.15$). Cross-item continuous TVD-MI IRT/Dawid–Skene scaling rates remain **untested empirically**.
+5. **The historical suite used synthetic scores.** `experiments/06_llm_judges/main.py` is currently a synthetic Gaussian proxy.
 
 | Regime / Estimator | What It Learns | What It Is Blind To / Fails On | Status (As of 11-21-2026) |
 |---|---|---|---|
 | Unconditional prompt–response TVD-MI | Joint-vs-product dependence $\mathrm{TV}(P_{X,Y}, P_X\otimes P_Y)$ | Bijections ($Y=X$ prompt copy), label inversion ($Y=1-Z^\star$) | Derived & measured (Check A) |
 | Unsigned task-semantic peer TVD-MI | Alignment magnitude with task-semantic peers $W_j$ | Rejects prompt copy, invariant under global label inversion | Derived & measured (Check A) |
 | Oriented conditional peer TVD-MI ($\Delta^{\mathrm{orient}}_{c,j}$) | Signed agreement $2(2q_j-1)(2p_c-1)\mathrm{Var}(Z^\star)$ | Fails if peers echo surface prompt or lack anchor competence | Derived & measured (Check A) |
-| Random-witness best-of-$K$ ($\mathrm{Beta}(1,\beta)$) | Approximates $\tau(c)$ at exact rate $\Theta(K^{-1/\beta})$ | Naive in-sample max inflates by $\sqrt{(\log K)/n}$ | Fixed, derived & measured (Check B) |
+| Random-witness best-of-$K$ ($\mathrm{Beta}(1,\beta)$) | Approximates $\tau(c)$ at exact rate $\Theta(K^{-1/\beta})$ | In-sample selection can inflate the score | Fixed, derived & measured (Check B) |
 | Split-sample cross-fitted best-of-$K$ (Thm 3') | Unbiased held-out eval; $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$ | Uses $n = n_{\mathrm{sel}} + n_{\mathrm{eval}}$; requires $p_\varepsilon > 0$ | Derived & measured (Check C) |
-| Consensus majority vote (Theorem 2) | Exponential $2e^{-2K\gamma_0^2}$ under conditional independence | Stalls at $\mathbb{P}(Q(W) < 1/2)$ under latent confounder $W$ | Cond. indep. verified; confounded Thm 4 **untested** |
-| Scalar mean / median / trimmed mean | $K^{-1/2}$ variance drop only if $\rho_K \to 0$ | Floor $\sigma\sqrt{\rho_0}$; asymmetric Huber bias under $\delta > 0$ | Derived & measured (Checks D–E) |
+| Consensus majority vote (Theorem 2) | Exponential $2e^{-2K\gamma_0^2}$ under conditional independence | Limiting error $\mathbb{P}(Q<1/2)+\tfrac12\mathbb{P}(Q=1/2)$ for shared conditional accuracy $Q=Q(W)$ | Cond. indep. verified; confounded Thm 4 **untested** |
+| Scalar mean / median / trimmed mean | Unbiased equicorrelated mean has RMSE $\sigma\sqrt{\rho_K+(1-\rho_K)/K}$ | Floor $\sigma\sqrt{\rho_0}$; asymmetric Huber bias under $\delta > 0$ | Derived & measured (Checks D–E) |
 
 ---
 
@@ -55,7 +55,7 @@ $$\mathbb{P}\!\left(\left|\hat{\tau}^{\mathrm{split}}_{K,n}(c) - \tau(c)\right| 
 
 and minimizing total judge-call budget $B = K \cdot n$ balances approximation vs. selection variance at:
 
-$$K^\star(B) \asymp \left(\frac{B}{\log B}\right)^{\frac{\beta}{\beta+2}}, \qquad n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}}, \qquad \mathrm{Error}^\star(B) \asymp \left(\frac{\log B}{B}\right)^{\frac{1}{\beta+2}}.$$
+$$K^\star(B) \asymp \left(\frac{B}{\log B}\right)^{\frac{\beta}{\beta+2}}, \qquad n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}}, \qquad \mathrm{Error}(K^\star,B) = O_p\!\left((\log B/B)^{1/(\beta+2)}\right).$$
 
 ### 2.3 Equicorrelated Local Elasticity & Asymmetric Huber Bias (Checks D & E)
 
@@ -63,14 +63,14 @@ Expanding $\mathrm{RMSE}(\bar{S}_K) = \sigma\sqrt{\rho + (1-\rho)/K} = \sigma\sq
 
 $$\alpha_{\mathrm{eff}}(K) := -\frac{d \log \mathrm{RMSE}}{d \log K} = \frac{1 - \rho}{2\big(1 + (K-1)\rho\big)}.$$
 
-Under asymmetric contamination ($\tau_c = 0.80, \mu_{\mathrm{adv}} = 0.20 < \tau_c, \sigma = 0.20, \delta = 0.15$), simple mean suffers bias $\delta(\mu_{\mathrm{adv}} - \tau_c) \approx -0.0861$, while the large-$K$ unclipped sample median bias is:
+Under asymmetric contamination ($\tau_c = 0.80, \mu_{\mathrm{adv}} = 0.20 < \tau_c, \sigma = 0.20, \delta = 0.15$), simple mean suffers bias $-0.0861$, relative to the clipped honest mean in the simulation. For an honest Gaussian and all contamination below the mixture median, the population median shift relative to the honest median is:
 
-$$m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right) = -\sqrt{\frac{\pi}{2}}\,\sigma\delta + O(\delta^2) \approx -0.0446 \quad (\text{clipped measured } -0.0289).$$
+$$m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right) = -\sqrt{\frac{\pi}{2}}\,\sigma\delta + O(\delta^2) \approx -0.0446 \quad (\sigma=0.20,\;\delta=0.15).$$
 
 ### 2.4 New Theorems Recommended for the Paper
 
 1. **Bijection Invariance & Oriented Peer Recovery:** $\mathrm{TV}(P_{X, f(X)}, P_X \otimes P_{f(X)}) = 1 - \sum_x P_X(x)^2$ for any injection $f$, whereas oriented task-semantic peer agreement gives $\Delta^{\mathrm{orient}}_{c,j} = 2(2q_j - 1)(2p_c - 1)\mathrm{Var}(Z^\star)$.
-2. **Confounded Consensus Phase Transition:** With conditional competence $Q(W) = \mathbb{P}(b_j(Z)=h^\star(Z) \mid Z, W)$, $\lim_{K\to\infty}\mathbb{P}(b_K(Z) \neq h^\star(Z)) = \mathbb{P}(Q(W) < 1/2) + \tfrac{1}{2}\mathbb{P}(Q(W) = 1/2)$.
+2. **Confounded Consensus Phase Transition:** With conditionally i.i.d. votes given $(Z,W)$ and conditional competence $Q(W) = \mathbb{P}(b_j(Z)=h^\star(Z) \mid Z, W)$, $\lim_{K\to\infty}\mathbb{P}(b_K(Z) \neq h^\star(Z)) = \mathbb{P}(Q(W) < 1/2) + \tfrac{1}{2}\mathbb{P}(Q(W) = 1/2)$.
 
 ---
 

@@ -47,7 +47,7 @@ d_j = m_j^{-1/2}, \quad
 Z^{\mathrm{bal}}_{i,j} = d_j \widetilde{Z}_{i,j}, \quad
 w_j^{\mathrm{RB}} \propto d_j \, v_{1,j}\!\left(Z^{\mathrm{bal}}\right),
 \\[6pt]
-\mathrm{Var}\!\left(\bar{S}^{\mathrm{bal}}_{F,\{K_f\}}\right)
+\text{Known families:}\quad \mathrm{Var}\!\left(\bar{S}^{\mathrm{bal}}_{F,\{K_f\}}\right)
   = \frac{1}{F^2}\sum_{f=1}^F \left(\tau_f^2 + \frac{\sigma_f^2}{K_f}\right)
   \le \frac{B}{F} \;\xrightarrow[F\to\infty]{}\; 0
   \quad\forall\, K_1,\dots,K_F \ge 1.
@@ -61,7 +61,7 @@ w_j^{\mathrm{RB}} \propto d_j \, v_{1,j}\!\left(Z^{\mathrm{bal}}\right),
 \\[6pt]
 K^\star(B) \asymp \left(\frac{B}{\log B}\right)^{\frac{\beta}{\beta+2}},
 \qquad
-\mathrm{Error}^\star(B) \asymp \left(\frac{\log B}{B}\right)^{\frac{1}{\beta+2}}.
+\mathrm{Error}(K^\star,B) = O_p\!\left((\log B/B)^{1/(\beta+2)}\right).
 """,
     "eq07_effective_family_breakdown": r"""
 \text{Balanced family vote:}\quad

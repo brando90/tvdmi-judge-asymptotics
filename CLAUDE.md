@@ -28,12 +28,11 @@ tvdmi-judge-asymptotics/
 │   ├── 03_two_axis_decomposition/ # K x n tradeoff
 │   ├── 04_diversity_dependence/ # correlated judges (rho)
 │   ├── 05_adversarial_robustness/ # breakdown threshold
-│   ├── 06_llm_judges/          # real LLM-judge validation
+│   ├── 06_llm_judges/          # synthetic judge simulation
 │   ├── 07–11                    # secondary extensions
 │   ├── utils.py               # shared utilities
 │   ├── EXPERIMENT_PLAN.md     # full implementation spec
 │   └── README.md              # experiment index
-├── lean/                  # Lean 4 project (future)
 └── notes/                 # working notes (future)
 ```
 

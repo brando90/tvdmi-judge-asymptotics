@@ -2,7 +2,7 @@
 \section{Experiments: Synthetic Diagnostics and Real-LLM Evaluation}
 \label{sec:experiments}
 
-We test every theoretical prediction in two stages: controlled Monte Carlo
+We use two empirical checks: controlled Monte Carlo
 verification of our closed-form bounds (including fixes for historical scaling
 and contamination artifacts detailed in Appendix~\ref{app:experiments}), followed
 by held-out validation on four public human-annotated or objective LLM benchmarks using zero
@@ -13,11 +13,11 @@ human labels during unsupervised aggregation.
   \includegraphics[width=0.69\textwidth]{figures/exp13_real_llm_and_theory_6panel.pdf}
   \vspace{-7pt}
   \caption{\textbf{Real-LLM and theoretical verification (Experiment~13, 5-fold CV).}
-  \textbf{(A)} On \textsc{SummEval}, prompt copying ($0.485$) outscores the best summarizer ($0.328$) under raw TVD-MI, whereas peer contrast restores separation ($0.329$ vs.\ $0.296$).
+  \textbf{(A)} On \textsc{SummEval}, prompt copying ($0.485$) outscores the best summarizer ($0.328$) under the lexical witness contrast, whereas peer contrast restores separation ($0.329$ vs.\ $0.296$).
   \textbf{(B)} With $M \le 64$ \texttt{BART-CNN} clones, uniform mean ($0.985 \to 0.826$), median ($0.988 \to 0.785$), and naive SVD ($0.985 \to 0.785$) degrade, while \texttt{RB-Spec} holds $0.988$.
-  \textbf{(C)} On \textsc{SummEval} null permutations ($n=20$), in-sample optimization inflates to $+0.065$ vs.\ $+0.001$ split-sample ($p=0.992$).
+  \textbf{(C)} On \textsc{SummEval} null permutations ($n=20$), in-sample optimization inflates to $+0.066$ vs.\ $+0.002$ split-sample ($p=0.483$).
   \textbf{(D)} Under wild ($K=38$) and cloned-adversarial ($66.7\%$ adversaries) pools, \texttt{RB-Spec} reaches $+0.689$ and $+0.703$ item Spearman while baselines collapse to $[-0.500, -0.201]$.
-  \textbf{(E)} On \textsc{MT-Bench} ($K=17$, $2,575$ pairs), \texttt{RB-Spec} achieves $0.795$ vs.\ human ceiling $0.823$.
+  \textbf{(E)} On \textsc{MT-Bench} ($K=17$, $2,575$ pairs), \texttt{RB-Spec} achieves $0.794$ vs.\ repeat-human agreement $0.823$.
   \textbf{(F)} $500$-rep Monte Carlo matches Theorem~\ref{thm:balanced-1F} and Proposition~\ref{prop:clone-hijacking}.}
   \label{fig:exp13-overview}
   \vspace{-4pt}
@@ -26,15 +26,15 @@ human labels during unsupervised aggregation.
 % Provenance: experiments/13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026/results/summary_metrics.json, summeval_heldout_regimes.csv, mtbench_pairwise.csv
 \subsection{Real-LLM Benchmarks and Unsupervised Evaluation Protocol}
 
-\textbf{\textsc{SummEval} \citep{fabbri2021summeval}.} We evaluate $1,600$ summaries ($100$ articles $\times 16$ systems; expert mean $4.131$, leave-one-expert-out item Spearman $0.758\,[0.729, 0.782]$, system $0.966$, $\mathrm{ICC(A,1)} = 0.806$). The reference-free pool pairs $4$ GPT-4 G-Eval critics (\citealp{liu2023geval}; parses $\ge 31{,}809/32{,}000$), $4$ seq2seq scorers (\texttt{BARTScore}, \texttt{BART-para}, \texttt{BART-CNN}, \texttt{PRISM}), $70$ \texttt{BART-CNN} prompt paraphrases, and word length. Weights fit via 5-fold article-disjoint CV, using training GPT-4 Likert means solely to set the $[1,5]$ scale without human labels.
+\textbf{\textsc{SummEval} \citep{fabbri2021summeval}.} We evaluate $1,600$ summaries ($100$ articles $\times 16$ systems; expert mean $4.131$, leave-one-expert-out item Spearman $0.758\,[0.729, 0.782]$, system $0.966$, $\mathrm{ICC(A,1)} = 0.806$). The reference-free pool pairs $4$ GPT-4 G-Eval critics (\citealp{liu2023geval}; parses $\ge 31{,}809/32{,}000$), $4$ seq2seq scorers (\texttt{BARTScore}, \texttt{BART-para}, \texttt{BART-CNN}, \texttt{PRISM}), $70$ \texttt{BART-CNN} prompt paraphrases, and word length. Table~\ref{tab:real-llm-main} fits weights on within-article centered training scores, applies them to globally training-standardized test scores, and sets the output scale from training GPT-4 ratings.
 
-\textbf{\textsc{LMSYS MT-Bench} \citep{zheng2023judging}.} Over all $2,575$ decisive human pairs ($80$ questions, $6$ models; human agreement $0.823$ across $779$ repeats), a $K=17$ pool combines the GPT-4 judge, prompt TF-IDF similarity, lexical diversity, $11$ verbosity clones, and $3$ inverted critics under 5-fold question-disjoint CV ($2,000$ cluster bootstraps, paired Wilcoxon tests).
+\textbf{\textsc{LMSYS MT-Bench} \citep{zheng2023judging}.} Over all $2,575$ decisive human ratings ($80$ questions, $6$ models; human agreement $0.823$ across $779$ repeats), a $K=17$ pool combines the GPT-4 judge, prompt TF-IDF similarity, lexical diversity, $11$ verbosity clones, and $3$ inverted critics under 5-fold question-disjoint CV ($2,000$ cluster bootstraps, paired Wilcoxon tests).
 
 \begin{table}[t]
 \centering
 \caption{\textbf{Held-out 5-fold real-LLM evaluation} on \textsc{SummEval}
 ($100$ articles, $1,600$ items) and \textsc{MT-Bench} ($80$ questions, $2,575$
-decisive human pairs); $95\%$ cluster-bootstrap intervals.}
+decisive human ratings); $95\%$ cluster-bootstrap intervals.}
 \label{tab:real-llm-main}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lcccc@{}}
@@ -43,13 +43,13 @@ Method & \textsc{SummEval} Wild ($K=38$) & \textsc{SummEval} Adv-Flood ($67\%$ r
 \midrule
 Single GPT-4 & $0.596\,[0.557, 0.634]$ & $0.596\,[0.556, 0.633]$ & $0.965\,[0.900, 0.976]$ & $0.708\,[0.671, 0.742]$ \\
 Uniform Mean & $0.515\,[0.466, 0.561]$ & $-0.201\,[-0.269, -0.131]$ & $-0.265\,[-0.468, -0.094]$ & $0.685\,[0.649, 0.720]$ \\
-Itemwise Median & $0.457\,[0.398, 0.513]$ & $-0.446\,[-0.505, -0.387]$ & $-0.785\,[-0.853, -0.665]$ & $0.686\,[0.651, 0.720]^\dagger$ \\
-Naive Rank-1 SVD & $0.497\,[0.446, 0.547]$ & $-0.500\,[-0.550, -0.450]$ & $-0.806\,[-0.891, -0.673]$ & $0.718\,[0.681, 0.751]$ \\
-\textbf{\texttt{RB-Spec TVD-MI}} & $\mathbf{0.689\,[0.659, 0.718]}$ & $\mathbf{0.703\,[0.673, 0.732]}$ & $\mathbf{0.974\,[0.903, 0.979]}$ & $\mathbf{0.795\,[0.769, 0.820]}$ \\
+Itemwise Median & $0.457\,[0.398, 0.513]$ & $-0.446\,[-0.505, -0.387]$ & $-0.785\,[-0.853, -0.665]$ & $0.686\,[0.651, 0.719]^\dagger$ \\
+Naive Rank-1 SVD & $0.497\,[0.446, 0.547]$ & $-0.500\,[-0.550, -0.450]$ & $-0.806\,[-0.891, -0.673]$ & $0.718\,[0.680, 0.751]$ \\
+\textbf{\texttt{RB-Spec TVD-MI}} & $\mathbf{0.689\,[0.659, 0.718]}$ & $\mathbf{0.703\,[0.673, 0.732]}$ & $\mathbf{0.974\,[0.903, 0.979]}$ & $\mathbf{0.794\,[0.769, 0.818]}$ \\
 \bottomrule
 \end{tabular}}
 \vspace{2pt}
-{\footnotesize $^\dagger$Majority Vote on pairwise decisions. \texttt{RB-Spec} beats Uniform Mean with Wilcoxon $p=1.21\times 10^{-9}$ (Wild), $p=4.40\times 10^{-18}$ (Adv-Flood), and $p=3.87\times 10^{-10}$ (\textsc{MT-Bench}).}
+{\footnotesize $^\dagger$Majority Vote on pairwise decisions. \texttt{RB-Spec} beats Uniform Mean with Wilcoxon $p=1.21\times 10^{-9}$ (Wild), $p=4.40\times 10^{-18}$ (Adv-Flood), and $p=7.03\times 10^{-10}$ (\textsc{MT-Bench}).}
 \vspace{-6pt}
 \end{table}
 
@@ -57,9 +57,9 @@ Naive Rank-1 SVD & $0.497\,[0.446, 0.547]$ & $-0.500\,[-0.550, -0.450]$ & $-0.80
 
 Figure~\ref{fig:exp13-overview} and Table~\ref{tab:real-llm-main} show three findings:
 (1)~\textbf{Residual saturation} within model families ($\rho = 0.769$ across $20$ GPT-4 calls; $\rho = 1.000$ across $70$ \texttt{BART-CNN} prompts) vs.\ distinct families ($\rho = 0.558$);
-(2)~\textbf{Reversible clone hijacking}: $64$ clones drop Uniform Mean by $-0.159$ system Spearman and Naive SVD by $-0.200$ ($200$-split \texttt{RB-Spec} $0.970\,[0.935, 0.991]$ vs.\ Mean $0.806\,[0.712, 0.874]$, $p=1.43\times 10^{-34}$); and
-(3)~\textbf{Uncalibrated level bias}: \texttt{RB-Spec} achieves strong tracking ($\mathrm{ICC(C,1)}=0.688$, Pearson $0.726\,[0.702, 0.749]$), but uncalibrated GPT-4 mean ($3.019$) sits below expert severity ($4.131$), leaving bias $-1.111\,[-1.168, -1.052]$ and $\mathrm{ICC(A,1)}=0.351$.
+(2)~\textbf{Reversible clone hijacking}: $64$ clones drop Uniform Mean by $-0.159$ system Spearman and Naive SVD by $-0.200$ ($200$-split \texttt{RB-Spec} $0.970\,[0.935, 0.991]$ vs.\ Mean $0.806\,[0.712, 0.874]$); and
+(3)~\textbf{Uncalibrated level bias}: \texttt{RB-Spec} achieves strong tracking ($\mathrm{ICC(C,1)}=0.688$, Pearson $0.726\,[0.702, 0.749]$), but uncalibrated ensemble mean on the GPT-4 scale ($3.019$) sits below expert severity ($4.131$), leaving bias $-1.111\,[-1.168, -1.052]$ and $\mathrm{ICC(A,1)}=0.351$.
 
 \subsection{Anchor Calibration, \texttt{SRB-Spec} Shrinkage, \textsc{RewardBench~2}, and \textsc{JudgeBench} (Experiments~14--15)}
 
-OLS affine calibration on $m=5$--$20$ anchor articles removes \textsc{SummEval} ($K=38$) bias ($-1.104 \to +0.007$), cuts MAE ($1.130 \to 0.370$), and lifts $\mathrm{ICC(A,1)}$ ($0.334 \to 0.644$; $\mathrm{ICC(C,1)}=0.648$, $p=4.27\times 10^{-18}$; Appendix~\ref{app:experiments}). Across $1,753$ \textsc{RewardBench~2} prompts ($K=23$ \citep{malik2025rewardbench2}), two-stage \texttt{SRB-Spec} eliminates vanilla \texttt{RB-Spec}'s clean-pool gap ($0.831$ Auto, $0.836$ $\alpha=1$ vs.\ vanilla $0.787$, $p=6.96\times 10^{-13}$; Naive SVD $0.833$) while resisting $32$ \texttt{OpenAssistant} clones ($0.827$/$0.832$ vs.\ SVD $0.435$, $p=1.99\times 10^{-137}$) and $54.9\%$ anti-correlated \texttt{PKU-beaver-v1.0-reward} floods ($0.836$/$0.837$ vs.\ SVD $0.143$, $p=2.91\times 10^{-248}$). On \textsc{JudgeBench} ($33$ official judges $\times 350$ pairs \citep{tan2025judgebench}), \texttt{CR-SRB-Spec} reaches $0.714$ clean and $0.711$ under $46\%$ adversaries (vs.\ Mean $0.634$, SVD $0.660$, $p=0.0038$); partial-proxy residualization matches $(1-r^2)c^2 v_W + \mathrm{Var}_{\mathrm{bal}}$ across $500$ MC trials and three benchmarks, with $0/10{,}500$ multi-factor rank-$r$ ($r\in\{1,2,3\}$) subspace violations.
+OLS affine calibration on 20 anchor articles reduces \textsc{SummEval} ($K=38$) bias ($-1.104 \to +0.007$), cuts MAE ($1.130 \to 0.370$), and lifts $\mathrm{ICC(A,1)}$ ($0.334 \to 0.644$ at 20 anchors; paired article MAE at 10 anchors, $p=4.27\times 10^{-18}$; Appendix~\ref{app:experiments}). Across $1,753$ \textsc{RewardBench~2} prompts ($K=23$ \citep{malik2025rewardbench2}), two-stage \texttt{SRB-Spec} eliminates vanilla \texttt{RB-Spec}'s clean-pool gap ($0.831$ Auto, $0.836$ $\alpha=1$ vs.\ vanilla $0.787$, $p=6.96\times 10^{-13}$; Naive SVD $0.833$) while resisting $32$ \texttt{OpenAssistant} clones ($0.827$/$0.832$ vs.\ SVD $0.435$, $p=1.99\times 10^{-137}$) and $54.9\%$ anti-correlated \texttt{PKU-beaver-v1.0-reward} floods ($0.836$/$0.837$ vs.\ SVD $0.143$, $p=2.91\times 10^{-248}$). On \textsc{JudgeBench} ($33$ official judges $\times 350$ pairs \citep{tan2025judgebench}), \texttt{CR-SRB-Spec} reaches $0.714$ clean and $0.711$ under $46\%$ adversaries (vs.\ Mean $0.631$, SVD $0.660$, $p=0.00253$ vs.\ Mean); partial-proxy residualization tracks the predicted squared error across $500$ simulations per proxy level, with $0/10{,}500$ multi-factor rank-$r$ ($r\in\{1,2,3\}$) subspace violations.

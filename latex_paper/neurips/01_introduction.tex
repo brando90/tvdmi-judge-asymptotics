@@ -2,26 +2,18 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Evaluating generated text without access to gold references is a central
-problem in modern machine learning and natural language evaluation.
-\emph{Reference-free evaluation} replaces human-written references with
-automated judges---typically large language models (LLMs)---that score candidate
-outputs directly. Empirically, combining multiple judges improves reliability
-\citep{verga2024replacing, zheng2023judging}, yet foundational questions remain
-unresolved: \emph{when} does scaling judge count $K$ and sample count $n$
-converge to true task competence, and \emph{why} do correlated or cloned judge
-families cause naive ensembles to stall or invert?
+Reference-free judges score candidate outputs without gold references. Combining large language model (LLM) judges can improve reliability \citep{verga2024replacing,zheng2023judging}. When does adding data or judges recover competence, and when do cloned judges amplify errors?
 
 The Total Variation Distance--Mutual Information (TVD-MI) framework
-\citep{robertson2025limitations} casts reference-free evaluation as a binary
+\citep{robertson2026information} casts reference-free evaluation as a binary
 hypothesis test distinguishing joint prompt--response draws $P^{(c)}_{UV}$
 from product draws $P^{(c)}_U \otimes P^{(c)}_V$. Each judge serves as a
 bounded witness critic targeting the variational supremum $\tau(c) :=
 \tvd(P^{(c)}_{UV}, P^{(c)}_U \otimes P^{(c)}_V)$. Previous studies
-analyzed bounded finite-sample robustness \citep{robertson2025limitations},
+analyzed bounded finite-sample robustness \citep{robertson2026information},
 sparse score-matrix recovery via Item Response Theory (IRT)
-\citep{robertson2025tvdmi}, and confounded binary aggregation
-\citep{chen2026care}, but left open the joint scaling tradeoffs, in-sample
+\citep{robertson2025identity}, and confounded binary aggregation
+\citep{zhao2026care}, but left open the joint scaling tradeoffs, in-sample
 critic selection biases, hierarchical clone-hijacking failures, and real-LLM
 empirical validation.
 
@@ -34,26 +26,23 @@ framework connecting statistical convergence to semantic validity:
   \ref{thm:split-sample}): We establish $O_p(K^{-1/\beta})$ random-witness
   rates, $2e^{-2K\gamma_0^2}$ consensus decay, the corrected two-sample
   Hoeffding concentration $2Ke^{-n\eta^2}$, and disjoint split-sample
-  cross-fitting that eliminates $+\Omega_p(\sqrt{(\log K)/n})$ selection
-  inflation and achieves compute-optimal allocation $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$.
+  evaluation that removes selection bias and balances the error bound at $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$.
 \item \textbf{Semantic validity remedies} (Theorems~\ref{thm:injection-blindness}--\ref{thm:optimal-weights}):
   We prove exact injection blindness ($\tvd = 1 - \sum_x P_X(x)^2$, showing
   why verbatim prompt copying defeats unconditional prompt--response TVD-MI),
   exact invariance of double-centered TVD-MI witnesses to additive prompt and
-  verbosity shifts, oriented conditional peer monotonicity, and Nitzan--Paroush
-  inverse-variance optimal weighting via weighted Cauchy--Schwarz.
+  verbosity shifts, oriented conditional peer monotonicity, and inverse-variance optimal weighting via weighted Cauchy--Schwarz.
 \item \textbf{Hierarchical clone-hijacking falsification and \texttt{RB-Spec TVD-MI}}
   (Proposition~\ref{prop:clone-hijacking}, Theorems~\ref{thm:balanced-1F}--\ref{thm:effective-family-adv}):
   We show that flooding a panel with $K_1 \to \infty$ redundant clones of a
-  weak model drives naive averages and SVD toward the weak family floor
+  weak model drives the variance of the naive mean toward the weak family floor
   $\tau_1^2$ and can flip adversarial majority signs. Our unsupervised
   \emph{Redundancy-Balanced Spectral Peer TVD-MI} (\texttt{RB-Spec TVD-MI})
-  restores family-level $1/F$ error scaling and effective-family adversarial
-  tolerance $\delta_{\mathrm{fam}} < 1/2$.
+  approximates equal-family weighting, for which we prove a $1/F$ variance bound and a positive sign-flip vote margin for $\delta_{\mathrm{fam}}<1/2$.
 \item \textbf{Real-LLM verification and Lean~4 proofs}
-  (Sections~\ref{sec:lean}--\ref{sec:experiments}): We validate every claim on
+  (Sections~\ref{sec:lean}--\ref{sec:experiments}): We evaluate the estimators on
   \textsc{SummEval} \citep{fabbri2021summeval} ($1,600$ summaries),
-  \textsc{MT-Bench} \citep{zheng2023judging} ($2,575$ human pairs),
+  \textsc{MT-Bench} \citep{zheng2023judging} ($2,575$ decisive human ratings),
   \textsc{RewardBench~2} \citep{malik2025rewardbench2} ($1,753$ prompts, $27$ models),
   and \textsc{JudgeBench} \citep{tan2025judgebench} ($350$ pairs, $33$ judges),
   and verify $66$ theorems ($28$ \texttt{Basic}, $15$ \texttt{NewTheory},

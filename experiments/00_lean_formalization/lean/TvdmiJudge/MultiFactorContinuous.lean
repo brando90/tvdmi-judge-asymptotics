@@ -146,11 +146,19 @@ end SignalDeconfoundingShrinkage
 
 section PartialProxyConfounder
 
-/-- Residualizing a shared cross-family confounder `c * W` against an observable proxy covariate
-    with squared correlation `r^2` reduces the confounder variance floor from `c^2 * v_W` to
-    `(1 - r^2) * c^2 * v_W`, removing fraction `r^2 * c^2 * v_W`. -/
-theorem partial_proxy_residual_confounder_variance (c r v_W : ℝ) :
-    c ^ 2 * v_W - (1 - r ^ 2) * c ^ 2 * v_W = r ^ 2 * c ^ 2 * v_W := by
+/-- For centered unit-norm samples of a confounder and a proxy, their inner product
+    is the correlation. Subtracting the projection onto the proxy leaves the stated
+    fraction of the confounder's squared norm. The result also holds without centering
+    when interpreted as a Euclidean projection identity. -/
+theorem partial_proxy_residual_confounder_variance {n : ℕ} (w x : Fin n → ℝ)
+    (c scale r : ℝ) (hw : ∑ i, w i ^ 2 = 1) (hx : ∑ i, x i ^ 2 = 1)
+    (hr : ∑ i, w i * x i = r) :
+    ∑ i, (c * scale * (w i - r * x i)) ^ 2 = (1 - r ^ 2) * c ^ 2 * scale ^ 2 := by
+  have pointwise (i : Fin n) : (c * scale * (w i - r * x i)) ^ 2 =
+      (c * scale) ^ 2 * (w i ^ 2 - (2 * r) * (w i * x i) + r ^ 2 * x i ^ 2) := by ring
+  simp_rw [pointwise]
+  rw [← Finset.mul_sum, Finset.sum_add_distrib, Finset.sum_sub_distrib,
+    ← Finset.mul_sum, ← Finset.mul_sum, hw, hx, hr]
   ring
 
 /-- When the observed covariate correlates imperfectly (`r^2 < 1`) with a nonzero shared
@@ -264,22 +272,33 @@ end MultiFactorDavisKahan
 
 section MeasureTheoreticTVD
 
-/-- Continuous measure-theoretic variational TVD event witness attainment: on any general
-    measurable space `(α, MeasurableSpace α)`, integrating the indicator of measurable event
-    `S` under `P` and `Q` attains the exact set total-variation difference `|P.real S - Q.real S|`,
-    and under probability measures obeys exact complement symmetry `P(S) - Q(S) = Q(Sᶜ) - P(Sᶜ)`. -/
+/-- A Hahn-positive event attains the largest absolute discrepancy over all
+    measurable events. Its indicator realizes this discrepancy as a difference
+    of integrals. -/
 theorem measure_tvd_event_witness_attainment {α : Type*} [MeasurableSpace α]
     (P Q : Measure α) [IsProbabilityMeasure P] [IsProbabilityMeasure Q]
-    (S : Set α) (hS : MeasurableSet S) :
-    |∫ _ in S, (1 : ℝ) ∂P - ∫ _ in S, (1 : ℝ) ∂Q| = |P.real S - Q.real S| ∧
-      P.real S - Q.real S = Q.real Sᶜ - P.real Sᶜ := by
-  constructor
-  · simp [Measure.real]
-  · have hP : P.real Sᶜ = 1 - P.real S := by
-      simpa using (measureReal_compl (μ := P) hS)
-    have hQ : Q.real Sᶜ = 1 - Q.real S := by
-      simpa using (measureReal_compl (μ := Q) hS)
-    linarith
+    (S : Set α) (hS : MeasurableSet S)
+    (hpos : ∀ T, MeasurableSet T → T ⊆ S → Q T ≤ P T)
+    (hneg : ∀ T, MeasurableSet T → T ⊆ Sᶜ → P T ≤ Q T) :
+    (∫ _ in S, (1 : ℝ) ∂P) - (∫ _ in S, (1 : ℝ) ∂Q) = P.real S - Q.real S ∧
+      ∀ T : Set α, MeasurableSet T → |P.real T - Q.real T| ≤ P.real S - Q.real S := by
+  refine ⟨by simp [Measure.real], ?_⟩
+  have upper (T : Set α) (hT : MeasurableSet T) : P.real T - Q.real T ≤ P.real S - Q.real S := by
+    have h₁ : Q.real (S \ T) ≤ P.real (S \ T) :=
+      ENNReal.toReal_mono (measure_ne_top _ _) (hpos _ (hS.diff hT) Set.diff_subset)
+    have h₂ : P.real (T \ S) ≤ Q.real (T \ S) :=
+      ENNReal.toReal_mono (measure_ne_top _ _) (hneg _ (hT.diff hS) (fun _ h => h.2))
+    have pS := measureReal_inter_add_diff (μ := P) (s := S) hT
+    have qS := measureReal_inter_add_diff (μ := Q) (s := S) hT
+    rw [Set.inter_comm S T] at pS qS
+    linarith [measureReal_inter_add_diff (μ := P) (s := T) hS,
+      measureReal_inter_add_diff (μ := Q) (s := T) hS]
+  intro T hT
+  refine abs_le.mpr ⟨?_, upper T hT⟩
+  have hc := upper Tᶜ hT.compl
+  rw [measureReal_compl hT, measureReal_compl hT] at hc
+  simp at hc
+  linarith
 
 /-- Discrete histogram TVD approximations of continuous distributions are monotonically
     non-decreasing under finite partition refinement: splitting each coarse cell `b` into

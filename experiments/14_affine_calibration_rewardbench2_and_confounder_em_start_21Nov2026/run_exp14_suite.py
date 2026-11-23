@@ -12,6 +12,7 @@ import hashlib
 import json
 import pickle
 import re
+import sys
 import time
 from pathlib import Path
 
@@ -39,6 +40,8 @@ matplotlib.rcParams.update(
 )
 
 EXP14_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(EXP14_DIR.parent / "13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026"))
+from mtbench_features import mtbench_features
 RESULTS_DIR = EXP14_DIR / "results"
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -239,16 +242,6 @@ def load_summeval_bundle() -> dict:
     Y_cand = [[bart[d]["sys_summs"][s]["sys_summ"] for s in systems] for d in docs]
     word_len = np.array([[len(Y_cand[di][si].split()) for si in range(16)] for di in range(100)], dtype=np.float64)
 
-    # Prompt-candidate lexical TF-IDF cosine similarity for confounder residualization covariate
-    all_texts = X_docs + [Y_cand[di][si] for di in range(100) for si in range(16)]
-    vec = TfidfVectorizer(max_features=12000, stop_words="english").fit(all_texts)
-    X_mat = vec.transform(X_docs)
-    Y_mat = vec.transform([Y_cand[di][si] for di in range(100) for si in range(16)])
-    prompt_sim = np.zeros((100, 16), dtype=np.float64)
-    for di in range(100):
-        rows = slice(di * 16, (di + 1) * 16)
-        prompt_sim[di] = np.asarray(Y_mat[rows].multiply(X_mat[di]).sum(axis=1)).ravel()
-
     G4 = np.stack([G_dims[d][:, :, 0] for d in ("con", "rel", "coh", "flu")], axis=2)
     J_wild = np.concatenate([G4, B_rf, B_en[:, :, :29], word_len[:, :, None]], axis=2)
     return {
@@ -257,7 +250,8 @@ def load_summeval_bundle() -> dict:
         "B_rf": B_rf,
         "B_en": B_en,
         "word_len": word_len,
-        "prompt_sim": prompt_sim,
+        "articles": np.asarray(X_docs),
+        "summaries": np.asarray(Y_cand),
         "J_wild": J_wild,
     }
 
@@ -277,46 +271,17 @@ def load_mtbench_bundle() -> dict:
     y_true = np.where(dec["winner_h"] == "model_a", 1.0, -1.0)
     assert len(dec) == 2575 and dec["question_id"].nunique() == 80
 
-    prompts, resp_a, resp_b = [], [], []
-    for _, row in dec.iterrows():
-        turn_idx = 0 if int(row["turn"]) == 1 else 1
-        ca, cb = row["conversation_a"], row["conversation_b"]
-        prompts.append(str(ca[2 * turn_idx]["content"]))
-        resp_a.append(str(ca[2 * turn_idx + 1]["content"]))
-        resp_b.append(str(cb[2 * turn_idx + 1]["content"]))
+    return {"pairs": dec, "y_true": y_true, "q_ids": dec["question_id"].to_numpy(dtype=int)}
 
-    vec = TfidfVectorizer(max_features=3000, stop_words="english").fit(prompts + resp_a + resp_b)
-    VP = vec.transform(prompts)
-    VA = vec.transform(resp_a)
-    VB = vec.transform(resp_b)
-    sim_diff = np.asarray(VP.multiply(VA).sum(axis=1) - VP.multiply(VB).sum(axis=1)).ravel()
 
-    def lex_div(txt: str) -> float:
-        toks = re.findall(r"[a-z]+", txt.lower())
-        return len(set(toks)) / np.sqrt(len(toks) + 1.0)
-
-    div_diff = np.array([lex_div(a) - lex_div(b) for a, b in zip(resp_a, resp_b)], dtype=np.float64)
-    wlen_diff = np.array([len(a.split()) - len(b.split()) for a, b in zip(resp_a, resp_b)], dtype=np.float64)
-    clen_diff = np.array([len(a) - len(b) for a, b in zip(resp_a, resp_b)], dtype=np.float64)
-
-    gmap = {"model_a": 1.0, "model_b": -1.0, "tie": 0.0, "tie (inconsistent)": 0.0}
-    gpt4_score = np.array([gmap[w] for w in dec["winner_g"]], dtype=np.float64)
-
-    rng_mt = np.random.default_rng(SEED + 99)
-    cols = [gpt4_score, sim_diff, div_diff]
-    for c_idx in range(11):
-        base = wlen_diff if c_idx % 2 == 0 else clen_diff
-        jitter = rng_mt.normal(0.0, 0.05 * base.std(), size=len(base))
-        cols.append(base + jitter)
-    cols.extend([-gpt4_score, -sim_diff, -div_diff])
-    X_raw = np.column_stack(cols)
-    return {
-        "X_raw": X_raw,
-        "y_true": y_true,
-        "q_ids": dec["question_id"].to_numpy(dtype=int),
-        "len_diff": wlen_diff,
-        "sim_diff": sim_diff,
-    }
+def summeval_overlap(bundle: dict, train: np.ndarray) -> np.ndarray:
+    docs, summaries = bundle["articles"], bundle["summaries"]
+    vec = TfidfVectorizer(max_features=12000, stop_words="english")
+    vec.fit([*docs[train], *summaries[train].ravel()])
+    doc_vec = vec.transform(docs)
+    summary_vec = vec.transform(summaries.ravel())
+    matched = doc_vec[np.repeat(np.arange(len(docs)), summaries.shape[1])]
+    return np.asarray(summary_vec.multiply(matched).sum(axis=1)).reshape(summaries.shape)
 
 
 def load_rewardbench2_bundle() -> dict:
@@ -639,23 +604,12 @@ def module2_rewardbench2(rb2: dict, rng: np.random.Generator) -> dict:
     res_nat_adv = _eval_rb2_pool(S_nat_adv, S_nat_adv, rb2, rng, n_boot=N_BOOT)
 
     # Platt / logistic probability calibration over (chosen, rejected) pairs on raw logit mean & RB-Spec
-    oof_rb = res_natural["oof_rb_cand"]
     raw_mean_cand = S_main_r.mean(axis=1)
     slices = rb2["prompt_cand_slices"]
-    pair_prompt = []
-    pair_margin_rb = []
-    pair_margin_raw = []
-    for pi, (s, e, nc) in enumerate(slices):
-        sc_rb = oof_rb[s:e]
-        sc_raw = raw_mean_cand[s:e]
-        for ci in range(nc):
-            for rj in range(nc, e - s):
-                pair_prompt.append(pi)
-                pair_margin_rb.append(float(sc_rb[ci] - sc_rb[rj]))
-                pair_margin_raw.append(float(sc_raw[ci] - sc_raw[rj]))
-    pair_prompt = np.asarray(pair_prompt, dtype=int)
-    pair_margin_rb = np.asarray(pair_margin_rb, dtype=np.float64)
-    pair_margin_raw = np.asarray(pair_margin_raw, dtype=np.float64)
+    pairs = [(pi, i, j) for pi, (s, e, nc) in enumerate(slices)
+             for i in range(s, s + nc) for j in range(s + nc, e)]
+    pair_prompt, chosen, rejected = np.asarray(pairs).T
+    pair_margin_raw = raw_mean_cand[chosen] - raw_mean_cand[rejected]
 
     n_prompts = len(slices)
     anchor_counts = [0, 5, 10, 20, 50]
@@ -666,6 +620,10 @@ def module2_rewardbench2(rb2: dict, rng: np.random.Generator) -> dict:
     for _ in range(100):
         perm_p = rng.permutation(n_prompts)
         tr_p, te_p = perm_p[:200], perm_p[200:]
+        train_cand = np.isin(rb2["cand_prompt_idx"], tr_p)
+        w_rb, _ = fit_rb_spec_weights(S_main_c[train_cand])
+        scores_rb = S_main_c @ w_rb
+        pair_margin_rb = scores_rb[chosen] - scores_rb[rejected]
         te_mask = np.isin(pair_prompt, te_p)
         te_rb = pair_margin_rb[te_mask]
         te_raw = pair_margin_raw[te_mask]
@@ -755,24 +713,23 @@ def module3_confounder_breakdown_and_recovery(
     H = summeval["H_overall"]
     wlen_se = summeval["word_len"]
     # Z-normalize word length & prompt overlap per article so universal bias creates strong within-prompt length correlation
-    wlen_c = (wlen_se - wlen_se.mean(axis=1, keepdims=True))
-    wlen_c = wlen_c / max(float(wlen_c.std()), 1e-8)
-    psim_c = summeval["prompt_sim"] - summeval["prompt_sim"].mean(axis=1, keepdims=True)
-    psim_c = psim_c / max(float(psim_c.std()), 1e-8)
-
+    wlen_centered = wlen_se - wlen_se.mean(axis=1, keepdims=True)
+    c_base = J_wild - J_wild.mean(axis=1, keepdims=True)
     se_folds = np.array_split(rng.permutation(100), N_FOLDS)
+    overlaps = []
+    for te_idx in se_folds:
+        train = ~np.isin(np.arange(len(J_wild)), te_idx)
+        sim = summeval_overlap(summeval, train)
+        overlaps.append(sim - sim.mean(axis=1, keepdims=True))
     se_rows = []
     for c in c_levels:
-        # Inject universal confounder proportional to judge within-prompt scale onto all 38 judges across all families!
-        J_conf = J_wild.copy()
-        c_base = J_wild - J_wild.mean(axis=1, keepdims=True)
-        sd_j = np.maximum(c_base.reshape(-1, J_wild.shape[2]).std(axis=0), 1e-8)
-        J_conf = J_conf + c * (wlen_c[:, :, None] * sd_j[None, None, :])
-
         preds = {k: np.zeros((100, 16)) for k in ("Uniform Mean", "Vanilla RB-Spec", "CR-RB-Spec", "RB-Spec + EM (5-anc)")}
-        for te_idx in se_folds:
+        for te_idx, psim_c in zip(se_folds, overlaps):
             mask = np.ones(100, dtype=bool); mask[te_idx] = False
             tr_idx = np.where(mask)[0]
+            sd_j = np.maximum(c_base[tr_idx].reshape(-1, J_wild.shape[2]).std(0), 1e-8)
+            wlen_c = wlen_centered / max(float(wlen_centered[tr_idx].std()), 1e-8)
+            J_conf = J_wild + c * wlen_c[:, :, None] * sd_j
             C_tr = (J_conf[tr_idx] - J_conf[tr_idx].mean(axis=1, keepdims=True)).reshape(-1, J_conf.shape[2])
             C_te = (J_conf[te_idx] - J_conf[te_idx].mean(axis=1, keepdims=True)).reshape(-1, J_conf.shape[2])
 
@@ -811,22 +768,23 @@ def module3_confounder_breakdown_and_recovery(
         se_rows.append(res_c)
 
     # 3B. MT-Bench K=17 universal length confounder sweep
-    X_mt = mtbench["X_raw"]
     y_mt = mtbench["y_true"]
     q_ids = mtbench["q_ids"]
     uniq_qs = sorted(set(q_ids.tolist()))
     mt_folds = np.array_split(rng.permutation(len(uniq_qs)), N_FOLDS)
-    ld_mt = (mtbench["len_diff"] / max(float(mtbench["len_diff"].std()), 1e-8))[:, None]
-    cov_mt = np.column_stack([mtbench["len_diff"], mtbench["sim_diff"]])
-
+    mt_inputs = []
+    for f_idx in mt_folds:
+        te_m = np.isin(q_ids, np.asarray(uniq_qs)[f_idx])
+        X_mt, ld = mtbench_features(mtbench["pairs"], ~te_m, SEED)
+        cov_mt = np.column_stack([ld, X_mt[:, 1]])
+        shift = ld[:, None] / max(ld[~te_m].std(), 1e-8) * np.maximum(X_mt[~te_m].std(0), 1e-8)
+        mt_inputs.append((te_m, X_mt, shift, cov_mt))
     mt_rows = []
     for c in c_levels:
-        X_conf = X_mt + c * (ld_mt * np.maximum(X_mt.std(axis=0), 1e-8)[None, :])
         oof = {k: np.zeros(len(y_mt)) for k in ("Uniform Mean", "Vanilla RB-Spec", "CR-RB-Spec")}
-        for f_idx in mt_folds:
-            te_qs = set(uniq_qs[i] for i in f_idx)
-            te_m = np.isin(q_ids, list(te_qs))
+        for te_m, X_mt, shift, cov_mt in mt_inputs:
             tr_m = ~te_m
+            X_conf = X_mt + c * shift
             rms = np.maximum(np.sqrt(np.mean(X_conf[tr_m] ** 2, axis=0)), 1e-8)
             Z_tr, Z_te = X_conf[tr_m] / rms, X_conf[te_m] / rms
             oof["Uniform Mean"][te_m] = Z_te.mean(axis=1)

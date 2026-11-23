@@ -25,16 +25,15 @@ $b_K(z) := \mathbf{1}\!\big[\sum_{j=1}^K b_j(z) > K/2\big].$
 
 \begin{theorem}[Consensus convergence]
 \label{thm:consensus}
-Under Assumption~\ref{asm:competence}, let $M$ denote the mixture distribution
-over evaluation pairs. Then
+Let $M=(P_{UV}+P_U\otimes P_V)/2$ and take expectation over the random votes under Assumption~\ref{asm:competence}. Then
 \begin{equation}
-0 \le \tau(c) - \Delta_c(b_K)
+0 \le \tau(c) - \E[\Delta_c(b_K)]
 \le 2\,\E_{Z \sim M}\!\big[e^{-2K\gamma(Z)^2}\big].
 \end{equation}
 If $\gamma(z) \ge \gamma_0 > 0$ almost surely, then
 \begin{equation}
 \label{eq:consensus-uniform}
-\tau(c) - \Delta_c(b_K) \le 2\,e^{-2K\gamma_0^2}.
+\tau(c) - \E[\Delta_c(b_K)] \le 2\,e^{-2K\gamma_0^2}.
 \end{equation}
 \end{theorem}
 
@@ -43,7 +42,7 @@ Fix $z = (u,v)$ and let $X_j = \mathbf{1}[b_j(z) = h^\star(z)]$, a Bernoulli
 random variable with parameter $q(z) \ge \frac{1}{2} + \gamma(z)$.
 The $X_j$ are independent given~$z$.
 
-Majority vote errs when $\sum_j X_j \le K/2$. By Hoeffding's inequality
+A majority error requires $\sum_j X_j \le K/2$. By Hoeffding's inequality
 applied to $\E[\sum_j X_j \mid z] \ge K(\frac{1}{2} + \gamma(z))$:
 \begin{equation}
 \Prob\!\big(b_K(z) \neq h^\star(z) \mid z\big)
@@ -52,9 +51,8 @@ applied to $\E[\sum_j X_j \mid z] \ge K(\frac{1}{2} + \gamma(z))$:
 
 Since $h^\star$ and $b_K$ are binary, the gap in TVD witness values satisfies
 \begin{equation}
-\Delta_c(h^\star) - \Delta_c(b_K)
-\le 2\E_M[|h^\star(Z) - b_K(Z)|]
-= 2\E_M[\Prob(b_K(Z) \neq h^\star(Z) \mid Z)]
+\Delta_c(h^\star) - \E[\Delta_c(b_K)]
+\le 2\E_M[\Prob(b_K(Z) \neq h^\star(Z) \mid Z)]
 \le 2\E_M[e^{-2K\gamma(Z)^2}].
 \end{equation}
 Under the uniform margin $\gamma(z) \ge \gamma_0$, the bound becomes
@@ -62,7 +60,7 @@ $2\,e^{-2K\gamma_0^2}$.
 \end{proof}
 
 \begin{remark}
-Under positive competence and conditional independence, majority-vote judges
+Under a uniform positive margin and conditional independence, majority-vote judges
 converge \emph{exponentially fast} to the optimal TVD critic. This is the
 cleanest formalization of the asymptotic-consensus hypothesis, connecting
 classical Condorcet jury results to modern judge-ensemble evaluation.

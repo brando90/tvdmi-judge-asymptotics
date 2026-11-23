@@ -3,7 +3,7 @@
 > **TLDR (11-21-2026)**
 > - **What it is:** a research repo on reference-free evaluation with judge ensembles (scoring with TVD-MI, Total Variation Distance–Mutual Information): does the aggregated score converge to a gold target as the number of judges K grows, at what rate, and when does it break (dependent, cloned, or adversarial judges, or shared confounders)?
 > - **Status:** Lean 4 formalization (`66` theorems across `Basic.lean`, `NewTheory.lean`, `SpectralCalibration.lean`, and `MultiFactorContinuous.lean`, zero `sorry`); historical scripts `01`–`11` reconciled in Experiments 12–13; real-LLM validation completed across `SummEval` (`1,600` items), `LMSYS MT-Bench` (`2,575` pairs), `RewardBench 2` (`1,753` deduplicated non-tie prompts, `27` models), and `JudgeBench` (`33` real judges across `350` pairs) in Experiments 13–15; dual NeurIPS (`main.pdf`) and arXiv (`main_arxiv.pdf`) builds maintained.
-> - **Where things are:** `experiments/` (`00` Lean 4, `01`–`15` empirical/theoretical experiments, roadmap in `experiments/README.md`), `theory/assumptions.md`, `latex_paper/neurips/main.tex` & `main_arxiv.tex`, `CLAUDE.md`, and `AGENTS.md`.
+> - **Where things are:** `experiments/` (`00` Lean 4, `01`–`15` empirical/theoretical experiments, roadmap in `experiments/README.md`), `theory/assumptions.md`, `latex_paper/neurips/main.tex` & `main_arxiv.tex`, `CLAUDE.md`, and `agents.md`.
 
 This repository studies the mathematics of reference-free evaluation with judge
 ensembles, with a focus on Total Variation Distance–Mutual Information
@@ -75,8 +75,8 @@ A good way to read this project is:
   describing goal, hypothesis, method, and expected output.
   See `experiments/README.md` for the full experiment plan.
 
-- `lean/`
-  Lean 4 formalization of the setup and the main results (future)
+- `experiments/00_lean_formalization/lean/`
+  Lean 4 sources and pinned toolchain for the four proof modules.
 
 - `notes/`
   Working notes, open problems, and design decisions (future)

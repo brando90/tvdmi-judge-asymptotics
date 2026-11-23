@@ -505,7 +505,7 @@
       {
         "rho": 0.0,
         "floor_theory": 0.0,
-        "k_star_crossover": Infinity,
+        "k_star_crossover": "inf",
         "broken_free_b_alpha": 0.46806025741055984,
         "broken_free_b_R2": 0.9984647314171424,
         "fixed_local_alpha_unclipped_16_256": 0.4989904638275493,

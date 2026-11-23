@@ -1,0 +1,6 @@
+# Experiment 17: Cross-Company Mega QA (`Codex` + `Claude Code`) & Collaborator Summary Brief (`11-23-2026`)
+
+- **Date:** `11-23-2026`
+- **Status:** VERIFIED (`11-23-2026 12:07 PST`, started `11-23-2026 10:52:43 PST`, base `7ea00af` on `origin/main`, campaign `QA_BASE = cb2a2c0`); ready for final commit/push and collaborator email dispatch.
+- **Doc link:** <https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/17_cross_company_mega_qa_and_collaborator_brief_start_23Nov2026/README.md>
+- **TLDR:** Completed the 3-stage cross-company sequential Mega Quality Assurance (`QA`) chain (`OpenAI Codex gpt-6.2-astra xhigh -> Anthropic Claude Code claude-opus-5-5 xhigh -> OpenAI Codex gpt-6.2-astra xhigh` fresh context) and independent post-Stage-3 deterministic verification (`3,290` Lean build jobs, `66/66` standard axioms, `21/21` Python compiles, `21`/`23`/`1`-page warning-free PDFs, zero temp files/secrets/Rule-91 violations). Updated `Henry Bosch` (`hbosch@stanford.edu`) in `brando90/ultimate-utils` (`8b8246b`). Final step: push `main`, log `~/agent-sync`, and email `Sanmi Koyejo` (`sanmi@stanford.edu`) and `Henry Bosch` (`hbosch@stanford.edu`) with `brando.science@gmail.com` in BCC.

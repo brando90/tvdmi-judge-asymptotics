@@ -12,9 +12,9 @@ Date: 11-21-2026
 
 ## 1. What These Results Show and Do Not Show (Explicit Limits)
 
-1. **Likert Severity vs. Bradley–Terry Logit Calibration:** Scalar Likert judges (`SummEval`) require `m = 5` to `20` human anchors to remove constant severity offsets (`bias: -1.1039 -> +0.0074`, `ICC(A,1): 0.3341 -> 0.6441`, `MAE: 1.1295 -> 0.3702`), whereas Bradley–Terry RLHF reward models (`RewardBench 2`) already output near-calibrated binary cross-entropy margins (`m = 0` `ECE = 0.0219`), so small-`m` (`m <= 10`) Platt refits overfit slightly before stabilizing at `m = 50`.
+1. **Likert Severity vs. Bradley–Terry Logit Calibration:** Scalar Likert judges (`SummEval`) require `m = 5` to `20` human anchors to remove constant severity offsets (`bias: -1.1039 -> +0.0074`, `ICC(A,1): 0.3341 -> 0.6441`, `MAE: 1.1295 -> 0.3702`), whereas Bradley–Terry RLHF reward models (`RewardBench 2`) already output near-calibrated binary cross-entropy margins (`m = 0` `ECE = 0.0218`), so small-`m` (`m <= 10`) Platt refits overfit slightly before stabilizing at `m = 50`.
 2. **Clean vs. Flooded `RewardBench 2` Tradeoff:** On clean `RewardBench 2` (`K = 23`), where strong correlated families already hold a `17/23` majority, unsupervised `RB-Spec` trades slight clean-regime accuracy (`0.7872` vs. `0.8334` Naive SVD) to survive `M = 32` weak-clone floods (`0.7781` vs. `0.4324`, `p = 1.65e-124`) and `54.9%` naturally inverted `PKU-beaver-v1.0-reward` floods (`0.7963` vs. `0.1455`, `p = 2.11e-229`).
-3. **Cross-Family Confounder Vulnerability vs. `CR-RB-Spec`:** Vanilla `RB-Spec` still breaks when **every** family loads onto the same confounder (`c^2 v_W` floor in `cross_family_confounder_variance_floor`). Residualizing observable confounders (`CR-RB-Spec`) requires candidate length / prompt-overlap covariates (or disambiguating anchors) to isolate quality cleanly (`0.5936` `SummEval`, `0.7709` `MT-Bench`, `0.8915` MC).
+3. **Cross-Family Confounder Vulnerability vs. `CR-RB-Spec`:** Vanilla `RB-Spec` still breaks when **every** family loads onto the same confounder (`c^2 v_W` floor in `cross_family_confounder_variance_floor`). Residualizing observable confounders (`CR-RB-Spec`) requires candidate length / prompt-overlap covariates (or disambiguating anchors) to isolate quality cleanly (`0.5767` `SummEval`, `0.7736` `MT-Bench`, `0.8915` MC).
 
 ---
 

@@ -2,7 +2,7 @@
 \section{Lean~4 Formalization}
 \label{sec:lean}
 
-We formally verify all variational, invariance, concentration, calibration, confounder, shrinkage, and multi-factor spectral theorems in Lean~4 (\texttt{leanprover/lean4:v4.29.0}) with Mathlib \citep{mathlib2020} across four modules in \texttt{experiments/00\_lean\_formalization/lean/TvdmiJudge/}:
+Lean~4.29.0 and Mathlib \citep{mathlib2020} check the following results.
 
 \begin{enumerate}[leftmargin=*,itemsep=0pt,topsep=1pt]
 \raggedright
@@ -10,9 +10,9 @@ We formally verify all variational, invariance, concentration, calibration, conf
 \item \textbf{Double-centering \& peer recovery} (\texttt{NewTheory.lean}, Thm.~\ref{thm:double-centering}): Additive shift cancellation (\texttt{tvdmi\_double\_centering\_invariance}) and inverter rejection (\texttt{oriented\_peer\_strict\_mono}, \texttt{oriented\_peer\_rejects\_inverter}).
 \item \textbf{Clone hijacking \& $1/F$ recovery} (\texttt{Basic.lean}, \texttt{NewTheory.lean}): Equicorrelated floor (\texttt{variance\_floor}), clone-hijacking asymptote and counterexample, and $B/F$ recovery (\texttt{var\_family\_balanced\_le\_inv\_F}, \texttt{inv\_F\_rate\_vanishes}).
 \item \textbf{Two-axis Hoeffding \& cross-fitting} (\texttt{NewTheory.lean}, Thms.~\ref{thm:two-axis}--\ref{thm:split-sample}): Exact $n\eta^2$ exponent (\texttt{hoeffding\_two\_sample\_exponent}) and vanishing split bound (\texttt{split\_sample\_bound\_vanishes}).
-\item \textbf{Adversarial thresholds \& optimal weights} (\texttt{Basic.lean}, \texttt{NewTheory.lean}): Threshold $\delta_{\mathrm{fam}} < 1/2$ (\texttt{effective\_family\_adversarial\_threshold}) and Nitzan--Paroush weights (\texttt{optimal\_judge\_weights\_cauchy\_schwarz}).
-\item \textbf{Calibration, confounders, \& Davis--Kahan} (\texttt{SpectralCalibration.lean}, Thm.~\ref{thm:calibration-dk}): $\mathrm{ICC}(A,1) < \mathrm{ICC}(C,1)$ (\texttt{icc\_agreement\_lt\_consistency\_of\_bias}), $O(1/m)$ calibration, confounder residualization, and rank-1 $O(n^{-1/2})$ decay (\texttt{davis\_kahan\_rayleigh\_sin\_sq\_bound}).
-\item \textbf{Shrinkage, proxies, rank-$r$, \& measure TVD} (\texttt{MultiFactorContinuous.lean}): Deconfounding (\texttt{marginal\_cov\_confounds\_signal\_and\_cloning}), shrinkage dominance (\texttt{interior\_shrinkage\_strictly\_dominates\_both}), floor $(1-r^2)c^2 v_W$ (\texttt{partial\_proxy\_residual\_confounder\_variance}), rank-$r$ bound (\texttt{multifactor\_rayleigh\_trace\_sin\_sq\_bound}), and measure-space witness/partition TVD (\texttt{measure\_tvd\_event\_witness\_attainment}, \texttt{partition\_tvd\_refinement\_monotone}).
+\item \textbf{Adversarial thresholds \& optimal weights} (\texttt{Basic.lean}, \texttt{NewTheory.lean}): Threshold $\delta_{\mathrm{fam}} < 1/2$ (\texttt{effective\_family\_adversarial\_threshold}) and inverse-variance weights (\texttt{optimal\_judge\_weights\_cauchy\_schwarz}).
+\item \textbf{Calibration, confounders, \& Davis--Kahan} (\texttt{SpectralCalibration.lean}, Thm.~\ref{thm:calibration-dk}): $\mathrm{ICC}(A,1) < \mathrm{ICC}(C,1)$ (\texttt{icc\_agreement\_lt\_consistency\_of\_bias}), $O(1/m)$ calibration, confounder residualization, and rank-1 leakage given an $O(n^{-1/2})$ perturbation (\texttt{davis\_kahan\_rayleigh\_sin\_sq\_bound}).
+\item \textbf{Shrinkage, proxies, rank-$r$, \& measure TVD} (\texttt{MultiFactorContinuous.lean}): Deconfounding (\texttt{marginal\_cov\_confounds\_signal\_and\_cloning}), shrinkage dominance (\texttt{interior\_shrinkage\_strictly\_dominates\_both}), floor $(1-r^2)c^2 v_W$ (\texttt{partial\_proxy\_residual\_confounder\_variance}), rank-$r$ bound (\texttt{multifactor\_rayleigh\_trace\_sin\_sq\_bound}), and attainment on a given Hahn-positive event and partition refinement (\texttt{measure\_tvd\_event\_witness\_attainment}, \texttt{partition\_tvd\_refinement\_monotone}).
 \end{enumerate}
 
 All $66$ theorems ($28$ \texttt{Basic.lean}, $15$ \texttt{NewTheory.lean}, $11$ \texttt{SpectralCalibration.lean}, $12$ \texttt{MultiFactorContinuous.lean}) compile cleanly (\texttt{lake build}, 3,290~jobs) with zero \texttt{sorry} under \texttt{[propext, Classical.choice, Quot.sound]}.

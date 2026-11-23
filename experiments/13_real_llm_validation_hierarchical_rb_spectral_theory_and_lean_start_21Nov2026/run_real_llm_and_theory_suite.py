@@ -18,6 +18,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from mtbench_features import mtbench_features
 from scipy.stats import kendalltau, pearsonr, spearmanr, wilcoxon
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -364,8 +365,7 @@ def module3_saturation_and_split_null(bundle: dict, rng: np.random.Generator) ->
         bundle["G_dims"]["rel"].reshape(1600, 20),
         bundle["B_en"][:, :, :40].reshape(1600, 40),
     ])  # 80 real critics
-    null_pool_std = (null_pool - null_pool.mean(0)) / (null_pool.std(0) + 1e-12)
-    null_pool_3d = null_pool_std.reshape(100, 16, 80)
+    null_pool_3d = null_pool.reshape(100, 16, 80)
     null_rows = []
     for n_art in (20, 50):
         half = n_art // 2
@@ -378,24 +378,24 @@ def module3_saturation_and_split_null(bundle: dict, rng: np.random.Generator) ->
                 # so neither article difficulty nor system quality leaks across candidates.
                 sub_X = null_pool_3d[art_idx, :, :k_sub]  # (n_art, 16, k_sub)
                 h_flat_sub = bundle["H_overall"][art_idx, :].ravel()
-                h_perm_flat = h_flat_sub[rng.permutation(len(h_flat_sub))]
+                order = rng.permutation(len(h_flat_sub))
+                h_perm_flat = h_flat_sub[order]
                 n_half_items = half * 16
                 sel_X = sub_X[:half].reshape(-1, k_sub)
                 eval_X = sub_X[half:].reshape(-1, k_sub)
-                h_sel = (h_perm_flat[:n_half_items] - h_perm_flat[:n_half_items].mean()) / (
-                    h_perm_flat[:n_half_items].std() + 1e-12
-                )
-                h_ev = (h_perm_flat[n_half_items:] - h_perm_flat[n_half_items:].mean()) / (
-                    h_perm_flat[n_half_items:].std() + 1e-12
-                )
-                h_all = (h_perm_flat - h_perm_flat.mean()) / (h_perm_flat.std() + 1e-12)
-                scores_sel = (sel_X.T @ h_sel) / len(h_sel)
-                scores_ev = (eval_X.T @ h_ev) / len(h_ev)
-                scores_full = (sub_X.reshape(-1, k_sub).T @ h_all) / len(h_all)
+                # Restrict the random order independently within each disjoint half.
+                sel_y = h_flat_sub[order[order < n_half_items]]
+                eval_y = h_flat_sub[order[order >= n_half_items]]
+                def standardize(x):
+                    return (x - x.mean(axis=0)) / (x.std(axis=0) + 1e-12)
+
+                scores_sel = standardize(sel_X).T @ standardize(sel_y) / len(sel_y)
+                scores_ev = ((eval_X - sel_X.mean(0)) / (sel_X.std(0) + 1e-12)).T @ standardize(eval_y) / len(eval_y)
+                scores_full = standardize(sub_X.reshape(-1, k_sub)).T @ standardize(h_perm_flat) / len(h_perm_flat)
                 naive_vals[r] = float(np.max(scores_full))
                 j_star = int(np.argmax(scores_sel))
                 split_vals[r] = float(scores_ev[j_star])
-            w_p = float(wilcoxon(np.abs(naive_vals), np.abs(split_vals)).pvalue) if k_sub > 1 else float("nan")
+            w_p = float(wilcoxon(np.abs(naive_vals), np.abs(split_vals)).pvalue) if k_sub > 1 else None
             sp_zero_p = float(wilcoxon(split_vals).pvalue)
             null_rows.append({
                 "n_art": n_art,
@@ -682,60 +682,6 @@ def module4_summeval_regimes(bundle: dict, rng: np.random.Generator) -> dict:
     }
 
 
-def _extract_mtbench_features(df: pd.DataFrame) -> np.ndarray:
-    """Compute non-human pairwise judge signals from real GPT-4 votes + conversation texts."""
-    prompts, resp_a, resp_b = [], [], []
-    for _, row in df.iterrows():
-        turn_idx = 0 if int(row["turn"]) == 1 else 1
-        ca, cb = row["conversation_a"], row["conversation_b"]
-        u_txt = str(ca[2 * turn_idx]["content"])
-        a_txt = str(ca[2 * turn_idx + 1]["content"])
-        b_txt = str(cb[2 * turn_idx + 1]["content"])
-        prompts.append(u_txt)
-        resp_a.append(a_txt)
-        resp_b.append(b_txt)
-
-    # TF-IDF prompt-response relevance difference (A minus B)
-    vec = TfidfVectorizer(max_features=3000, stop_words="english")
-    vec.fit(prompts + resp_a + resp_b)
-    VP = vec.transform(prompts)
-    VA = vec.transform(resp_a)
-    VB = vec.transform(resp_b)
-    sim_a = np.asarray(VP.multiply(VA).sum(axis=1)).ravel()
-    sim_b = np.asarray(VP.multiply(VB).sum(axis=1)).ravel()
-    tfidf_diff = sim_a - sim_b
-
-    # Unique non-stopword lexical richness difference
-    def lex_div(txt: str) -> float:
-        toks = re.findall(r"[a-z]+", txt.lower())
-        return len(set(toks)) / np.sqrt(len(toks) + 1.0)
-
-    lex_diff = np.array([lex_div(a) - lex_div(b) for a, b in zip(resp_a, resp_b)])
-    # Character length and word length diffs (verbosity clones)
-    wlen_diff = np.array([len(a.split()) - len(b.split()) for a, b in zip(resp_a, resp_b)], dtype=np.float64)
-    clen_diff = np.array([len(a) - len(b) for a, b in zip(resp_a, resp_b)], dtype=np.float64)
-
-    # GPT-4 real pairwise vote mapped to +1 (model_a), -1 (model_b), 0 (tie)
-    gmap = {"model_a": 1.0, "model_b": -1.0, "tie": 0.0, "tie (inconsistent)": 0.0}
-    gpt4_score = np.array([gmap[w] for w in df["winner_g"]], dtype=np.float64)
-
-    rng_mt = np.random.default_rng(SEED + 99)
-    # Construct K=17 realistic messy pairwise judge pool:
-    # 1 real GPT-4, 1 TF-IDF prompt-alignment, 1 lexical richness,
-    # 11 verbosity/length clones (strong confounding clone family!), 3 sign-flipped adversaries!
-    cols = [
-        gpt4_score,
-        tfidf_diff,
-        lex_diff,
-    ]
-    for c_idx in range(11):
-        base = wlen_diff if c_idx % 2 == 0 else clen_diff
-        jitter = rng_mt.normal(0.0, 0.05 * base.std(), size=len(base))
-        cols.append(base + jitter)
-    cols.extend([-gpt4_score, -tfidf_diff, -lex_diff])
-    return np.column_stack(cols)
-
-
 def module5_mt_bench_pairwise(rng: np.random.Generator) -> dict:
     """Evaluate pairwise aggregators on LMSYS MT-Bench human judgments across 80 questions."""
     df_h = pd.read_parquet(MTBENCH_CACHE / "human.parquet")
@@ -764,9 +710,6 @@ def module5_mt_bench_pairwise(rng: np.random.Generator) -> dict:
                     agree_pairs.append(int(vals[i] == vals[j]))
     inter_human_acc = float(np.mean(agree_pairs))
 
-    X_raw = _extract_mtbench_features(dec)  # (2575, 17)
-    K = X_raw.shape[1]
-
     # 5-fold question-disjoint CV so every question is scored out-of-sample
     q_perm = rng.permutation(unique_qs)
     q_folds = np.array_split(q_perm, N_FOLDS)
@@ -776,6 +719,7 @@ def module5_mt_bench_pairwise(rng: np.random.Generator) -> dict:
     for q_te in q_folds:
         te_mask = np.isin(q_ids, q_te)
         tr_mask = ~te_mask
+        X_raw, _ = mtbench_features(dec, tr_mask, SEED)
         X_tr, X_te = X_raw[tr_mask], X_raw[te_mask]
         # Note: pairwise differences naturally center around 0 under symmetry; scale by train RMS
         rms = np.maximum(np.sqrt(np.mean(X_tr ** 2, axis=0)), 1e-8)
@@ -828,7 +772,7 @@ def module5_mt_bench_pairwise(rng: np.random.Generator) -> dict:
         for m in methods
     }
 
-    summary = {"n_pairs": int(len(dec)), "n_questions": 80, "inter_human_agreement": inter_human_acc, "K_panel": K, "methods": {}}
+    summary = {"n_pairs": int(len(dec)), "n_questions": 80, "inter_human_agreement": inter_human_acc, "K_panel": X_raw.shape[1], "methods": {}}
     for m in methods:
         pred_sign = np.where(oof_scores[m] > 0, 1.0, np.where(oof_scores[m] < 0, -1.0, 0.0))
         acc_overall = float(np.mean(pred_sign == y_true))
@@ -1133,7 +1077,7 @@ def main() -> None:
         "module5_mtbench": mod5,
         "module6_theory_and_cost": mod6,
     }
-    (RESULTS_DIR / "summary_metrics.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    (RESULTS_DIR / "summary_metrics.json").write_text(json.dumps(summary, indent=2, allow_nan=False), encoding="utf-8")
     write_summary_csvs(summary)
     make_6panel_figure(mod2, mod3, mod4, mod5, mod6)
     print(f"ALL MODULES COMPLETE in {summary['elapsed_sec']}s")

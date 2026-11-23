@@ -21,7 +21,7 @@ any prompt distribution $P_X$ and any injective map $Y = f(X)$,
 \end{equation}
 which depends solely on prompt collision entropy and assigns higher
 unconditional TVD-MI to verbatim prompt copying ($Y = X$) than to non-injective
-semantic reasoning (verified in Lean~4 as \texttt{injection\_tvd\_blindness}).
+maps that merge positive-mass inputs (verified in Lean~4 as \texttt{injection\_tvd\_blindness}).
 Similarly, global label inversion $Y = 1 - Z^\star$ preserves the joint--product
 total variation distance identically.
 \end{theorem}
@@ -36,7 +36,7 @@ TVD-MI witness contrast: for any $h(x,y) = a(x) + b(y) + \gamma\,\psi(x,y)$,
 \end{equation}
 Moreover, when conditionally independent semantic peer predictors $W_j$
 ($W_j \perp Y_c \mid Z^\star$, symmetric accuracy
-$\Prob(W_j = Z^\star \mid Z^\star) = q_j$) replace unconditional
+$\Prob(W_j = Z^\star \mid Z^\star) = q_j$, $\Prob(Y_c=Z^\star\mid Z^\star)=p_c$, $\Var(Z^\star)>0$, with $\widetilde Y_c$ an independent marginal draw) replace unconditional
 prompt--response comparisons on binary latent correctness $Z^\star$ via the
 oriented witness
 $\Delta^{\mathrm{orient}}_{c,j} := \E[\mathbf{1}\{W_j=Y_c\} - \mathbf{1}\{W_j=\widetilde{Y}_c\}] = \E[(\mathbf{1}\{W_j=1\}-\mathbf{1}\{W_j=0\})(Y_c - \widetilde{Y}_c)]$,
@@ -47,10 +47,10 @@ and systematic inverters ($p_c < 1/2$, strictly negative) whenever $q_j > 1/2$.
 
 \begin{theorem}[Optimal heterogeneous judge weights via Cauchy--Schwarz]
 \label{thm:optimal-weights}
-Let unbiased judges have competences $\mu_j > 0$ and residual variances
+Let judges have uncorrelated residuals, loadings $\mu_j > 0$ and residual variances
 $v_j > 0$. Across all normalized linear ensembles satisfying $\sum_{j=1}^K w_j \mu_j = 1$,
 $\sum_{j=1}^K w_j^2 v_j \ge (\sum_{j=1}^K \mu_j^2 / v_j)^{-1}$, with unique
-equality at the Nitzan--Paroush inverse-variance weights $w_j^\star \propto \mu_j / v_j$.
+equality at the inverse-variance weights $w_j^\star \propto \mu_j / v_j$.
 \end{theorem}
 
 \begin{theorem}[Rank consistency with gold metric]
@@ -66,5 +66,10 @@ probability approaching~$1$.
 
 \begin{theorem}[Calibration, confounders, shrinkage, multi-factor DK, and continuous TVD]
 \label{thm:calibration-dk}
-(i)~When $\Cov(\widehat{Y}, Y) > 0$ and $\mu_{\widehat{Y}} \neq \mu_Y$, $\mathrm{ICC}(A,1) < \mathrm{ICC}(C,1)$, closing via $m$-anchor OLS calibration at $O(1/m)$. (ii)~Under shared confounder $cW$ ($\Var(W) = v_W$), $1/F$ balancing retains floor $c^2 v_W$, which an $r$-correlated proxy reduces to $(1-r^2)c^2 v_W$ (\texttt{partial\_proxy\_residual\_confounder\_variance}), while interior shrinkage $\lambda^\star$ dominates uniform and balanced endpoints. (iii)~Rank-$r$ empirical projection leakage obeys $\sum_{k=1}^r \sin^2\theta_k \le 2r\varepsilon / (\lambda_r - \lambda_{r+1}) = O(r n^{-1/2})$ \citep{davis1970rotation}, and indicator witnesses on measurable spaces attain $|P_{\R}(S)-Q_{\R}(S)|$ monotonically under partition refinement (\texttt{SpectralCalibration.lean}, \texttt{MultiFactorContinuous.lean}).
+(i)~For positive covariance, unequal means lower the population absolute-agreement coefficient below consistency.
+An offset estimated by the mean of $m$ independent errors of variance $v$ has excess squared error $v/m$.
+(ii)~Under independent centered signal, family noise and shared confounder $cW$, linear projection on a proxy correlated $r$ with $W$ and uncorrelated with the other components leaves confounder variance $(1-r^2)c^2 v_W$.
+For two error vectors, an interior linear combination improves both risks if their cross moment is below each risk.
+(iii)~For a positive eigengap $g$ and operator perturbation $\varepsilon$, rank-$r$ empirical projection leakage is at most $2r\varepsilon/g$ \citep{davis1970rotation}.
+Lean checks the implication from the Rayleigh trace inequalities, maximal discrepancy on a given Hahn-positive event, and monotonicity under finite partition refinement.
 \end{theorem}

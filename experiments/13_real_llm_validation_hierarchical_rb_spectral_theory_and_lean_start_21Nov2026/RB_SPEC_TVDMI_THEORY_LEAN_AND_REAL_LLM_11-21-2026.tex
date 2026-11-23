@@ -69,10 +69,7 @@ Carlo simulations).
   \item \textbf{Hierarchical clone-hijacking falsification vs.\ $1/F$ recovery:}
     When $F$ judge families emit unbalanced clone counts $K_1,\dots,K_F$, uniform
     averaging converges to a cloned weak family's floor $\tau_1^2$ and can invert
-    adversarial majority signs. \texttt{RB-Spec TVD-MI} restores $O(1/F)$ scaling
-    and effective-family breakdown $\delta_{\mathrm{fam}} < 1/2$, provided fewer
-    than half of independent families are adversarial and a latent shared confound
-    $W$ does not reverse more than half of all distinct families.
+    adversarial majority signs. Equal weighting of independent families gives the $O(1/F)$ bound under uniformly bounded variances. The learned spectral rule resisted the tested floods.
 \end{enumerate}}}
 \end{center}
 
@@ -197,10 +194,10 @@ Under uniform weighting across $(K_1, K_2)$ judges from two orthogonal families,
 = \frac{K_1^2 \tau_1^2 + K_1 \sigma_1^2 + K_2^2 \tau_2^2 + K_2 \sigma_2^2}{(K_1 + K_2)^2}
 \;\xrightarrow[K_1 \to \infty]{}\; \tau_1^2,\;}
 \end{equation}
-which strictly increases variance whenever a high-bias family ($\tau_1^2 = 0.25$)
+which strictly increases variance whenever a high-variance family ($\tau_1^2 = 0.25$)
 floods a diverse low-variance core ($\tau_2^2 = 0.01, \sigma_2^2 = 0.05, K_2 = 4$;
 see \lident{clone\_\allowbreak hijacking\_\allowbreak strict\_\allowbreak increase\_\allowbreak counterexample} for $K_1: 1 \to 10$).
-Conversely, weighting every judge in family $f$ by $w_j = 1/(F K_f)$ obeys
+For uniformly bounded family and individual variances, weighting every judge in family $f$ by $w_j = 1/(F K_f)$ obeys
 \begin{equation}
 \boxed{\;
 \Var\!\left(\bar{S}^{\mathrm{bal}}_{F,\{K_f\}}\right)
@@ -227,9 +224,7 @@ $\widehat{R}_{j,j'}$ be the empirical judge correlation matrix. Define the
 redundancy mass $m_j := \sum_{j'=1}^K |\widehat{R}_{j,j'}|^6 \ge 1$ and balancing
 weights $d_j := m_j^{-1/2}$. Compute the top right singular vector $v_1$ of
 $Z^{\mathrm{bal}}_{i,j} = d_j \widetilde{Z}_{i,j}$, set $w^{\mathrm{RB}}_j = d_j v_{1,j}$,
-and orient globally by $\mathrm{sign}(\sum_{j=1}^K d_j w^{\mathrm{RB}}_j)$. On an
-exact block of $K_f$ clones ($|\widehat{R}_{jj'}| = 1$), $d_j = K_f^{-1/2}$ so total
-family spectral mass equals $1$, matching the $1/F$ weighting of Theorem~4.2.
+and orient globally by $\mathrm{sign}(\sum_{j=1}^K d_j w^{\mathrm{RB}}_j)$. For an isolated exact clone block with zero external correlations, $d_j=K_f^{-1/2}$ normalizes its squared column mass. Its final spectral weight still depends on the fitted singular vector.
 
 \section{Effective-Family Breakdown, Split-Sample Frontier, and Cauchy--Schwarz Weights}
 
@@ -239,14 +234,14 @@ family spectral mass equals $1$, matching the $1/F$ weighting of Theorem~4.2.
 \begin{enumerate}[leftmargin=*,itemsep=3pt]
   \item \textbf{Effective-family threshold:} If fraction $\delta_{\mathrm{fam}}$ of
     independent families invert honest margin $\gamma > 0$, family-balanced
-    voting beats $1/2$ iff $\delta_{\mathrm{fam}} < 1/2$, invariant to clone counts
+    the expected correctness of a uniformly sampled family vote exceeds $1/2$ iff $\delta_{\mathrm{fam}} < 1/2$, invariant to clone counts
     inside any family.
   \item \textbf{Split-sample two-axis convergence (Theorem 3'):} Fixing Paper
     Theorem~3's two-sample Hoeffding exponent from $2n\eta^2$ to $n\eta^2$
     (\texttt{hoeffding\_two\_sample\_exponent}: $\sum_{m=1}^{2n}(b_m-a_m)^2 = 2/n$),
     disjoint split evaluation achieves error $O_p(K^{-1/\beta} + \sqrt{(\log K)/n})$
-    without null bias, minimized over budget $B = Kn$ at $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$.
-  \item \textbf{Inverse-variance / Nitzan--Paroush optimality:} For unbiased judges
+    without held-out null bias. The bound is balanced under budget $B = Kn$ at $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$.
+  \item \textbf{Inverse-variance / Nitzan--Paroush optimality:} For uncorrelated judge residuals and normalized weights
     ($\sum w_j \mu_j = 1$) with variances $v_j > 0$, expanding the nonnegative
     identity $\sum_{j=1}^K v_j\big(w_j - \frac{\mu_j}{v_j S}\big)^2 = \sum_j w_j^2 v_j - \frac{1}{S} \ge 0$
     for $S = \sum_{j=1}^K \mu_j^2 / v_j$ proves $\sum_j w_j^2 v_j \ge 1/S$, with
@@ -254,7 +249,7 @@ family spectral mass equals $1$, matching the $1/F$ weighting of Theorem~4.2.
 \end{enumerate}
 \end{theorem}
 
-\section{Empirical Verification Summary on Real LLMs (\textsc{SummEval} \& \textsc{MT-Bench})}
+\section{Empirical Verification Summary on Real LLMs ({\mdseries\scshape SummEval} \& {\mdseries\scshape MT-Bench})}
 
 \begin{center}
 \includegraphics[width=\textwidth]{results/exp13_real_llm_and_theory_6panel.pdf}
@@ -262,7 +257,7 @@ family spectral mass equals $1$, matching the $1/F$ weighting of Theorem~4.2.
 
 \begin{table}[ht]
 \centering
-\caption{\textbf{Held-out 5-fold CV summary on \textsc{SummEval} ($100$ articles, $1,600$ items; item Spearman across regimes) and \textsc{MT-Bench} ($80$ questions, $2,575$ decisive pairs); $95\%$ cluster-bootstrap CIs.}}
+\caption{\textbf{Held-out 5-fold CV summary on {\mdseries\scshape SummEval} ($100$ articles, $1,600$ items; item Spearman across regimes) and {\mdseries\scshape MT-Bench} ($80$ questions, $2,575$ decisive pairs); $95\%$ cluster-bootstrap CIs.}}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{@{}lccccc@{}}
 \toprule
@@ -270,9 +265,9 @@ Method & \textsc{SummEval} Clean ($K=13$) & \textsc{SummEval} Wild ($K=38$) & \t
 \midrule
 Single GPT-4 & $0.596\,[0.555,0.635]$ & $0.596\,[0.557,0.634]$ & $0.596\,[0.556,0.633]$ & $-0.476$ & $0.708\,[0.671,0.742]$ \\
 Uniform Mean & $0.643\,[0.608,0.675]$ & $0.515\,[0.466,0.561]$ & $-0.201\,[-0.269,-0.131]$ & $-0.758$ & $0.685\,[0.649,0.720]$ \\
-Itemwise Median & $0.483\,[0.429,0.535]$ & $0.457\,[0.398,0.513]$ & $-0.446\,[-0.505,-0.387]$ & $-0.523$ & $0.686\,[0.651,0.720]$ (Maj) \\
-Naive SVD & $0.570\,[0.528,0.611]$ & $0.497\,[0.446,0.547]$ & $-0.500\,[-0.550,-0.450]$ & $-1.115$ & $0.718\,[0.681,0.751]$ \\
-\textbf{\texttt{RB-Spec TVD-MI}} & $\mathbf{0.688\,[0.657,0.715]}$ & $\mathbf{0.689\,[0.659,0.718]}$ & $\mathbf{0.703\,[0.673,0.732]}$ & $-1.111$ & $\mathbf{0.795\,[0.769,0.820]}$ \\
+Itemwise Median & $0.483\,[0.429,0.535]$ & $0.457\,[0.398,0.513]$ & $-0.446\,[-0.505,-0.387]$ & $-0.523$ & $0.686\,[0.651,0.719]$ (Maj) \\
+Naive SVD & $0.570\,[0.528,0.611]$ & $0.497\,[0.446,0.547]$ & $-0.500\,[-0.550,-0.450]$ & $-1.115$ & $0.718\,[0.680,0.751]$ \\
+\textbf{\texttt{RB-Spec TVD-MI}} & $\mathbf{0.688\,[0.657,0.715]}$ & $\mathbf{0.689\,[0.659,0.718]}$ & $\mathbf{0.703\,[0.673,0.732]}$ & $-1.111$ & $\mathbf{0.794\,[0.769,0.818]}$ \\
 \bottomrule
 \end{tabular}}
 \end{table}

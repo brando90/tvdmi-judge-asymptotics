@@ -2,6 +2,6 @@
 \section{Related Work}
 \label{sec:related}
 
-\textbf{LLM-as-judge and TVD-MI.} Multi-judge ensembles improve reliability \citep{zheng2023judging, dubois2024alpacafarm, verga2024replacing, malik2025rewardbench2}. Robertson and Koyejo~\citeyearpar{robertson2025limitations} cast reference-free evaluation as TVD-MI testing and sparse IRT recovery \citep{robertson2025tvdmi}, while CARE \citep{chen2026care} analyzed confounded binary judges; we establish scaling rates, split-sample unbiasedness, and redundancy-balanced spectral recovery.
+\textbf{LLM-as-judge and TVD-MI.} Multi-judge ensembles improve reliability \citep{zheng2023judging, dubois2023alpacafarm, verga2024replacing, malik2025rewardbench2}. \citet{robertson2026information} study TVD-MI evaluation and \citet{robertson2025identity} studies sparse IRT recovery, while CARE \citep{zhao2026care} models shared confounders; we derive scaling and selection bounds and test spectral weights under judge replication.
 
-\textbf{Jury theorems and formal verification.} Condorcet and Nitzan--Paroush \citep{condorcet1785, nitzan1982optimal} assume independent binary voters; we extend optimality to bounded TVD critics, clone blocks, and Davis--Kahan bounds \citep{davis1970rotation} in Lean~4 \citep{mathlib2020}.
+\textbf{Jury theorems and formal verification.} Condorcet and Nitzan--Paroush \citep{condorcet1785, nitzan1982optimal} assume independent binary voters; we study bounded TVD critics and clone blocks, and formalize implications of Davis--Kahan inequalities \citep{davis1970rotation} in Lean~4 \citep{mathlib2020}.

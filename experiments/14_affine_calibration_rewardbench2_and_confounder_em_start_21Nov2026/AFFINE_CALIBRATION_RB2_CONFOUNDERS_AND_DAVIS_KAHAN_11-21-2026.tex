@@ -17,7 +17,7 @@
 \newcommand{\lident}[1]{{\small\texttt{#1}}}
 
 \title{\textbf{Semi-Supervised Affine Calibration, Cross-Family Confounder Recovery,
-\textsc{RewardBench~2} Validation, and Davis--Kahan Spectral Bounds}}
+{\mdseries\scshape RewardBench~2} Validation, and Davis--Kahan Spectral Bounds}}
 \author{Project: \texttt{brando90/tvdmi-judge-asymptotics} (Experiment~14, 11-21-2026)}
 \date{Date: 11-21-2026 \quad(\emph{As of 11-21-2026 19:48 PST})}
 
@@ -42,12 +42,12 @@ Empirical evaluation runs via \lident{run\_\allowbreak exp14\_\allowbreak suite.
 \begin{enumerate}[leftmargin=1.4em,itemsep=3pt]
   \item \textbf{Likert Severity vs.\ Pairwise Logits:} Scalar judges
     (\textsc{SummEval}) inherit harsh severity offsets ($-1.1039$ bias,
-    $\mathrm{ICC(A,1)}=0.3341 < \mathrm{ICC(C,1)}=0.6455$); just $m=5$--$20$
+    $\mathrm{ICC(A,1)}=0.3341 < \mathrm{ICC(C,1)}=0.6455$); $m=20$
     anchor articles lift $\mathrm{ICC(A,1)}$ to $0.6441$ and cut MAE
     $1.1295 \to 0.3702$. Conversely, \textsc{RewardBench~2} Bradley--Terry RMs
-    are already logistic-calibrated ($\mathrm{ECE}=0.0219$ at $m=0$), so small-$m$
+    are already logistic-calibrated ($\mathrm{ECE}=0.0218$ at $m=0$), so small-$m$
     ($m \le 10$) Platt refits overfit slightly before stabilizing at $m=50$.
-  \item \textbf{Clean vs.\ Flooded \textsc{RewardBench~2} Tradeoff:} On clean
+  \item \textbf{Clean vs.\ Flooded {\mdseries\scshape RewardBench~2} Tradeoff:} On clean
     unflooded \textsc{RewardBench~2} ($K=23$), \texttt{RB-Spec} slightly trails
     \texttt{Naive SVD} ($0.7872$ vs.\ $0.8334$) because cluster equalization raises
     weights on weaker singletons; when weak clones ($M=32$) or naturally
@@ -56,7 +56,7 @@ Empirical evaluation runs via \lident{run\_\allowbreak exp14\_\allowbreak suite.
   \item \textbf{Cross-Family Confounder Requirement:} When every judge family
     loads on the same confounder $W$, vanilla \texttt{RB-Spec} stalls at floor
     $c^2 v_W$. Confounder-residualized \texttt{CR-RB-Spec} recovers accuracy
-    ($0.5936$ \textsc{SummEval}, $0.7709$ \textsc{MT-Bench}, $0.8915$ MC)
+    ($0.5767$ \textsc{SummEval}, $0.7736$ \textsc{MT-Bench}, $0.8915$ MC)
     provided observable confounder covariates span $W$.
 \end{enumerate}}}
 \end{center}
@@ -69,7 +69,7 @@ Empirical evaluation runs via \lident{run\_\allowbreak exp14\_\allowbreak suite.
 \lident{anchor\_\allowbreak calibration\_\allowbreak excess\_\allowbreak tendsto\_\allowbreak zero}.\par\medskip
 For finite-sample error vector $e \in \R^n$ with sample bias $\mu = \frac{1}{n}\sum_{i=1}^n e_i$,
 $\frac{1}{n}\sum_{i=1}^n e_i^2 = \mu^2 + \frac{1}{n}\sum_{i=1}^n (e_i - \mu)^2$,
-so debiasing strictly lowers MSE whenever $\mu \neq 0$. Moreover, for positive
+so debiasing strictly lowers MSE whenever $\mu \neq 0$. For the population agreement coefficients, with positive
 covariance $\Cov(\widehat{Y}, Y) > 0$ and $\Var(\widehat{Y}) + \Var(Y) > 0$,
 \begin{equation}
 \boxed{\;
@@ -143,10 +143,10 @@ Chaining $\lambda_1 - \varepsilon = Q(u_1) - \varepsilon \le \widehat{Q}(u_1) \l
 \toprule
 Experiment Module & Regime / Baseline & Uncalibrated / Baseline & Proposed Method & Significance / Rate \\
 \midrule
-\textsc{SummEval} Affine ($K=38$) & $m=0 \to 20$ anchors & $\mathrm{ICC(A,1)}=0.3341$, $\mathrm{MAE}=1.1295$ & $\mathrm{ICC(A,1)}=\mathbf{0.6441}$, $\mathrm{MAE}=\mathbf{0.3702}$ & $p=4.27\times 10^{-18}$ ($m=10$ vs.\ $0$) \\
+\textsc{SummEval} Affine ($K=38$) & $m=0 \to 20$ anchors & $\mathrm{ICC(A,1)}=0.3341$, $\mathrm{MAE}=1.1295$ & $\mathrm{ICC(A,1)}=\mathbf{0.6441}$, $\mathrm{MAE}=\mathbf{0.3702}$ & $p=4.27\times 10^{-18}$ (MAE, $m=10$ vs.\ $0$) \\
 \textsc{RewardBench~2} Weak Clones & $K=55$ ($M=32$ OASST) & Mean $0.4803$, Naive SVD $0.4324$ & \texttt{RB-Spec}: $\mathbf{0.7781}\,[0.758,0.795]$ & $p=1.65\times 10^{-124}$ vs.\ SVD \\
 \textsc{RewardBench~2} PKU Polarity & $K=51$ (beaver-v1-reward) & Mean $0.3109$, Naive SVD $0.1455$ & \texttt{RB-Spec}: $\mathbf{0.7963}\,[0.778,0.815]$ & $p=2.11\times 10^{-229}$ vs.\ SVD \\
-Cross-Family Confounder ($c=2.0$) & \textsc{SummEval} / \textsc{MT-Bench} & Vanilla RB: $0.2757$ / $0.6707$ & \texttt{CR-RB-Spec}: $\mathbf{0.5936}$ / $\mathbf{0.7709}$ & $p=6.03\times 10^{-13}$ / $1.59\times 10^{-4}$ \\
+Cross-Family Confounder ($c=2.0$) & \textsc{SummEval} / \textsc{MT-Bench} & Vanilla RB: $0.2759$ / $0.6683$ & \texttt{CR-RB-Spec}: $\mathbf{0.5767}$ / $\mathbf{0.7736}$ & $p=1.72\times 10^{-12}$ / $2.73\times 10^{-5}$ \\
 MC Confounder + $42\%$ Adv ($c=2.0$) & $500$ reps ($K=24, F=6$) & Vanilla RB $0.5131$, DS-EM $0.5960$ & \texttt{CR-RB}: $\mathbf{0.8915}$ (+EM $0.8583$) & Restores $+0.378$ acc \\
 Davis--Kahan (\textsc{RewardBench~2}) & $n=10 \to 640$ prompts & Bound $0.5148 \to 0.0492$ ($0$ viol.) & $\sin^2\theta$: $0.0660 \to \mathbf{0.00091}$ & Fitted slope $\mathbf{-1.03}$ \\
 \bottomrule

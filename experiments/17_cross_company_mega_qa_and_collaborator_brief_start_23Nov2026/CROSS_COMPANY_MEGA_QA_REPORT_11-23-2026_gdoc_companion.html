@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Experiment 17: Cross-Company Mega QA &amp; Collaborator Brief Report (11-23-2026)</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; line-height: 1.5; max-width: 920px; margin: 24px auto; padding: 0 16px; color: #1f2328; }
+    h1, h2 { color: #8c1515; border-bottom: 1px solid #d0d7de; padding-bottom: 4px; }
+    table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
+    th, td { border: 1px solid #d0d7de; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background-color: #f6f8fa; font-weight: bold; }
+    code { background-color: #f6f8fa; padding: 2px 5px; border-radius: 3px; font-family: Menlo, Consolas, monospace; font-size: 13px; }
+    .box { background-color: #fff8c5; border: 1px solid #d4a72c; padding: 10px 14px; border-radius: 4px; margin: 12px 0; }
+  </style>
+</head>
+<body>
+  <h1>Experiment 17: Cross-Company Mega QA &amp; Collaborator Brief Report (11-23-2026)</h1>
+  <p><strong>Date:</strong> 11-23-2026 | <strong>Campaign Anchor:</strong> <code>cb2a2c0</code> | <strong>Branch Base:</strong> <code>7ea00af</code> | <strong>External Contact Commit:</strong> <code>brando90/ultimate-utils</code> <code>8b8246b</code></p>
+
+  <div class="box">
+    <strong>Executive Verdict:</strong> True cross-company 3-stage sequential Mega Quality Assurance (OpenAI Codex, then Anthropic Claude Code, then fresh-context OpenAI Codex) plus an independent post-Stage-3 deterministic verification gate passed with zero open critical or major issues across the repository, the one-page summary slide PDF, and the collaborator email draft.
+  </div>
+
+  <h2>1. Three-Stage Cross-Company Audit Ledger</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Stage</th>
+        <th>Provider / CLI</th>
+        <th>Model &amp; Effort (Requested to Actual)</th>
+        <th>Verdict</th>
+        <th>Verified Outcomes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Stage 1</td>
+        <td>OpenAI Codex (<code>codex exec</code>)</td>
+        <td><code>gpt-6.2-astra</code> (<code>xhigh</code>) to <code>gpt-6.2-astra</code> (<code>xhigh</code>)</td>
+        <td><code>FIXED</code> (0 crit, 6 maj, 8 fixes, <code>IMPROVED</code>; 540,748 tokens)</td>
+        <td>Removed TF-IDF and Platt fold leakage on MT-Bench (0.7950 to 0.7938, created <code>mtbench_features.py</code>); recovered 4 reverse-order JudgeBench votes (<code>o1-preview</code> 264/350 = 75.4%, <code>CR-SRB</code> 71.1% [66.3%, 76.0%] vs Equal Vote 63.1% p=0.00253 and SVD 66.0% p=0.0143); fixed pooled cluster intervals (SummEval 0.647 [0.612, 0.681], MT-Bench 0.803 [0.777, 0.829]); strengthened <code>MultiFactorContinuous.lean</code>; fixed two-sample exponent and attributions; set checklist Open Access to No; replayed Exps 12–15 + 11 smokes.</td>
+      </tr>
+      <tr>
+        <td>Stage 2</td>
+        <td>Anthropic Claude Code (<code>claude</code>)</td>
+        <td><code>opus[1m]</code> (<code>xhigh</code>) to <code>claude-opus-5-5</code> (<code>xhigh</code>) via Stanford profile (personal <code>fable</code> hit 11pm cap)</td>
+        <td><code>FIXED</code> (0 crit, 0 maj, 1 fix, <code>PASS</code>)</td>
+        <td>Independently rebuilt 33-judge JudgeBench matrix (4 cells fixed, 0.7543); corrected 0.5114 to 0.5086 in Experiment 15 results line 40; verified 66/66 Lean axioms, byte-identical Exps 12–15 replay, 21/23/1-page PDFs; flagged untracked <code>mtbench_features.py</code> and explicit LMSYS MT-Bench naming.</td>
+      </tr>
+      <tr>
+        <td>Stage 3 (Fresh Context)</td>
+        <td>OpenAI Codex (<code>codex exec</code>)</td>
+        <td><code>gpt-6.2-astra</code> (<code>xhigh</code>) to <code>gpt-6.2-astra</code> (<code>xhigh</code>)</td>
+        <td><code>FIXED</code> (0 crit, 2 maj, 7 fixes, <code>IMPROVED</code>; 191,576 tokens)</td>
+        <td>Separated known-family 1/F variance guarantee from empirical covariance-shrinkage weights in Experiment 13 and collaborator brief; restored missing half-tie consensus error term, conditional i.i.d. hypothesis given (Z, W), equicorrelated RMSE, and random-vote expectation in Experiment 12; clarified Experiment 06 as synthetic judge simulation vs Experiments 13–15 real benchmark data; refined <code>98_appendix_experiments.tex</code> note.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>2. Deterministic Verification Gate (Post-Stage-3)</h2>
+  <ul>
+    <li><strong>Lean 4 Formalization:</strong> <code>lake build</code> (3,290 jobs) succeeded; comment-stripped source audit confirmed zero <code>sorry</code>, <code>admit</code>, <code>native_decide</code>, or custom axioms; 66/66 theorems returned only standard axioms (<code>[propext, Classical.choice, Quot.sound]</code>).</li>
+    <li><strong>Python &amp; Utilities:</strong> 21/21 Python scripts compiled; <code>experiments/utils.py</code> smoke check returned true TVD = 0.1828; all <code>__pycache__</code> folders removed.</li>
+    <li><strong>PDF Builds:</strong> Anonymous <code>main.pdf</code> (21 pages, References starting on Page 10, zero warnings/overfulls, zero leaks or TODOs), <code>main_arxiv.pdf</code> (23 pages, zero warnings), and <code>TVDMI_SUMMARY_SLIDE_11-23-2026.pdf</code> (1 page, zero warnings/overfulls).</li>
+    <li><strong>Diff, Secrets &amp; Rule 91:</strong> Zero temporary build files; CRLF-aware <code>git diff --check</code> clean from both <code>cb2a2c0</code> and <code>7ea00af</code>; zero leaked secrets; zero Rule-91 forbidden characters across HTML companions and the collaborator brief.</li>
+    <li><strong>Contact Database:</strong> Updated Henry Bosch (<code>hbosch@stanford.edu</code>, alias <code>Henry B</code>, affiliation <code>Stanford</code>) in <code>brando90/ultimate-utils</code> commit <code>8b8246b</code>; <code>resolve("Henry B")</code> verified.</li>
+  </ul>
+</body>
+</html>

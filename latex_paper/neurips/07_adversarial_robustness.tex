@@ -5,7 +5,7 @@
 \begin{assumption}[Contamination model]
 \label{asm:contamination}
 A fraction $(1-\delta)$ of judges are honest with competence margin $\gamma > 0$.
-A fraction $\delta$ are adversarial.
+A fraction $\delta$ are adversarial. Conditional on the correct answer, the votes are independent.
 \end{assumption}
 
 \begin{theorem}[Adversarial breakdown threshold]
@@ -26,7 +26,7 @@ For binary votes:
 Suppose a panel comprises $F$ independent judge families of which a fraction
 $\delta_{\mathrm{fam}}$ are cloned sign-flip adversaries (regardless of how many
 redundant clones $K_f$ each adversarial family emits). Weighting each family
-equally by $1/F$ succeeds asymptotically if and only if
+equally by $1/F$ gives a positive expected vote margin exactly when
 \begin{equation}
 \label{eq:effective-family-threshold}
 (1 - \delta_{\mathrm{fam}})\!\left(\tfrac{1}{2}+\gamma\right)
@@ -43,7 +43,7 @@ in Lean~4 as \texttt{effective\_family\_adversarial\_threshold}).
 Suppose judges share a prompt or stylistic confounder $W$ (e.g., verbosity or
 model family) and satisfy conditional independence given $(Z, W)$ with
 conditional accuracy $Q(W) := \Prob(b_j(Z) = h^\star(Z) \mid Z, W)$. Then the
-uncalibrated majority vote $b_K(Z)$ saturates at the non-vanishing error limit
+uncalibrated majority vote $b_K(Z)$ saturates at the error limit
 \begin{equation}
 \lim_{K \to \infty}\Prob\!\big(b_K(Z) \neq h^\star(Z)\big)
   = \Prob\!\left(Q(W) < \tfrac{1}{2}\right) + \tfrac{1}{2}\Prob\!\left(Q(W) = \tfrac{1}{2}\right).
@@ -52,10 +52,10 @@ uncalibrated majority vote $b_K(Z)$ saturates at the non-vanishing error limit
 
 \begin{proposition}[Asymmetric Huber median shift and robust aggregation error]
 \label{prop:robust-aggregation}
-For bounded scalar scores in $[0,1]$ under one-sided adversarial
+For scalar scores with finite means under one-sided adversarial
 contamination at fraction $\delta$, naive mean suffers bias $\delta(\mu_{\mathrm{adv}} - \tau_c)$.
 While the sample median improves breakdown tolerance, Gaussian honest noise
-($\sigma$) with shifted adversaries strictly below $\tau_c$ retains an irreducible
+($\sigma$) with $0<\delta<1/2$ and all contaminating mass below the mixture median gives the
 asymmetric bias $m_\delta - \tau_c = -\sigma\,\Phi^{-1}(\frac{1}{2(1-\delta)})
 = -\sqrt{\pi/2}\,\sigma\delta + O(\delta^2) = O(\sigma\delta)$.
 \end{proposition}

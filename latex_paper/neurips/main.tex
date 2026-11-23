@@ -98,11 +98,11 @@ with TVD-MI Judge Ensembles}
 We study the asymptotic and finite-sample behavior of reference-free evaluation
 with ensembles of Total Variation Distance--Mutual Information (TVD-MI) judges.
 Each judge is modeled as a bounded witness critic distinguishing joint from
-product distributions. Under independent critics, random-witness best-of-$K$
-converges at rate $O_p(K^{-1/\beta})$, consensus majority vote converges at
-rate $2e^{-2K\gamma_0^2}$, and disjoint split-sample cross-fitting eliminates
+product distributions. Under polynomial witness mass and independent critics, random-witness best-of-$K$
+converges at rate $O_p(K^{-1/\beta})$, consensus majority vote has
+an expected-gap bound $2e^{-2K\gamma_0^2}$ under a uniform positive margin, and disjoint split-sample cross-fitting eliminates
 finite-sample winner's-curse inflation while yielding an interior
-compute-optimal judge allocation $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$.
+bound-balancing judge allocation $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$.
 Crucially, we establish three failure mechanisms of naive TVD-MI ensembles:
 (i)~unconditional prompt--response TVD-MI is blind to injective prompt-copying
 ($\mathrm{TV} = 1 - \sum_x P_X(x)^2$) and label inversions, whereas
@@ -112,17 +112,15 @@ clone correlation violates naive $K^{-1}$ variance scaling, allowing redundant
 judge clones to hijack linear averages, itemwise medians, and naive SVD; and
 (iii)~correlated latent confounders lock uncalibrated consensus error above zero.
 We introduce \emph{Redundancy-Balanced Spectral Peer TVD-MI} (\texttt{RB-Spec TVD-MI}),
-which balances collinear judge families unsupervised and achieves family-level
-$1/F$ error scaling and effective-family adversarial resilience up to
+which estimates redundancy without labels. Equal weights on independent families give
+a $1/F$ variance bound and a positive sign-flip vote margin for
 $\delta_{\mathrm{fam}} < 1/2$. Across held-out evaluations on \textsc{SummEval}
 (1,600 summaries across 100 articles), \textsc{MT-Bench} (2,575 human
 pairwise judgments across 80 questions), \textsc{RewardBench~2} (1,753
 prompts across 27 reward models), and \textsc{JudgeBench} (350 pairs across
-33 judges), signal-deconfounded shrinkage (\texttt{SRB-Spec}) eliminates clean-regime
-penalties (reaching 0.836 on \textsc{RewardBench~2}) while resisting clones and
-anti-correlated judges; $m=5$--$20$ anchors remove Likert severity bias
-($\mathrm{ICC(A,1)}: 0.334 \to 0.644$), while \texttt{CR-SRB-Spec} isolates
-shared confounders under observed proxy correlation $r^2$.
+33 judges), signal-deconfounded shrinkage (\texttt{SRB-Spec}) improves clean-panel accuracy (reaching 0.836 on \textsc{RewardBench~2}) while resisting clones and
+anti-correlated judges; 20 anchor articles reduce Likert severity bias
+($\mathrm{ICC(A,1)}: 0.334 \to 0.644$), and a linear proxy with correlation $r$ leaves fraction $1-r^2$ of the shared variance under orthogonality assumptions.
 Sixty-six theorems (28 core, 15 hierarchical/variational, 11 calibration/Davis--Kahan,
 and 12 shrinkage, partial-proxy, multi-factor, and continuous measure-theoretic TVD
 theorems) are verified in Lean~4 without placeholders.

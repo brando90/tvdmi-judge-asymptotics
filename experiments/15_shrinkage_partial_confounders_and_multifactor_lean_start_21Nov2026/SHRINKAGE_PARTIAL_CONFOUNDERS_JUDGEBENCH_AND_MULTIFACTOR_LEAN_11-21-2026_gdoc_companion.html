@@ -19,7 +19,7 @@
 <p><strong>Date:</strong> 11-21-2026 | <strong>Authors:</strong> Brando Miranda and Sanmi Koyejo (Rylan Schaeffer co-authorship invite TODO) | <strong>Repository:</strong> brando90/tvdmi-judge-asymptotics</p>
 
 <div class="note">
-<strong>TLDR:</strong> Formalized 12 additional Lean 4.29.0 theorems in MultiFactorContinuous.lean (66 total theorems in TvdmiJudge, 3,290 jobs, zero sorry, strictly standard Lean axioms) and validated four extensions in 25.4s (seed 42): (1) SRB-Spec closes the clean RewardBench 2 (K = 23) gap (0.8311 Auto and 0.8363 at alpha = 1.00 vs 0.7872 Vanilla RB-Spec, p = 6.96e-13) while keeping clone-flood (0.8266 to 0.8323 vs 0.4353 SVD) and PKU polarity-flood (0.8357 to 0.8374 vs 0.1426 SVD) robustness; (2) On 33 official ICLR 2025 JudgeBench judges (350 pairs), CR-SRB-Spec reaches 0.7143 clean and 0.7114 under 46% adversaries (p = 0.00380 vs Mean); (3) Partial-proxy confounder residualization matches the exact (1 - r<sup>2</sup>)c<sup>2</sup>v<sub>W</sub> + Var<sub>bal</sub> floor law across 500 Monte Carlo reps and three real benchmarks; and (4) Multi-factor rank-r (r = 1, 2, 3) subspace leakage exhibits 0 violations across 10,500 i.i.d. draws.
+<strong>TLDR:</strong> Formalized 12 additional Lean 4.29.0 theorems in MultiFactorContinuous.lean (66 total theorems in TvdmiJudge, 3,290 jobs, zero sorry, strictly standard Lean axioms) and validated four extensions in 61.22s (seed 42): (1) SRB-Spec closes the clean RewardBench 2 (K = 23) gap (0.8311 Auto and 0.8363 at alpha = 1.00 vs 0.7872 Vanilla RB-Spec, p = 6.96e-13) while keeping clone-flood (0.8266 to 0.8323 vs 0.4353 SVD) and PKU polarity-flood (0.8357 to 0.8374 vs 0.1426 SVD) robustness; (2) On 33 official ICLR 2025 JudgeBench judges (350 pairs), CR-SRB-Spec reaches 0.7143 clean and 0.7114 under 46% adversaries (p = 0.00253 vs Mean); (3) Partial-proxy confounder residualization tracks the predicted mean squared error over 500 simulations at each proxy strength. The three benchmark sweeps measure accuracy or rank correlation; and (4) Multi-factor rank-r (r = 1, 2, 3) subspace leakage exhibits 0 violations across 10,500 i.i.d. draws.
 </div>
 
 <h2>1. Formalized Equations and Machine-Checked Theorems (66 Total)</h2>
@@ -41,7 +41,7 @@
   <tr><td>RewardBench 2 PKU Polarity Flood (K=51)</td><td>0.1426</td><td>0.7986</td><td><strong>0.8357</strong></td><td><strong>0.8374</strong></td><td>6.85e-10 (Auto) / 1.02e-09</td></tr>
   <tr><td>SummEval Wild (K=38, Item Spearman)</td><td>0.4861</td><td>0.6284</td><td>0.6326</td><td><strong>0.6468</strong></td><td>0.0129 (Auto) / 5.42e-04</td></tr>
   <tr><td>SummEval Adv-Flood (K=24, 67% Inv)</td><td>-0.5007</td><td>0.6463</td><td>0.6399</td><td><strong>0.6495</strong></td><td>0.0470 (Auto) / 0.6758</td></tr>
-  <tr><td>MT-Bench Confounded (K=17, Pair Acc)</td><td>0.7188</td><td>0.7942</td><td>0.7880</td><td><strong>0.8031</strong></td><td>0.0043 (Auto) / 0.0463</td></tr>
+  <tr><td>MT-Bench Confounded (K=17, Pair Acc)</td><td>0.7161</td><td>0.7953</td><td>0.7852</td><td><strong>0.8035</strong></td><td>0.0192 (Auto) / 0.0331</td></tr>
 </table>
 
 <h2>4. Real 33-Judge JudgeBench (350 Pairs, 5-Fold Pair-Disjoint CV)</h2>
@@ -49,16 +49,16 @@
   <tr><th>Regime</th><th>Uniform Vote</th><th>Naive SVD</th><th>Vanilla RB-Spec</th><th>SRB-Spec (Auto)</th><th>CR-SRB-Spec (Len)</th><th>Wilcoxon p (CR-SRB vs Mean / SVD)</th></tr>
   <tr><td>Clean Diverse (K=33, 11 frameworks)</td><td>0.7000</td><td>0.6943</td><td>0.6914</td><td>0.6971</td><td><strong>0.7143</strong></td><td>0.1655 / 0.0522</td></tr>
   <tr><td>Weak-Clone Flood (K=65, M=32)</td><td>0.6686</td><td>0.6257</td><td>0.6914</td><td>0.6914</td><td><strong>0.7086</strong></td><td>0.0707 / 9.50e-04</td></tr>
-  <tr><td>Adversarial Flood (K=61, 46% Inv)</td><td>0.6343</td><td>0.6600</td><td>0.6914</td><td>0.6943</td><td><strong>0.7114</strong></td><td>0.00380 / 0.0143</td></tr>
+  <tr><td>Adversarial Flood (K=61, 46% Inv)</td><td>0.6314</td><td>0.6600</td><td>0.6914</td><td>0.6943</td><td><strong>0.7114</strong></td><td>0.00253 / 0.0143</td></tr>
 </table>
 
 <h2>5. Imperfect Proxy Sweep (500 MC Reps + Real LLMs) and Multi-Factor Rank-r Bounds</h2>
 <table>
-  <tr><th>Proxy r</th><th>r<sup>2</sup></th><th>JudgeBench Acc</th><th>RewardBench 2 Acc</th><th>SummEval Sp</th><th>MC CR MSE (SE)</th><th>Lean Exact Formula</th></tr>
+  <tr><th>Proxy r</th><th>Squared proxy correlation</th><th>JudgeBench Acc</th><th>RewardBench 2 Acc</th><th>SummEval Sp</th><th>MC CR MSE (SE)</th><th>Lean Exact Formula</th></tr>
   <tr><td>0.00</td><td>0.0000</td><td>0.5174</td><td>0.2925</td><td>0.1948</td><td>2.3551 (0.0075)</td><td>2.3336</td></tr>
-  <tr><td>0.50</td><td>0.2500</td><td>0.5337</td><td>0.3365</td><td>0.2002</td><td>1.7771 (0.0054)</td><td>1.7711</td></tr>
-  <tr><td>0.70</td><td>0.4900</td><td>0.5489</td><td>0.4037</td><td>0.2102</td><td>1.2315 (0.0038)</td><td>1.2311</td></tr>
-  <tr><td>0.95</td><td>0.9025</td><td>0.6229</td><td>0.6318</td><td>0.3048</td><td>0.3038 (0.0009)</td><td>0.3029</td></tr>
+  <tr><td>0.50</td><td>0.2500</td><td>0.5349</td><td>0.3365</td><td>0.2002</td><td>1.7771 (0.0054)</td><td>1.7711</td></tr>
+  <tr><td>0.70</td><td>0.4900</td><td>0.5503</td><td>0.4037</td><td>0.2102</td><td>1.2315 (0.0038)</td><td>1.2311</td></tr>
+  <tr><td>0.95</td><td>0.9025</td><td>0.6231</td><td>0.6318</td><td>0.3048</td><td>0.3038 (0.0009)</td><td>0.3029</td></tr>
   <tr><td>1.00</td><td>1.0000</td><td><strong>0.6943</strong></td><td><strong>0.8426</strong></td><td><strong>0.6559</strong></td><td><strong>0.0857</strong> (0.0003)</td><td><strong>0.0836</strong></td></tr>
 </table>
 

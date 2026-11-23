@@ -2,6 +2,6 @@
 \section{Discussion and Conclusion}
 \label{sec:conclusion}
 
-Separating \emph{statistical convergence} from \emph{semantic validity} explains when TVD-MI ensembles succeed: (1)~double-centered peer contrasts neutralize copying and inversions; (2)~cross-fitting removes winner's-curse inflation and sets $K^\star(B)$; (3)~\texttt{RB-Spec} and \texttt{SRB-Spec} restore $1/F$ scaling, flood invariance, and clean-pool parity across \textsc{SummEval}, \textsc{MT-Bench}, \textsc{RewardBench~2}, and \textsc{JudgeBench}; and (4)~$5$--$20$ anchors close $\mathrm{ICC(A,1)}$--$\mathrm{ICC(C,1)}$ while \texttt{CR-SRB-Spec} removes confounders up to proxy $r^2$ under rank-$r$ bounds.
+Separating \emph{statistical convergence} from \emph{semantic validity} explains when TVD-MI ensembles succeed: (1)~double-centered peer contrasts neutralize copying and inversions; (2)~cross-fitting removes winner's-curse inflation and sets $K^\star(B)$; (3)~equal weights on known independent families give a $1/F$ variance bound, and estimated spectral weights resist the tested floods on \textsc{SummEval}, \textsc{MT-Bench}, \textsc{RewardBench~2}, and \textsc{JudgeBench}; and (4)~20 anchor articles brought absolute agreement near consistency on \textsc{SummEval}.
 
-\textbf{Limitations.} Imperfect proxies ($r^2 < 1$) retain confounder variance $(1-r^2)c^2v_W$ without anchors; continuous measure-space TVD attainment and partition monotonicity are Lean-verified, while non-convex EM IRT fixed-point rates remain open.
+\textbf{Limitations.} Imperfect proxies ($r^2 < 1$) retain confounder variance $(1-r^2)c^2v_W$ without anchors; Hahn-event optimality and finite partition monotonicity are Lean-verified, while non-convex EM IRT fixed-point rates remain open.

@@ -31,7 +31,7 @@
 
 <h2>2. Major Reconciliations Verified</h2>
 <ul>
-  <li><strong>Huber Median Bias Taylor Expansion (Experiment 12):</strong> Corrected the asymptotic Gaussian one-sided median shift formula from an extraneous divided-by-2 typo to negative square-root(pi/2) times sigma times delta plus O(delta<sup>2</sup>), restored factor 2 in Table 1 oriented peer variance reduction, and re-rendered the equation PNG cleanly.</li>
+  <li><strong>Huber Median Bias Taylor Expansion (Experiment 12):</strong> Corrected the asymptotic Gaussian one-sided median shift formula by restoring the leading coefficient shown in the equation image, restored factor 2 in Table 1 oriented peer variance reduction, and re-rendered the equation PNG cleanly.</li>
   <li><strong>Appendix Robustness Proof and Acknowledgements (NeurIPS / arXiv):</strong> Updated the stale Proposition 7.4 proof in <code>98_appendix_proofs.tex</code> to match Section 7, added JudgeBench to <code>97_acknowledgments.tex</code>, and eliminated every Overfull hbox and float warning across <code>main.pdf</code> (21 pages, strictly anonymous, Limitations ending on Page 9) and standalone PDFs.</li>
   <li><strong>Experiment 14 HTML Links/Subscripts and Experiment 15 CI Clarity:</strong> Fixed misleading Drive labels and 3 subscript/superscript formulas in the Experiment 14 HTML companion, documented pooled vs. per-cluster mean confidence intervals in Experiment 15 Results, removed dead Python imports while preserving identical random streams, and purged 36 stale temp files.</li>
 </ul>
@@ -42,7 +42,7 @@
 <h2>4. Orchestrator Deterministic Verification</h2>
 <ul>
   <li><strong>Lean 4.29.0:</strong> Clean build (3,290 jobs), 66/66 theorems verified with 0 placeholders and strictly standard Lean axioms.</li>
-  <li><strong>Python, HTML, Security:</strong> 20/20 scripts compile cleanly, zero CV/label leakage, all Rule-91 HTML companions free of forbidden math tokens, clean diff formatting, zero secret hits.</li>
+  <li><strong>Python, HTML, Security:</strong> 20/20 scripts compile cleanly, the initial review reported no leakage. The subsequent fold-level audit corrected text preprocessing and calibration weights in the evaluation runners, clean diff formatting, zero secret hits.</li>
 </ul>
 </body>
 </html>

@@ -73,7 +73,7 @@ Let $g(c)$ be the inaccessible gold metric. We say there is a
 \tau(c_1) > \tau(c_2) \iff g(c_1) > g(c_2).
 \end{equation}
 More generally, $g(c) = \phi(\tau(c))$ for some known or learnable
-monotone $\phi$.
+strictly increasing $\phi$.
 \end{definition}
 
 \begin{remark}
@@ -148,10 +148,7 @@ for some $\beta > 0$, then
 \end{corollary}
 
 \begin{proof}
-Set $\varepsilon = K^{-1/\beta}$. Then $p_\varepsilon(c) \asymp K^{-1}$,
-and $e^{-K \cdot K^{-1}} = e^{-1}$, which is a constant. So the probability
-that the gap exceeds $K^{-1/\beta}$ is bounded by a constant, establishing
-the $O_p$ rate.
+For a fixed $M>0$ put $\varepsilon=M K^{-1/\beta}$. For sufficiently large $K$ the lower mass bound gives $Kp_\varepsilon(c)\ge aM^\beta$ for some $a>0$. Taking $M$ large makes the tail probability arbitrarily small.
 \end{proof}
 
 \begin{remark}
@@ -194,27 +191,26 @@ b_K(z) := \mathbf{1}\!\left[\sum_{j=1}^K b_j(z) > K/2\right].
 \begin{theorem}[Consensus convergence]
 \label{thm:consensus}
 Under Assumption~\ref{asm:competence}, let $M$ denote the mixture
-distribution over evaluation pairs. Then
+with equal mass on the joint and product laws. Taking expectation over the random votes gives
 \begin{equation}
-0 \le \tau(c) - \Delta_c(b_K) \le 2 \, \E_{Z \sim M}\!\left[
+0 \le \tau(c) - \E[\Delta_c(b_K)] \le 2 \, \E_{Z \sim M}\!\left[
 e^{-2K\gamma(Z)^2}\right].
 \end{equation}
 If $\gamma(z) \ge \gamma_0 > 0$ almost surely, then
 \begin{equation}
-\tau(c) - \Delta_c(b_K) \le 2 e^{-2K\gamma_0^2}.
+\tau(c) - \E[\Delta_c(b_K)] \le 2 e^{-2K\gamma_0^2}.
 \end{equation}
 \end{theorem}
 
 \begin{proof}
 Fix $z = (u,v)$. Let $X_j = \mathbf{1}[b_j(z) = h^\star(z)]$, so each
-$X_j$ is Bernoulli with parameter $q(z) \ge \frac{1}{2} + \gamma(z)$.
+$X_j$ is Bernoulli with parameter $q_j(z) \ge \frac{1}{2} + \gamma(z)$.
 The variables $X_1, \ldots, X_K$ are independent given $z$.
 
-The majority vote $b_K(z) \neq h^\star(z)$ iff fewer than $K/2$ judges
-agree with $h^\star(z)$, i.e., $\sum_j X_j \le K/2$.
+A majority error requires $\sum_j X_j\le K/2$.
 
 By Hoeffding's inequality applied to the sum $\sum_j X_j$ with
-$\E[\sum_j X_j \mid z] = K q(z) \ge K(\frac{1}{2} + \gamma(z))$:
+$\E[\sum_j X_j \mid z] = \sum_j q_j(z) \ge K(\frac{1}{2} + \gamma(z))$:
 \begin{equation}
 \Prob\!\big(b_K(z) \neq h^\star(z) \mid z\big)
 \le \Prob\!\left(\sum_j X_j \le K/2 \mid z\right)
@@ -223,11 +219,8 @@ $\E[\sum_j X_j \mid z] = K q(z) \ge K(\frac{1}{2} + \gamma(z))$:
 
 Now, since $h^\star(z) \in \{0,1\}$ and $b_K(z) \in \{0,1\}$:
 \begin{align}
-\Delta_c(h^\star) - \Delta_c(b_K)
-&= \E_M\!\big[h^\star(Z) - b_K(Z)\big]_{\text{joint}}
-  - \E_M\!\big[h^\star(Z) - b_K(Z)\big]_{\text{product}} \\
-&\le 2 \, \E_M\!\big[|h^\star(Z) - b_K(Z)|\big] \\
-&= 2 \, \E_M\!\big[\Prob(b_K(Z) \neq h^\star(Z) \mid Z)\big] \\
+\Delta_c(h^\star)-\E[\Delta_c(b_K)]
+&\le 2\,\E_M\!\big[\Prob(b_K(Z)\ne h^\star(Z)\mid Z)\big] \\
 &\le 2 \, \E_M\!\big[e^{-2K\gamma(Z)^2}\big].
 \end{align}
 
@@ -239,19 +232,19 @@ Under the uniform margin $\gamma(z) \ge \gamma_0$:
 \end{proof}
 
 \begin{remark}
-Under positive competence and independence, majority-vote judges converge
+Under uniform positive competence and conditional independence, majority-vote judges converge
 \emph{exponentially fast} to the optimal TVD critic. This is the cleanest
 formalization of the asymptotic-consensus hypothesis.
 \end{remark}
 
 % ============================================================================
-\section{Theorem 3: Two-Axis Error Decomposition (Judges $\times$ Samples)}
+\section{Theorem 3: Two-Axis Error Decomposition (Judges and Samples)}
 \label{sec:two-axis}
 
 \begin{assumption}[Finite-sample estimation]
 \label{asm:finite-sample}
 Each judge $j$'s critic value $\Delta_c(h_j)$ is estimated empirically from
-$n$ i.i.d.\ positive/negative examples, giving $\widehat\Delta_c(h_j)$.
+$n$ independent draws from each of the joint and product laws, with both samples independent of the judges and of each other, giving $\widehat\Delta_c(h_j)$.
 \end{assumption}
 
 \begin{theorem}[Two-axis decomposition]
@@ -260,7 +253,7 @@ Under Assumptions~\ref{asm:random-witness} and~\ref{asm:finite-sample},
 for any $\varepsilon > 0$ and $\eta > 0$:
 \begin{equation}
 \Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j) > \varepsilon + \eta\Big)
-\le e^{-K \, p_\varepsilon(c)} + 2K \, e^{-2n\eta^2}.
+\le e^{-K \, p_\varepsilon(c)} + 2K \, e^{-n\eta^2}.
 \end{equation}
 \end{theorem}
 
@@ -270,16 +263,15 @@ $G = \{|\widehat\Delta_c(h_j) - \Delta_c(h_j)| \le \eta \text{ for all }
 j = 1, \ldots, K\}$.
 
 \textbf{Step 1: Concentration per judge.}
-Since $h_j$ maps to $[0,1]$ and $\Delta_c(h_j)$ is an expectation of a
-$[0,1]$-bounded random variable, Hoeffding's inequality gives
+The empirical contrast sums $2n$ independent terms, each with range width $1/n$. Their squared widths sum to $2/n$, so Hoeffding's inequality gives
 \begin{equation}
 \Prob\!\big(|\widehat\Delta_c(h_j) - \Delta_c(h_j)| > \eta\big)
-\le 2 e^{-2n\eta^2}.
+\le 2 e^{-n\eta^2}.
 \end{equation}
 
 By a union bound over $K$ judges:
 \begin{equation}
-\Prob(G^c) \le 2K \, e^{-2n\eta^2}.
+\Prob(G^c) \le 2K \, e^{-n\eta^2}.
 \end{equation}
 
 \textbf{Step 2: Judge approximation conditional on $G$.}
@@ -308,7 +300,7 @@ $(1 - p_\varepsilon(c))^K \le e^{-K \, p_\varepsilon(c)}$.
 \begin{align}
 &\Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j) > \varepsilon + \eta\Big) \\
 &\quad\le \Prob\!\Big(\tau(c) - \hat\tau^{\max}_K(c) > \varepsilon\Big) + \Prob(G^c) \\
-&\quad\le e^{-K \, p_\varepsilon(c)} + 2K \, e^{-2n\eta^2}.
+&\quad\le e^{-K \, p_\varepsilon(c)} + 2K \, e^{-n\eta^2}.
 \end{align}
 \end{proof}
 
@@ -356,11 +348,12 @@ Let $\bar S_K := \frac{1}{K} \sum_{j=1}^K S_j$. Then
 
 \begin{corollary}[Scaling regimes]
 \label{cor:scaling-regimes}
+For mean-zero errors with common positive variance,
 \begin{itemize}
-\item If $\rho_K(c) = 0$: $\mathrm{RMSE} \sim K^{-1/2}$.
+\item If $\rho_K(c) = 0$: $\mathrm{RMSE} \asymp K^{-1/2}$.
 \item If $\rho_K(c) = \rho_0 > 0$ (constant): irreducible error floor
   $\sigma\sqrt{\rho_0}$.
-\item If $\rho_K(c) \sim K^{-\beta}$ for $\beta > 0$: $\mathrm{RMSE} \sim
+\item If $\rho_K(c) \sim K^{-\beta}$ for $\beta > 0$: $\mathrm{RMSE} \asymp
   K^{-\alpha}$ with $\alpha = \frac{1}{2}\min(1, \beta)$.
 \end{itemize}
 \end{corollary}
@@ -369,7 +362,7 @@ Let $\bar S_K := \frac{1}{K} \sum_{j=1}^K S_j$. Then
 \label{thm:impossibility-dependence}
 If residual pairwise dependence does not vanish, i.e.,
 $\liminf_{K \to \infty} \rho_K(c) > 0$, then averaging-based aggregation
-cannot be asymptotically consistent:
+has nonvanishing mean squared error:
 \begin{equation}
 \liminf_{K \to \infty} \mathrm{Var}(\bar S_K \mid c) > 0.
 \end{equation}
@@ -393,10 +386,10 @@ $\gamma > 0$. A fraction $\delta$ are adversarial.
 
 \begin{theorem}[Adversarial breakdown threshold]
 \label{thm:adversarial}
-For binary votes where honest judges are correct with probability
+For independent binary votes with fixed class proportions, where honest judges are correct with probability
 $\frac{1}{2} + \gamma$ and adversaries are always wrong:
 \begin{itemize}
-\item The ensemble is asymptotically correct iff
+\item The expected vote has a strictly positive majority margin iff
 \begin{equation}
 (1-\delta)\Big(\tfrac{1}{2} + \gamma\Big) > \tfrac{1}{2}
 \quad\Longleftrightarrow\quad
@@ -414,7 +407,7 @@ The expected fraction of correct votes is
 = (1-\delta)\Big(\tfrac{1}{2} + \gamma\Big).
 \end{equation}
 
-Majority vote succeeds asymptotically iff this exceeds $\frac{1}{2}$:
+By the law of large numbers a positive limiting margin suffices for majority consistency. This expected vote exceeds $\frac{1}{2}$:
 \begin{align}
 (1-\delta)\Big(\tfrac{1}{2} + \gamma\Big) &> \tfrac{1}{2} \\
 \tfrac{1}{2} + \gamma - \delta\Big(\tfrac{1}{2} + \gamma\Big) &> \tfrac{1}{2} \\
@@ -435,11 +428,7 @@ This is the standard Byzantine majority threshold.
 
 \begin{proposition}[Robust aggregation error]
 \label{prop:robust-aggregation}
-For bounded scalar scores in $[0,1]$, any robust estimator inherits an
-unavoidable $O(\delta)$ bias term. A trimmed mean or median-of-means gives
-\begin{equation}
-\mathrm{Error} = O_p(K^{-1/2} + \delta).
-\end{equation}
+For scores in $[0,1]$, replacing at most $\delta K$ of $K$ independent honest observations changes their average by at most $\delta$. Its error about the common honest mean is therefore $O_p(K^{-1/2}+\delta)$.
 \end{proposition}
 
 \begin{remark}[Optimistic vs.\ pessimistic regimes]
@@ -459,7 +448,7 @@ unavoidable $O(\delta)$ bias term. A trimmed mean or median-of-means gives
 \label{thm:gold-consistency}
 Suppose a monotone validity link holds (Definition~\ref{def:gold-metric}).
 If the ensemble estimator $\hat\tau_K(c)$ is consistent for $\tau(c)$
-uniformly over a finite set of candidates $\{c_1, \ldots, c_L\}$, then
+uniformly over a finite set of candidates $\{c_1, \ldots, c_L\}$ with distinct target scores, then
 the induced ranking converges to the gold ranking.
 \end{theorem}
 
@@ -489,7 +478,7 @@ The strongest first-paper result is the three-part theorem:
 \[
 \Prob\!\Big(\tau(c) - \max_{j \le K} \widehat\Delta_c(h_j)
 > \varepsilon + \eta\Big)
-\le e^{-K \, p_\varepsilon(c)} + 2K \, e^{-2n\eta^2}.
+\le e^{-K \, p_\varepsilon(c)} + 2K \, e^{-n\eta^2}.
 \]
 
 \item \textbf{Diversity as covariance} (Proposition~\ref{prop:variance-floor}):

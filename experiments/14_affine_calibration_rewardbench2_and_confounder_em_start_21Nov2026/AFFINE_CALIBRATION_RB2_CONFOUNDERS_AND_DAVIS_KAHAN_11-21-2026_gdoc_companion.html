@@ -23,7 +23,7 @@
 <h1>TVD-MI Judge Ensembles: Semi-Supervised Calibration, RewardBench 2, Cross-Family Confounders &amp; Davis-Kahan Lean 4 Verification (11-21-2026)</h1>
 
 <div class="callout">
-  <p><strong>Provenance (As of 11-21-2026):</strong> Formalized and machine-checked 11 new theorems in Lean 4 (<code>TvdmiJudge/SpectralCalibration.lean</code>, bringing <code>TvdmiJudge</code> to 54 total theorems: 28 Basic + 15 NewTheory + 11 SpectralCalibration, leanprover/lean4:v4.29.0, 3,289 jobs, zero placeholder axioms, strictly propext, Classical.choice, Quot.sound). Empirical verification ran in Python 3.11 (seed 42, 11.02 seconds) over SummEval (100 articles, 1,600 summaries), LMSYS MT-Bench (80 questions, 2,575 pairs), RewardBench 2 (1,753 deduplicated non-ties prompts across 27 official open-source reward models), and 500-rep Monte Carlo trials. Completed the 16-item NeurIPS Paper Checklist, added root README BibTeX citation (Brando Miranda and Sanmi Koyejo) plus the Rylan Schaeffer authorship TODO, and rebuilt both anonymous NeurIPS venue and arXiv PDFs.</p>
+  <p><strong>Provenance (As of 11-21-2026):</strong> Formalized and machine-checked 11 new theorems in Lean 4 (<code>TvdmiJudge/SpectralCalibration.lean</code>, bringing <code>TvdmiJudge</code> to 54 total theorems: 28 Basic + 15 NewTheory + 11 SpectralCalibration, leanprover/lean4:v4.29.0, 3,289 jobs, zero placeholder axioms, strictly propext, Classical.choice, Quot.sound). Empirical verification ran in Python 3.11 (seed 42, 15.97 seconds) over SummEval (100 articles, 1,600 summaries), LMSYS MT-Bench (80 questions, 2,575 pairs), RewardBench 2 (1,753 deduplicated non-ties prompts across 27 official open-source reward models), and 500-rep Monte Carlo trials. Completed the 16-item NeurIPS Paper Checklist, added root README BibTeX citation (Brando Miranda and Sanmi Koyejo) plus the Rylan Schaeffer authorship TODO, and rebuilt both anonymous NeurIPS venue and arXiv PDFs.</p>
   <p><strong>Primary Links:</strong>
     <a href="https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/AFFINE_CALIBRATION_RB2_CONFOUNDERS_AND_DAVIS_KAHAN_11-21-2026.pdf">Typeset Experiment 14 Derivation PDF (GitHub)</a> |
     <a href="https://github.com/brando90/tvdmi-judge-asymptotics/blob/main/latex_paper/neurips/main.pdf">Updated NeurIPS Venue PDF (GitHub)</a> |
@@ -34,9 +34,9 @@
 
 <h2>1. What These Results Show and Do Not Show (Explicit Boundaries)</h2>
 <ul>
-  <li><strong>Likert Severity Calibration vs. Bradley-Terry Logits:</strong> Unanchored SummEval GPT-4 scores retain -1.1039 mean bias (agreement ICC(A,1) = 0.3341 vs. consistency ICC(C,1) = 0.6455). Fitting monotone OLS affine calibration on just m = 5 to 20 human anchor articles eliminates mean bias (-0.0045 to +0.0074), cuts MAE from 1.1295 down to 0.3702, and lifts ICC(A,1) to 0.6441 (p = 4.27e-18 on 5-fold CV). By contrast, Bradley-Terry RLHF reward models in RewardBench 2 already emit well-calibrated cross-entropy margins at m = 0 (RB-Spec ECE = 0.0219, raw logit mean ECE = 0.0134), so tiny m = 5 Platt refits slightly overfit (0.0553) before settling at m = 50 (0.0272).</li>
+  <li><strong>Likert Severity Calibration vs. Bradley-Terry Logits:</strong> Unanchored SummEval ensemble scores on the GPT-4 scale retain -1.1039 mean bias (agreement ICC(A,1) = 0.3341 vs. consistency ICC(C,1) = 0.6455). Fitting monotone OLS affine calibration on just m = 5 to 20 human anchor articles eliminates mean bias (-0.0045 to +0.0074), cuts MAE from 1.1295 down to 0.3702, and lifts ICC(A,1) to 0.6441 (paired absolute-error test at 10 anchors, p = 4.27e-18). By contrast, Bradley-Terry RLHF reward models in RewardBench 2 already emit well-calibrated cross-entropy margins at m = 0 (RB-Spec ECE = 0.0218, raw logit mean ECE = 0.0134), so tiny m = 5 Platt refits slightly overfit (0.0554) before settling at m = 50 (0.0273).</li>
   <li><strong>Clean vs. Flooded Tradeoff on RewardBench 2:</strong> On clean K = 23 RewardBench 2 where strong families hold a 17-of-23 majority, Naive SVD scores 0.8334 Best-of-4 accuracy while RB-Spec scores 0.7872 because cluster balancing raises weights on weaker legacy singletons. Under M = 32 weak OpenAssistant clones (K = 55), RB-Spec holds 0.7781 while Uniform Mean falls to 0.4803 and Naive SVD to 0.4324 (p = 1.65e-124). Under 54.9% naturally inverted PKU-Alignment/beaver-7b-v1.0-reward judges (K = 51), RB-Spec holds 0.7963 while Naive SVD collapses below random chance to 0.1455 (p = 2.11e-229).</li>
-  <li><strong>Cross-Family Universal Confounders:</strong> When every judge family loads onto the same confounder W (e.g., universal length preference), balanced 1/F weighting still stalls at floor c<sup>2</sup> v<sub>W</sub>. Covariate-residualized CR-RB-Spec stays completely invariant across c = 0 to 2.0 (SummEval 0.5936 vs. vanilla RB-Spec 0.2757, p = 6.03e-13; MT-Bench 0.7709 vs. 0.6707, p = 1.59e-04; Monte Carlo 0.8915 vs. 0.5131), assuming observable covariates capture W.</li>
+  <li><strong>Cross-Family Universal Confounders:</strong> When every judge family loads onto the same confounder W (e.g., universal length preference), equal family weights retain the shared confounder variance. Covariate-residualized CR-RB-Spec is stable in the observed benchmarks across c = 0 to 2.0 (SummEval 0.5767 vs. vanilla RB-Spec 0.2759, p = 1.72e-12; MT-Bench 0.7736 vs. 0.6683, p = 2.73e-05; Monte Carlo 0.8915 vs. 0.5131), assuming observable covariates capture W.</li>
 </ul>
 
 <h2>2. Overview Figure: Six Empirical &amp; Spectral Perturbation Checks (Experiment 14)</h2>
@@ -47,26 +47,26 @@
 <h2>3. Lean 4 Theorems (SpectralCalibration.lean) &amp; Typeset Equations</h2>
 
 <h3>3.1 Agreement ICC vs. Consistency ICC Gap &amp; Affine Anchor Calibration</h3>
-<p>Theorems <code>mse_bias_variance_decomp</code>, <code>icc_agreement_lt_consistency_of_bias</code>, and <code>anchor_calibration_excess_tendsto_zero</code> formally prove why mean bias strictly separates ICC(A,1) from ICC(C,1) and vanishes at rate 1/m under anchor calibration:</p>
+<p>Theorems <code>mse_bias_variance_decomp</code>, <code>icc_agreement_lt_consistency_of_bias</code>, and <code>anchor_calibration_excess_tendsto_zero</code> formally prove why mean bias strictly separates ICC(A,1) from ICC(C,1) and why the expected squared offset error decreases with the number of independent anchors:</p>
 <div class="eqbox"><img src="https://raw.githubusercontent.com/brando90/tvdmi-judge-asymptotics/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/doc_equation_images_11-21-2026/eq01_icc_gap_and_affine_calibration.png" alt="Equation 1: ICC Gap and Affine Calibration"></div>
 <div class="eqbox"><img src="https://raw.githubusercontent.com/brando90/tvdmi-judge-asymptotics/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/doc_equation_images_11-21-2026/eq02_platt_probability_calibration.png" alt="Equation 2: Platt Probability Calibration and ECE"></div>
 
 <h3>3.2 Cross-Family Confounder Floor &amp; Covariate Residualization (CR-RB-Spec)</h3>
-<p>Theorems <code>cross_family_confounder_variance_floor</code> and <code>confounder_residualization_recovery</code> prove that shared confounder variance c<sup>2</sup> v<sub>W</sub> persists under balanced 1/F weighting for all F, and disappears once training-fold residualization estimates c accurately:</p>
+<p>Theorems <code>cross_family_confounder_variance_floor</code> and <code>confounder_residualization_recovery</code> prove that shared confounder variance persists under equal family weights and vanishes when the nuisance contribution is removed exactly:</p>
 <div class="eqbox"><img src="https://raw.githubusercontent.com/brando90/tvdmi-judge-asymptotics/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/doc_equation_images_11-21-2026/eq03_cross_family_confounder_floor.png" alt="Equation 3: Cross-Family Confounder Floor"></div>
 <div class="eqbox"><img src="https://raw.githubusercontent.com/brando90/tvdmi-judge-asymptotics/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/doc_equation_images_11-21-2026/eq04_confounder_residualization_cr_rbspec.png" alt="Equation 4: CR-RB-Spec Recovery"></div>
 
 <h3>3.3 Rank-1 Davis-Kahan Spectral Perturbation &amp; Sample Convergence</h3>
-<p>Theorems <code>davis_kahan_rayleigh_sin_sq_bound</code> and <code>davis_kahan_sample_rate_vanishes</code> prove that empirical eigenvector subspace error sin<sup>2</sup> theta is at most 2 times epsilon divided by (lambda<sub>1</sub> minus lambda<sub>2</sub>) and converges to zero as sample size grows:</p>
+<p>Theorems <code>davis_kahan_rayleigh_sin_sq_bound</code> and <code>davis_kahan_sample_rate_vanishes</code> bound the subspace error given a spectral gap and perturbation bound. The bound tends to zero when the perturbation decreases at the assumed rate:</p>
 <div class="eqbox"><img src="https://raw.githubusercontent.com/brando90/tvdmi-judge-asymptotics/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/doc_equation_images_11-21-2026/eq05_davis_kahan_spectral_perturbation.png" alt="Equation 5: Davis-Kahan Subspace Bound"></div>
 <div class="eqbox"><img src="https://raw.githubusercontent.com/brando90/tvdmi-judge-asymptotics/main/experiments/14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026/doc_equation_images_11-21-2026/eq06_davis_kahan_sample_rate.png" alt="Equation 6: Davis-Kahan Sample Rate"></div>
 
 <h2>4. Summary Tables (Observed Numbers Directly from Runner Outputs)</h2>
 
-<h3>4.1 SummEval m-Anchor Affine Calibration (200 Stratified 50/50 Splits, Wild K = 38)</h3>
+<h3>4.1 SummEval m-Anchor Affine Calibration (200 Random 50/50 Splits, Wild K = 38)</h3>
 <table>
   <tr>
-    <th>Anchors m</th><th>Item Spearman</th><th>Mean Bias</th><th>MAE</th><th>RMSE</th><th>RB-Spec ICC(A,1) [95% Split CI]</th><th>ICC(C,1)</th><th>Mean Baselines ICC(A,1) (MAE)</th>
+    <th>Anchors m</th><th>Item Spearman</th><th>Mean Bias</th><th>MAE</th><th>RMSE</th><th>RB-Spec ICC(A,1) [central 95% of splits]</th><th>ICC(C,1)</th><th>Mean Baselines ICC(A,1) (MAE)</th>
   </tr>
   <tr><td>0</td><td>0.6299</td><td>-1.1039</td><td>1.1295</td><td>1.2967</td><td>0.3341 [0.2898, 0.3823]</td><td>0.6455</td><td>0.3962 (0.7502)</td></tr>
   <tr><td>2</td><td>0.6300</td><td>+0.0031</td><td>0.3972</td><td>0.5214</td><td>0.6006 [0.4375, 0.6959]</td><td>0.6263</td><td>0.4907 (0.4447)</td></tr>
@@ -95,11 +95,11 @@
   <tr>
     <th>Confounder Strength c</th><th>SummEval Vanilla RB (CR-RB)</th><th>MT-Bench Vanilla RB (CR-RB)</th><th>MC 500 Adv+Conf Vanilla RB (CR-RB / +DS-EM)</th>
   </tr>
-  <tr><td>0.0</td><td>0.6278 (0.5936)</td><td>0.7973 (0.7709)</td><td>0.9350 (0.9176 / 0.9037)</td></tr>
-  <tr><td>0.5</td><td>0.4783 (0.5936)</td><td>0.7957 (0.7709)</td><td>0.8993 (0.9170 / 0.9048)</td></tr>
-  <tr><td>1.0</td><td>0.3868 (0.5936)</td><td>0.6113 (0.7709)</td><td>0.6549 (0.9142 / 0.9022)</td></tr>
-  <tr><td>1.5</td><td>0.3213 (0.5936)</td><td>0.6540 (0.7709)</td><td>0.5321 (0.9102 / 0.8940)</td></tr>
-  <tr><td>2.0</td><td>0.2757 (<strong>0.5936</strong>, p=6.03e-13)</td><td>0.6707 (<strong>0.7709</strong>, p=1.59e-04)</td><td>0.5131 (<strong>0.8915</strong> / <strong>0.8583</strong>)</td></tr>
+  <tr><td>0.0</td><td>0.6278 (0.5767)</td><td>0.7988 (0.7736)</td><td>0.9350 (0.9176 / 0.9037)</td></tr>
+  <tr><td>0.5</td><td>0.4783 (0.5767)</td><td>0.7930 (0.7736)</td><td>0.8993 (0.9170 / 0.9048)</td></tr>
+  <tr><td>1.0</td><td>0.3870 (0.5767)</td><td>0.6159 (0.7736)</td><td>0.6549 (0.9142 / 0.9022)</td></tr>
+  <tr><td>1.5</td><td>0.3214 (0.5767)</td><td>0.6528 (0.7736)</td><td>0.5321 (0.9102 / 0.8940)</td></tr>
+  <tr><td>2.0</td><td>0.2759 (<strong>0.5767</strong>, p=1.72e-12)</td><td>0.6683 (<strong>0.7736</strong>, p=2.73e-05)</td><td>0.5131 (<strong>0.8915</strong> / <strong>0.8583</strong>)</td></tr>
 </table>
 <p><strong>Davis-Kahan Perturbation (RewardBench 2, 500 repetitions, eigengap 2.2797):</strong> Empirical sin squared theta shrinks from 0.06597 (n=10 prompts, Lean bound 0.5148) down to 0.000911 (n=640 prompts, Lean bound 0.04921, mean sin 0.0281) with zero bound violations across all 3,500 draws and fitted log-log slope -1.03 (-0.56 on the exact Rayleigh bound).</p>
 

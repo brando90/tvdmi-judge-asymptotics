@@ -2,8 +2,7 @@
 \section{Full Proofs}
 \label{app:proofs}
 
-All proofs are given in the main text. Here we collect additional technical
-details.
+We give additional derivations for the scaling and robustness results.
 
 \subsection{Proof of Corollary~\ref{cor:scaling-regimes}}
 
@@ -14,16 +13,16 @@ $\Var(\bar{S}_K) = \sigma^2/K$, so $\RMSE = \sigma/\sqrt{K}$.
 $(1-\rho_0)/K \to 0$, so $\Var(\bar{S}_K) \to \sigma^2\rho_0$.
 
 \textbf{Case 3} ($\rho_K \sim K^{-\beta}$).
-$\Var(\bar{S}_K) = \sigma^2(K^{-1} + (1-K^{-1})K^{-\beta})
-\sim \sigma^2 \max(K^{-1}, K^{-\beta})
+$\Var(\bar{S}_K) = \sigma^2(K^{-1} + (1-K^{-1})\rho_K)
+\asymp \sigma^2 \max(K^{-1}, K^{-\beta})
 = \sigma^2 K^{-\min(1,\beta)}$.
-So $\RMSE \sim K^{-\min(1,\beta)/2}$.
+So $\RMSE \asymp K^{-\min(1,\beta)/2}$.
 
 \subsection{Proof of Proposition~\ref{prop:robust-aggregation}}
 
 Let $(1-\delta)$ of judges be honest with bounded scores in $[0,1]$ and expectation $\tau_c$, and let fraction $\delta$ be adversarial with expectation $\mu_{\mathrm{adv}}$. By linearity of expectation, the sample mean satisfies $\E[\bar{S}_K] = (1-\delta)\tau_c + \delta\mu_{\mathrm{adv}} = \tau_c + \delta(\mu_{\mathrm{adv}} - \tau_c)$, incurring exact asymptotic bias $\delta(\mu_{\mathrm{adv}} - \tau_c)$.
 
-For the sample median under honest scores $\mathcal{N}(\tau_c, \sigma^2)$ and one-sided adversaries strictly below $\tau_c$ ($F_{\mathrm{adv}}(m_\delta) \approx 1$), the population median $m_\delta$ satisfies $(1-\delta)\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) + \delta = \frac{1}{2}$, hence $\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) = \frac{1/2 - \delta}{1 - \delta} = 1 - \frac{1}{2(1-\delta)}$. Using $\Phi^{-1}(1 - u) = -\Phi^{-1}(u)$ gives $m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right)$. Expanding $\frac{1}{2(1-\delta)} = \frac{1}{2} + \frac{\delta}{2} + O(\delta^2)$ with $(\Phi^{-1})'(\tfrac{1}{2}) = 1/\phi(0) = \sqrt{2\pi}$ yields $m_\delta - \tau_c = -\sqrt{\pi/2}\,\sigma\delta + O(\delta^2) = O(\sigma\delta)$.
+For the sample median under honest scores $\mathcal{N}(\tau_c, \sigma^2)$ and contaminating mass strictly below the mixture median ($F_{\mathrm{adv}}(m_\delta)=1$, $0<\delta<1/2$), the population median $m_\delta$ satisfies $(1-\delta)\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) + \delta = \frac{1}{2}$, hence $\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) = \frac{1/2 - \delta}{1 - \delta} = 1 - \frac{1}{2(1-\delta)}$. Using $\Phi^{-1}(1 - u) = -\Phi^{-1}(u)$ gives $m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right)$. Expanding $\frac{1}{2(1-\delta)} = \frac{1}{2} + \frac{\delta}{2} + O(\delta^2)$ with $(\Phi^{-1})'(\tfrac{1}{2}) = 1/\phi(0) = \sqrt{2\pi}$ yields $m_\delta - \tau_c = -\sqrt{\pi/2}\,\sigma\delta + O(\delta^2) = O(\sigma\delta)$.
 
 \subsection{Hoeffding's Inequality (Reference)}
 

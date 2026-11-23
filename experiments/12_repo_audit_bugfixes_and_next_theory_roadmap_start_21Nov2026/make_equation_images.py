@@ -23,14 +23,14 @@ EQUATIONS = {
 """,
     "eq02_hoeffding_null_overfit": r"""
 \mathbb{P}\!\left(\left|\widehat\Delta_c(h) - \Delta_c(h)\right| > \eta\right) \le 2 e^{-n\eta^2}, \\
-\tau(c)=0 \;\implies\; \max_{1 \le j \le K} \widehat\Delta_c(h_j) = \Omega_p\!\left(\sqrt{\frac{\log K}{n}}\right)
+\tau(c)=0 \;\implies\; \mathbb{P}\!\left(\max_{j\le K}\widehat\Delta_c(h_j)>t\right)\le K e^{-nt^2}\quad(t>0)
 """,
     "eq03_split_sample_thm3prime": r"""
 \mathbb{P}\!\left(\left|\hat\tau^{\mathrm{split}}_{K,n}(c) - \tau(c)\right| > \varepsilon + 2\eta_{\mathrm{sel}} + \eta_{\mathrm{eval}}\right)
 \le e^{-K p_\varepsilon(c)} + 2K e^{-n_{\mathrm{sel}}\eta_{\mathrm{sel}}^2} + 2 e^{-n_{\mathrm{eval}}\eta_{\mathrm{eval}}^2}, \\
 K^\star(B) \asymp \left(\frac{B}{\log B}\right)^{\frac{\beta}{\beta+2}}, \qquad
 n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}}, \qquad
-\mathrm{Error}^\star(B) \asymp \left(\frac{\log B}{B}\right)^{\frac{1}{\beta+2}}
+\mathrm{Error}(K^\star,B) = O_p\!\left((\log B/B)^{1/(\beta+2)}\right)
 """,
     "eq04_local_diversity_elasticity": r"""
 \mathrm{RMSE}(\bar S_K) = \sigma\sqrt{\rho + \frac{1-\rho}{K}}
@@ -42,7 +42,7 @@ n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}}, \qquad
 \mathrm{Bias}\!\left(\bar S_K\right) = \delta\left(\mu_{\mathrm{adv}} - \tau(c)\right), \\
 \mathrm{Bias}\!\left(\mathrm{Med}(S_{1:K})\right)
 \xrightarrow{K\to\infty} -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right)
-= -\sqrt{\frac{\pi}{2}}\,\sigma\,\delta + O(\delta^2) \quad (\mu_{\mathrm{adv}} \ll \tau(c))
+= -\sqrt{\frac{\pi}{2}}\,\sigma\,\delta + O(\delta^2) \quad (F_{\mathrm{adv}}(m_\delta)=1,\;0<\delta<1/2)
 """,
     "eq06_bijection_peer_recovery": r"""
 \mathrm{TV}\!\left(P_{X, f(X)},\, P_X \otimes P_{f(X)}\right) = 1 - \sum_y P_Y(y)^2, \\

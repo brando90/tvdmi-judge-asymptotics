@@ -51,7 +51,7 @@ Theorem~\ref{thm:coverage} has probability at most $e^{-K\,p_\varepsilon(c)}$.
 Combining Steps~1--2 yields the bound in~\eqref{eq:two-axis}. \qedhere
 \end{proof}
 
-\begin{theorem}[Split-sample cross-fitted two-axis bound and compute-optimal frontier]
+\begin{theorem}[Split-sample two-axis bound and budget allocation]
 \label{thm:split-sample}
 Let each judge be evaluated on disjoint selection ($n_{\mathrm{sel}}$) and
 evaluation ($n_{\mathrm{eval}}$) sample splits with $n = n_{\mathrm{sel}} +
@@ -67,24 +67,24 @@ Then for any $\varepsilon, \eta_{\mathrm{sel}}, \eta_{\mathrm{eval}} > 0$:
  + 2K\,e^{-n_{\mathrm{sel}}\eta_{\mathrm{sel}}^2}
  + 2\,e^{-n_{\mathrm{eval}}\eta_{\mathrm{eval}}^2}.
 \end{equation}
-Conditioned on $\hat{j}_K$, $\E[\hat\tau^{\mathrm{split}}_{K,n}(c) \mid \hat{j}_K]
-= \Delta_c(h_{\hat{j}_K})$, eliminating the in-sample $+\Omega_p(\sqrt{(\log K)/n})$
-winner's-curse maximization inflation present in $\max_j \widehat\Delta_c(h_j)$.
+Conditional on the sampled critics $H$ and selection index, $\E[\hat\tau^{\mathrm{split}}_{K,n}(c) \mid H,\hat{j}_K]
+= \Delta_c(h_{\hat{j}_K})$, so evaluation adds no selection bias.
+On the selection good event, the selected critic is within $2\eta_{\mathrm{sel}}$ of the population best.
+Conditional Hoeffding for that critic and a union bound give the display.
 Moreover, under tail geometry $p_\varepsilon(c) \asymp \varepsilon^\beta$ and a
 fixed total judge-call budget $B = K n$, balancing $K^{-1/\beta}$ against
-$\sqrt{(\log K)/n}$ yields an interior compute-optimal frontier:
+$\sqrt{(\log K)/n}$ with a fixed positive fraction of samples in each split gives a bound-balancing allocation:
 \begin{equation}
 K^\star(B) \asymp \left(\frac{B}{\log B}\right)^{\frac{\beta}{\beta+2}},
 \qquad
-n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}},
-\qquad
-\mathrm{Error}^\star(B) \asymp \left(\frac{\log B}{B}\right)^{\frac{1}{\beta+2}}.
+n^\star=B/K^\star,\qquad
+|\hat\tau^{\mathrm{split}}-\tau| = O_p\!\left((\log B/B)^{1/(\beta+2)}\right).
 \end{equation}
 \end{theorem}
 
 \begin{remark}
 Because an in-sample empirical maximum selects positively correlated estimation
-noise, $\max_j \widehat\Delta_c(h_j)$ systematically overestimates null targets
+noise, $\max_j \widehat\Delta_c(h_j)$ can overestimate null targets
 ($\tau(c) = 0$) as $K$ grows. Disjoint sample splitting decouples selection noise
 from evaluation noise, ensuring two-sided convergence cleanly without clipping.
 \end{remark}

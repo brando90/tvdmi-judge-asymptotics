@@ -101,9 +101,10 @@ def fit_srb_spec_auto(
     C_tr: np.ndarray,
     group_ids: np.ndarray | None = None,
     seed: int = SEED,
+    inner_features=None,
 ) -> tuple[np.ndarray, float]:
     """Unsupervised train-only inner-CV selector for shrinkage alpha in ALPHA_GRID.
-    Maximizes held-out family-balanced variance explained R^2 across validation judges.
+    Maximizes held-out family-balanced variance explained R^2 on validation items.
     Zero human labels accessed.
     """
     rng_in = np.random.default_rng(seed)
@@ -120,12 +121,14 @@ def fit_srb_spec_auto(
 
     best_alpha = 1.0
     best_score = -1.0
+    fold_data = []
+    for va_mask in in_masks:
+        if va_mask.sum() >= 5 and (~va_mask).sum() >= 10:
+            features = C_tr if inner_features is None else inner_features(~va_mask)
+            fold_data.append((features[~va_mask], features[va_mask]))
     for alpha in ALPHA_GRID:
         scores = []
-        for va_mask in in_masks:
-            if va_mask.sum() < 5 or (~va_mask).sum() < 10:
-                continue
-            C_in_tr, C_in_va = C_tr[~va_mask], C_tr[va_mask]
+        for C_in_tr, C_in_va in fold_data:
             w_cand, _ = fit_srb_spec_weights(C_in_tr, alpha=alpha)
             pred_va = C_in_va @ w_cand
             if pred_va.std() <= 1e-8:
@@ -214,7 +217,25 @@ def load_judgebench_cached() -> dict:
     d = json.loads(path.read_text(encoding="utf-8"))
     meta = d["meta"]
     judges = d["judges"]
-    S = np.array(d["scores_matrix"], dtype=np.float64).T  # (350, 33)
+    # Reconstruct signed votes directly from the released files. The second
+    # presentation reverses A/B. A missing first presentation can still vote.
+    pair_index = {row["pair_id"]: i for i, row in enumerate(meta)}
+    vote = {"A>B": 1.0, "B>A": -1.0}
+    S = np.full((len(meta), len(judges)), np.nan)
+    for j, judge in enumerate(judges):
+        with (JB_CACHE / "raw" / judge["file"]).open(encoding="utf-8") as records:
+            for line in records:
+                row = json.loads(line)
+                directions = [
+                    (1 if order == 0 else -1) * vote.get(judgment["decision"], 0.0)
+                    for order, judgment in enumerate(row["judgments"]) if judgment is not None
+                ]
+                i = pair_index[row["pair_id"]]
+                if not np.isnan(S[i, j]):
+                    raise ValueError(f"Duplicate pair in {judge['file']}")
+                S[i, j] = sum(directions) / len(directions) if directions else 0.0
+    if np.isnan(S).any():
+        raise ValueError("JudgeBench archive is missing a pair or judge")
     y_true = np.array([float(m["y_true"]) for m in meta], dtype=np.float64)
     sources = np.array([str(m["source"]) for m in meta])
     wlen_diff = np.array([float(m["wlen_diff"]) for m in meta], dtype=np.float64)
@@ -244,6 +265,7 @@ def load_judgebench_cached() -> dict:
         "n_pairs": len(meta),
         "n_judges": len(judges),
         "sha256_aligned_json": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "score_source": "raw judgment decisions, aligned by pair_id and presentation order",
         "sample_judge_scores_pair0": {
             judges[j]["label"]: float(S[0, j]) for j in (0, 10, 20, 25, 31)
         },
@@ -415,10 +437,15 @@ def module1_srb_shrinkage(
         for m in se_methods:
             sp_all = float(spearmanr(oof[m].ravel(), H.ravel()).statistic)
             sys_sp = float(spearmanr(oof[m].mean(axis=0), H.mean(axis=0)).statistic)
-            _, lo, hi = boot_mean_ci(art_sp[m], rng)
+            draw = rng.integers(0, len(H), size=(N_BOOT, len(H)))
+            lo, hi = np.quantile(art_sp[m][draw].mean(axis=1), [0.025, 0.975])
+            pooled = [spearmanr(oof[m][ids].ravel(), H[ids].ravel()).statistic for ids in draw]
+            pooled_lo, pooled_hi = np.quantile(pooled, [0.025, 0.975])
             p_vs_rb = safe_wilcoxon(art_sp[m], art_sp["Vanilla RB-Spec"]) if m != "Vanilla RB-Spec" else 1.0
             row_res[m] = {
                 "item_spearman": sp_all,
+                "item_ci_lo": float(pooled_lo),
+                "item_ci_hi": float(pooled_hi),
                 "art_mean_spearman": float(art_sp[m].mean()),
                 "art_ci_lo": lo,
                 "art_ci_hi": hi,
@@ -428,12 +455,14 @@ def module1_srb_shrinkage(
         summeval_out[rname] = row_res
 
     # MT-Bench Confounded K=17 (5-fold question-disjoint CV)
-    X_mt, y_mt, q_mt = mtbench["X_raw"], mtbench["y_true"], mtbench["q_ids"]
+    y_mt, q_mt = mtbench["y_true"], mtbench["q_ids"]
     uq = np.unique(q_mt)
     q_folds = np.array_split(rng.permutation(uq), N_FOLDS)
     oof_mt = {m: np.zeros(len(y_mt), dtype=np.float64) for m in se_methods}
     for te_q in q_folds:
         m_te = np.isin(q_mt, te_q)
+        frame = mtbench["pairs"]
+        X_mt, _ = r14.mtbench_features(frame, ~m_te, SEED)
         X_tr, X_te = X_mt[~m_te], X_mt[m_te]
         sd_tr = np.maximum(X_tr.std(axis=0), 1e-8)
         oof_mt["Uniform Z-Mean"][m_te] = (X_te / sd_tr).mean(axis=1)
@@ -445,7 +474,14 @@ def module1_srb_shrinkage(
         for a in ALPHA_GRID:
             w_s, _ = fit_srb_spec_weights(X_tr, alpha=a)
             oof_mt[f"SRB-Spec(a={a:.2f})"][m_te] = X_te @ w_s
-        w_auto, _ = fit_srb_spec_auto(X_tr, group_ids=q_mt[~m_te], seed=SEED + 29)
+        def inner_mt_features(inner_train):
+            train = np.zeros(len(frame), dtype=bool)
+            train[~m_te] = inner_train
+            features, _ = r14.mtbench_features(frame, train, SEED)
+            return features[~m_te]
+
+        w_auto, _ = fit_srb_spec_auto(X_tr, group_ids=q_mt[~m_te], seed=SEED + 29,
+                                      inner_features=inner_mt_features)
         oof_mt["SRB-Spec(Auto)"][m_te] = X_te @ w_auto
 
     mt_res = {}
@@ -453,12 +489,18 @@ def module1_srb_shrinkage(
         m: np.array([float(np.mean(np.sign(oof_mt[m][q_mt == q]) == y_mt[q_mt == q])) for q in uq])
         for m in se_methods
     }
+    q_counts = np.array([np.sum(q_mt == q) for q in uq])
     for m in se_methods:
         acc_all = float(np.mean(np.sign(oof_mt[m]) == y_mt))
-        _, lo, hi = boot_mean_ci(q_accs[m], rng)
+        draw = rng.integers(0, len(uq), size=(N_BOOT, len(uq)))
+        lo, hi = np.quantile(q_accs[m][draw].mean(axis=1), [0.025, 0.975])
+        pooled = (q_accs[m] * q_counts)[draw].sum(axis=1) / q_counts[draw].sum(axis=1)
+        pooled_lo, pooled_hi = np.quantile(pooled, [0.025, 0.975])
         p_vs_rb = safe_wilcoxon(q_accs[m], q_accs["Vanilla RB-Spec"]) if m != "Vanilla RB-Spec" else 1.0
         mt_res[m] = {
             "pair_acc": acc_all,
+            "pair_ci_lo": float(pooled_lo),
+            "pair_ci_hi": float(pooled_hi),
             "q_ci_lo": lo,
             "q_ci_hi": hi,
             "p_vs_vanilla_rb": p_vs_rb,
@@ -487,8 +529,8 @@ def module1_srb_shrinkage(
                 "method": m,
                 "metric_name": "item_spearman",
                 "metric": round(vals["item_spearman"], 6),
-                "ci_lo": round(vals["art_ci_lo"], 6),
-                "ci_hi": round(vals["art_ci_hi"], 6),
+                "ci_lo": round(vals["item_ci_lo"], 6),
+                "ci_hi": round(vals["item_ci_hi"], 6),
                 "p_vs_vanilla_rb": vals["p_vs_vanilla_rb"],
                 "p_vs_naive_svd": "",
             })
@@ -499,8 +541,8 @@ def module1_srb_shrinkage(
             "method": m,
             "metric_name": "pair_acc",
             "metric": round(vals["pair_acc"], 6),
-            "ci_lo": round(vals["q_ci_lo"], 6),
-            "ci_hi": round(vals["q_ci_hi"], 6),
+            "ci_lo": round(vals["pair_ci_lo"], 6),
+            "ci_hi": round(vals["pair_ci_hi"], 6),
             "p_vs_vanilla_rb": vals["p_vs_vanilla_rb"],
             "p_vs_naive_svd": "",
         })
@@ -572,7 +614,11 @@ def _eval_judgebench_regime(
         beta, _, _, _ = np.linalg.lstsq(X_tr, S_tr, rcond=None)
         R_tr = S_tr - X_tr @ beta
         R_te = S_te - X_te @ beta
-        w_cr, _ = fit_srb_spec_auto(R_tr, seed=SEED + 77)
+        def inner_residuals(inner_train):
+            coef = np.linalg.lstsq(X_tr[inner_train], S_tr[inner_train], rcond=None)[0]
+            return S_tr - X_tr @ coef
+
+        w_cr, _ = fit_srb_spec_auto(R_tr, seed=SEED + 77, inner_features=inner_residuals)
         oof["CR-SRB-Spec (Len)"][te_idx] = R_te @ w_cr
 
     out = {}
@@ -685,15 +731,18 @@ def module3_partial_proxies(
     n_noise_reps = 10
 
     # --- 3A. JudgeBench (K=33, c=2.0 universal length shift W) ---
-    W_jb = (jb["wlen_diff"] - jb["wlen_diff"].mean()) / max(jb["wlen_diff"].std(), 1e-8)
-    S_jb_conf = jb["S"] + c_conf * W_jb[:, None]
+    length_jb = jb["wlen_diff"]
     y_jb = jb["y_true"]
     jb_folds = np.array_split(rng.permutation(len(y_jb)), N_FOLDS)
 
     # Unresidualized Vanilla RB-Spec under c=2.0 baseline
     oof_van_jb = np.zeros(len(y_jb))
+    jb_inputs = []
     for te_idx in jb_folds:
-        tr_m = np.ones(len(y_jb), dtype=bool); tr_m[te_idx] = False
+        tr_m = ~np.isin(np.arange(len(y_jb)), te_idx)
+        W_jb = (length_jb - length_jb[tr_m].mean()) / max(length_jb[tr_m].std(), 1e-8)
+        S_jb_conf = jb["S"] + c_conf * W_jb[:, None]
+        jb_inputs.append((te_idx, tr_m, W_jb, S_jb_conf))
         w_v, _ = r14.fit_rb_spec_weights(S_jb_conf[tr_m])
         oof_van_jb[te_idx] = S_jb_conf[te_idx] @ w_v
     jb_van_acc = float(np.mean(np.sign(oof_van_jb) == y_jb))
@@ -742,11 +791,10 @@ def module3_partial_proxies(
         for rep in range(n_noise_reps):
             sq = float(np.sqrt(max(0.0, 1.0 - r * r)))
             # JudgeBench proxy
-            xi_jb = rng.normal(0.0, 1.0, size=len(W_jb))
-            X_jb = r * W_jb + sq * xi_jb
+            xi_jb = rng.normal(0.0, 1.0, size=len(y_jb))
             oof_cr_jb, oof_crs_jb = np.zeros(len(y_jb)), np.zeros(len(y_jb))
-            for te_idx in jb_folds:
-                tr_m = np.ones(len(y_jb), dtype=bool); tr_m[te_idx] = False
+            for te_idx, tr_m, W_jb, S_jb_conf in jb_inputs:
+                X_jb = r * W_jb + sq * xi_jb
                 oof_cr_jb[te_idx] = _residualize_with_proxy(S_jb_conf[tr_m], S_jb_conf[te_idx], X_jb[tr_m], X_jb[te_idx], False)
                 oof_crs_jb[te_idx] = _residualize_with_proxy(S_jb_conf[tr_m], S_jb_conf[te_idx], X_jb[tr_m], X_jb[te_idx], True)
             jb_cr_accs.append(float(np.mean(np.sign(oof_cr_jb) == y_jb)))
@@ -1016,7 +1064,7 @@ def make_figure(summary: dict) -> None:
     ax.set_xticks(x_jb)
     ax.set_xticklabels(jb_short)
     ax.set_ylim(0.15, 0.85)
-    ax.set_ylabel("Strict Two-Pass Pairwise Accuracy")
+    ax.set_ylabel("Position-Swap Pairwise Accuracy")
     ax.set_title("C. JudgeBench (33 Real Judges, 350 Hard Pairs)")
     ax.legend(loc="lower left", framealpha=0.92)
 

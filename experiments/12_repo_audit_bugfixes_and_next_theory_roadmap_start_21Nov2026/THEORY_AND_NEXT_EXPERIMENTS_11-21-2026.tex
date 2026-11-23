@@ -51,11 +51,11 @@
 
 \textbf{What the existing and fixed theorems do NOT show (explicit metric limits):}
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
-\item \textbf{Unconditional prompt--response TVD-MI is blind to bijections and label inversions.} Because $\TV(P_{X,Y}, P_X \otimes P_Y)$ maximizes over \emph{all} bounded critics $h:\cU\times\cV\to[0,1]$, it measures mutual dependence rather than task correctness. Any deterministic injection (including copying the prompt $Y = X$ or systematically inverting the binary answer $Y = 1 - Z^\star(X)$) achieves maximal or near-maximal TVD-MI while attaining $0\%$ gold task accuracy (Section~\ref{sec:bijection}, Check~A).
-\item \textbf{Naive empirical best-of-$K$ overfits finite samples $n$.} Maximizing an in-sample empirical gap $\max_{j \le K} \widehat{\Delta}_c(h_j)$ without sample splitting exhibits positive winner's-curse bias of order $+\Omega_p(\sqrt{(\log K)/n})$ even under the null $\tau(c)=0$. Experiment~03 and Experiment~11 clipped $\max(0, \tau(c) - \hat{\tau})$ and therefore hid this upward inflation (Section~\ref{sec:hoeffding_split}, Check~C).
+\item \textbf{Unconditional prompt--response TVD-MI is blind to bijections and label inversions.} Because $\TV(P_{X,Y}, P_X \otimes P_Y)$ maximizes over \emph{all} bounded critics $h:\cU\times\cV\to[0,1]$, it measures mutual dependence rather than task correctness. Copying the prompt gives the injective-map value, which can be large without predicting the answer. Inverting binary answers preserves the original dependence score while giving zero accuracy for an inverted oracle (Section~\ref{sec:bijection}, Check~A).
+\item \textbf{Naive empirical best-of-$K$ overfits finite samples $n$.} Maximizing an in-sample empirical gap $\max_{j \le K} \widehat{\Delta}_c(h_j)$ without sample splitting can inflate the estimated contrast even under the null $\tau(c)=0$. Experiment~03 and Experiment~11 clipped $\max(0, \tau(c) - \hat{\tau})$ and therefore hid this upward inflation (Section~\ref{sec:hoeffding_split}, Check~C).
 \item \textbf{Linear averaging is blind to shared judge bias and saturates at $\sigma\sqrt{\rho}$.} Equicorrelated scalar judges with pairwise error correlation $\rho > 0$ cannot be rescued by scaling $K \to \infty$ under any linear average; furthermore, the existing paper assumes conditional independence across judges in Theorem~2 (Consensus) and does not characterize the correlated-consensus threshold (Section~\ref{sec:confounded_consensus}).
 \item \textbf{Single-item median and trimmed mean retain $O(\sigma\delta)$ bias under asymmetric contamination.} Under one-sided Huber contamination $\delta$, static order statistics remove gross outliers only if the trimming fraction exceeds $\delta$ and still shift by $\approx -\sqrt{\pi/2}\,\sigma\delta$ for the sample median; cross-item Dawid--Skene / Item Response Theory (IRT) calibration across $n$ items is required to break the $O(\delta)$ single-item floor, and continuous cross-item IRT convergence rates remain \textbf{untested empirically} for continuous TVD-MI panels (Section~\ref{sec:adversarial_bias}).
-\item \textbf{Real LLM validation is currently synthetic-only.} \texttt{experiments/06\_llm\_judges/main.py} uses Gaussian noise around uniform gold scores with zero real LLM outputs; cross-domain real-LLM judge scaling curves remain \textbf{untested} inside this repository.
+\item \textbf{The historical suite used synthetic judge scores.} \texttt{experiments/06\_llm\_judges/main.py} uses Gaussian noise around uniform gold scores with zero real LLM outputs; the later benchmark suites use archived judge outputs.
 \end{enumerate}
 
 {\small
@@ -78,13 +78,13 @@ Unsigned task-semantic peer TVD-MI & Alignment magnitude with latent task peer r
 \midrule
 Oriented conditional peer TVD-MI ($\Delta^{\mathrm{orient}}_{c,j}$) & Signed agreement $2(2q_j-1)(2p_c-1)\Var(Z^\star)$ & Fails if \emph{every} peer shares a prompt-copying artifact or anchor is absent & Derived (Sec.~\ref{sec:bijection}); measured in Check~A \\
 \midrule
-Random-witness best-of-$K$ ($\mathrm{Beta}(1,\beta)$) & Approximates $\tau(c)$ at exact rate $\Theta(K^{-1/\beta})$ & Naive in-sample $\max$ inflates by $\sqrt{(\log K)/n}$ when $K \gg e^n$ & Fixed \& derived (Sec.~\ref{sec:beta_fix}); measured in Check~B \\
+Random-witness best-of-$K$ ($\mathrm{Beta}(1,\beta)$) & Approximates $\tau(c)$ at exact rate $\Theta(K^{-1/\beta})$ & In-sample selection can inflate the score; bounded scores cap the error & Fixed \& derived (Sec.~\ref{sec:beta_fix}); measured in Check~B \\
 \midrule
-Split-sample cross-fitted best-of-$K$ (Thm~3$'$) & Unbiased evaluation on held-out split; optimal $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$ & Costs $2\times$ samples ($n = n_{\mathrm{sel}} + n_{\mathrm{eval}}$); still needs $p_\varepsilon > 0$ & Derived (Sec.~\ref{sec:hoeffding_split}); measured in Check~C \\
+Split-sample cross-fitted best-of-$K$ (Thm~3$'$) & Unbiased evaluation on held-out split; bound-balancing $K^\star(B) \asymp (B/\log B)^{\beta/(\beta+2)}$ & Divides the available samples ($n = n_{\mathrm{sel}} + n_{\mathrm{eval}}$); still needs $p_\varepsilon > 0$ & Derived (Sec.~\ref{sec:hoeffding_split}); measured in Check~C \\
 \midrule
-Consensus majority vote (Theorem~2) & Exponential convergence $2e^{-2K\gamma_0^2}$ under cond.\ indep. & Stalls at $\Prob(Q(W) < 1/2)$ under latent confounder $W$ or $\delta \ge \frac{2\gamma}{1+2\gamma}$ & Cond.\ indep.\ verified in Exp~02; confounded Thm~4 derived (Sec.~\ref{sec:confounded_consensus}), \textbf{untested} \\
+Consensus majority vote (Theorem~2) & Exponential convergence $2e^{-2K\gamma_0^2}$ under cond.\ indep. & Limiting error $\Prob(Q<1/2)+\frac12\Prob(Q=1/2)$ for shared conditional accuracy $Q=Q(W)$ & Cond.\ indep.\ verified in Exp~02; confounded Thm~4 derived (Sec.~\ref{sec:confounded_consensus}), \textbf{untested} \\
 \midrule
-Scalar mean / median / trimmed mean & Sub-$K^{-1/2}$ variance reduction when $\rho_K \to 0$ & Floor $\sigma\sqrt{\rho_0}$ under dependence; median bias $-\sigma\Phi^{-1}(\frac{1}{2(1-\delta)})$ under one-sided contamination & Derived (Secs.~\ref{sec:diversity_fix}--\ref{sec:adversarial_bias}); measured in Checks~D--E \\
+Scalar mean / median / trimmed mean & Unbiased equicorrelated mean has RMSE $\sigma\sqrt{\rho_K+(1-\rho_K)/K}$ & Floor $\sigma\sqrt{\rho_0}$ under dependence; median bias $-\sigma\Phi^{-1}(\frac{1}{2(1-\delta)})$ under one-sided contamination & Derived (Secs.~\ref{sec:diversity_fix}--\ref{sec:adversarial_bias}); measured in Checks~D--E \\
 \bottomrule
 \end{longtable}
 }
@@ -171,7 +171,7 @@ Sample median / trimmed mean & $\mathrm{Med}(S_{1:K})$ / $\bar{S}_{K,\alpha}$ & 
 \section{Detailed Derivations of the Four Audit Defects and Exact Fixes}
 \label{sec:bug_derivations}
 
-\subsection{Bug 1: Experiment 01 Drawn from $\mathrm{Beta}(\beta, 1)$ Instead of $\mathrm{Beta}(1, \beta)$ and Linear-Scale Fit Bias}
+\subsection{\texorpdfstring{Bug 1: Experiment 01 Drawn from $\mathrm{Beta}(\beta, 1)$ Instead of $\mathrm{Beta}(1, \beta)$ and Linear-Scale Fit Bias}{Coverage sampling law and fit bias}}
 \label{sec:beta_fix}
 
 In Experiment~01 (\texttt{experiments/01\_basic\_scaling\_law/main.py}, line~134), judge quality parameters $Q_j$ were sampled from $\mathrm{Beta}(\beta, 1)$ for $\beta \in \{0.5, 1, 2, 4\}$. Here we derive why $\mathrm{Beta}(\beta, 1)$ always yields near-optimal tail exponent $\beta_{\mathrm{eff}} = 1$, why $\mathrm{Beta}(1, \beta)$ is the exact distribution giving $p_\varepsilon(c) \asymp \varepsilon^\beta$, and why unweighted linear least squares over $K \ge 1$ underestimates large $1/\beta$.
@@ -223,7 +223,7 @@ Using $\Gamma(1+x) = x\Gamma(x)$ and Stirling's ratio $\Gamma(K+1)/\Gamma(K+1+c)
 \textbf{Step 3 (Why linear-scale nonlinear least squares across $K \ge 1$ underestimates $\alpha = 2$).}
 For $\beta = 0.5$ ($1/\beta = 2$), eq.~\eqref{eq:exact_beta_gap} equals $\frac{2\tau(c)}{(K+1)(K+2)}$ exactly. Because $K=1$ ($\tau/3$) and $K=2$ ($\tau/6$) are $10^5\times$ larger than $K=1024$, minimizing $\sum_{K \in \{1,\dots,1024\}} (\bar{g}_K - a K^{-\alpha})^2$ gives $\hat{\alpha} = 1.147$ despite the true curve decaying as $K^{-2}$. Log-log Ordinary Least Squares (OLS) on the asymptotic tail $K \ge 8$ recovers exact $1/\beta$ within $\le 2\%$ (Check~B: $1.960, 0.987, 0.491, 0.246$ vs $2.000, 1.000, 0.500, 0.250$; $R^2 \ge 0.997$). Note also that on a discrete $20 \times 20$ grid (\texttt{fixed\_grid}), once $1 - q_j < 1/800$, all 400 cells match $h^\star$ identically and the gap hits exact $0$ for $K \ge 128$ at $\beta = 0.5$.
 
-\subsection{Bug 3: Hoeffding Factor-of-2 Typo, Null Overfitting, and Theorem 3$'$ (Split-Sample Best-of-$K$)}
+\subsection{\texorpdfstring{Bug 3: Hoeffding Factor-of-2 Typo, Null Overfitting, and Theorem 3$'$ (Split-Sample Best-of-$K$)}{Null overfitting and split-sample critic selection}}
 \label{sec:hoeffding_split}
 
 \textbf{Step 1 (Correction of the Hoeffding exponent in Paper Theorem~3).}
@@ -245,16 +245,16 @@ By Hoeffding's inequality, for every $\eta > 0$:
 The factor of $2$ was dropped in the denominator because two independent $n$-sample averages are subtracted.
 
 \textbf{Step 2 (Null overfitting of naive $\max_{j \le K} \widehat{\Delta}_c(h_j)$).}
-Suppose $\tau(c) = 0$ ($P_{UV} = P_U \otimes P_V$), so $\Delta_c(h_j) = 0$ for every $j$. Draw $K$ independent random binary critics $h_j$ with non-constant variance $\sigma_h^2 = \Var_{P_U \otimes P_V}(h_j) \ge v_0 > 0$. Conditional on $(h_1,\dots,h_K)$, $\widehat{\Delta}_c(h_j)$ has mean $0$ and variance $\frac{2\sigma_{h_j}^2}{n}$. By the Gaussian / Berry--Esseen extreme-value lower bound over $K$ independent evaluations (or over orthogonal witness blocks when witnesses are independent across cells),
+Suppose $\tau(c) = 0$ ($P_{UV} = P_U \otimes P_V$), so $\Delta_c(h_j) = 0$ for every $j$. For bounded critics, the two-sample inequality and a union bound give
 \begin{equation}
-\max_{1 \le j \le K} \widehat{\Delta}_c(h_j) = \Omega_p\!\left(\sqrt{\frac{\log K}{n}}\right).
+\Pr\!\left(\max_{j\le K}\widehat\Delta_c(h_j)>t\right)\le K e^{-nt^2}.
 \end{equation}
-Even when $h_1,\dots,h_K$ are evaluated on the \emph{same} $2n$ samples (as in real evaluations and Exp~03/11), the empirical Rademacher/Dudley complexity of $K$ distinct critics scales as $\sqrt{(\log K)/n}$ up to the grid dimension cap $\sqrt{d^2/n}$ if $K \gg 2^{d^2}$, inflating the apparent TVD-MI from $0$ to $+0.3155~[0.3122, 0.3189]$ at $K=1024, n=50$ (Check~C1). Experiments~03 and~11 recorded $\max(0, \tau(c) - \hat{\tau})$ instead of $|\hat{\tau} - \tau(c)|$, turning every positive overfitting error into $0.0000$ and falsely concluding that smaller $n$ yields smaller error ($0.0559$ at $n=50$ vs.\ $0.0741$ at $n=5000$ for $K=4$ in Exp~03).
+This is an upper bound. Identical critics have no selection inflation, and distinct critics on shared observations need not have independent errors. Check~C1 measured $+0.3155~[0.3122,0.3189]$ at $K=1024,n=50$. Experiments~03 and~11 recorded $\max(0, \tau(c) - \hat{\tau})$ instead of $|\hat{\tau} - \tau(c)|$, turning every positive overfitting error into $0.0000$ and falsely concluding that smaller $n$ yields smaller error ($0.0559$ at $n=50$ vs.\ $0.0741$ at $n=5000$ for $K=4$ in Exp~03).
 
-\textbf{Step 3 (New Theorem 3$'$: Split-Sample Cross-Fitted Best-of-$K$ and Compute-Optimal Budget Frontier).}
+\textbf{Step 3 (New Theorem 3$'$: Split-Sample Cross-Fitted Best-of-$K$ and Bound-Balancing Budget Allocation).}
 Partition the $n$ paired samples into disjoint selection ($n_{\mathrm{sel}}$) and evaluation ($n_{\mathrm{eval}} = n - n_{\mathrm{sel}}$) splits. Define $\hat{j}_K := \arg\max_{1 \le j \le K} \widehat{\Delta}^{\mathrm{sel}}_c(h_j)$ and $\hat{\tau}^{\mathrm{split}}_{K,n}(c) := \widehat{\Delta}^{\mathrm{eval}}_c(h_{\hat{j}_K})$.
 
-\begin{theorem}[Split-Sample Two-Sided Consistency and Compute-Optimal Scaling]
+\begin{theorem}[Split-Sample Two-Sided Consistency and Bound-Balancing Scaling]
 \label{thm:split_thm3p}
 Under i.i.d.\ witness draws $h_1,\dots,h_K \sim \mu$ and independent selection/evaluation samples $(n_{\mathrm{sel}}, n_{\mathrm{eval}})$, for all $\varepsilon, \eta_{\mathrm{sel}}, \eta_{\mathrm{eval}} > 0$:
 \begin{equation}
@@ -286,16 +286,16 @@ Since $\Delta_c(h_{\hat{j}_K}) \le \tau(c)$ holds universally for all $h \in \cH
 completing the union bound $\Prob((E_1 \cap E_2 \cap E_3)^c) \le \Prob(E_1^c) + \Prob(E_2^c) + \Prob(E_3^c)$.
 \end{proof}
 
-\textbf{Step 4 (Compute-optimal judge--sample allocation under fixed call budget $B = K \cdot n$).}
-Under $p_\varepsilon(c) \asymp \varepsilon^\beta$ and $n_{\mathrm{sel}} = n_{\mathrm{eval}} = n/2$, setting the three error terms to target failure probability $\alpha_0$ requires $\varepsilon \asymp K^{-1/\beta}$ and $\eta_{\mathrm{sel}} \asymp \sqrt{(\log K)/n}$. Substituting $n = B / K$, total error is
+\textbf{Step 4 (Balancing the judge and sample error bounds under fixed call budget $B = K \cdot n$).}
+Under $p_\varepsilon(c) \asymp \varepsilon^\beta$ and $n_{\mathrm{sel}} = n_{\mathrm{eval}} = n/2$, setting the three error terms to target failure probability $\alpha_0$ requires $\varepsilon \asymp K^{-1/\beta}$ and $\eta_{\mathrm{sel}} \asymp \sqrt{(\log K)/n}$. Substituting $n = B / K$ gives an upper bound proportional to
 \begin{equation}
-\mathcal{E}(K; B) \asymp K^{-1/\beta} + \sqrt{\frac{K \log K}{B}}.
+\mathcal{U}(K; B) := K^{-1/\beta} + \sqrt{\frac{K \log K}{B}}.
 \end{equation}
-Differentiating $\log(K^{-1/\beta}) = \log(\sqrt{(K \log K)/B})$ balances the two terms at $K^{\frac{1}{\beta} + \frac{1}{2}} \asymp \sqrt{\frac{B}{\log B}}$, yielding:
+Equating the two terms balances the bound at $K^{\frac{1}{\beta} + \frac{1}{2}} \asymp \sqrt{\frac{B}{\log B}}$, yielding:
 \begin{equation}
 \boxed{K^\star(B) \asymp \left(\frac{B}{\log B}\right)^{\frac{\beta}{\beta+2}}, \quad
 n^\star(B) \asymp B^{\frac{2}{\beta+2}}(\log B)^{\frac{\beta}{\beta+2}}, \quad
-\mathrm{Error}^\star(B) \asymp \left(\frac{\log B}{B}\right)^{\frac{1}{\beta+2}}.}
+\mathcal{U}(K^\star;B) \asymp \left(\frac{\log B}{B}\right)^{\frac{1}{\beta+2}}.}
 \end{equation}
 For $\beta = 1$ and $B = 4096$, $(B/\log_2 B)^{1/3} = (4096/12)^{1/3} \approx 7.0$, and Check~C2 measures the empirical minimum RMSE of $\hat{\tau}^{\mathrm{split}}$ at exact $K^\star = 8, n = 512$ ($0.0456~[0.0428, 0.0483]$).
 
@@ -321,7 +321,7 @@ When \texttt{utils.fit\_power\_law} fits $a K^{-\alpha} + b$ with an unconstrain
 \end{equation}
 which transitions around the crossover scale $K_{\mathrm{cross}}(\rho) = (1-\rho)/\rho$ from $1/2$ (when $K \ll K_{\mathrm{cross}}$) smoothly down to $0$ (when $K \gg K_{\mathrm{cross}}$). Check~E confirms monotone degradation of $\alpha_{\mathrm{eff}}$ across $K \in [16, 256]$ from $0.4990$ ($\rho=0$) to $0.0160$ ($\rho=0.80$).
 
-\subsection{Bug 2: Experiment 05B $\tau_c = 0.50$ Degeneracy and Asymmetric Huber Median Bias}
+\subsection{\texorpdfstring{Bug 2: Experiment 05B $\tau_c = 0.50$ Degeneracy and Asymmetric Huber Median Bias}{Degenerate scores and asymmetric median bias}}
 \label{sec:adversarial_bias}
 
 In Experiment~05B (\texttt{experiments/05\_adversarial\_robustness/main.py}, line~81), honest judges were drawn from $\mathcal{N}(\tau_c, \sigma^2)$ and adversarial judges from $\mathcal{N}(1 - \tau_c, \sigma^2)$ with $\tau_c = 0.5$. Since $1 - 0.5 = 0.5$, adversarial judges had the exact same distribution as honest judges! Under any non-degenerate target $\tau_c \neq 0.5$, the contaminated mixture distribution is $F_\delta(x) = (1 - \delta) F_{\mathrm{hon}}(x) + \delta F_{\mathrm{adv}}(x)$.
@@ -329,13 +329,13 @@ In Experiment~05B (\texttt{experiments/05\_adversarial\_robustness/main.py}, lin
 \textbf{Exact large-$K$ biases ($\tau_c = 0.80, \mu_{\mathrm{adv}} = 0.20 < \tau_c$, $\sigma = 0.20, \delta = 0.15$):}
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
 \item \textbf{Simple Mean:} $\E[\bar{S}_K] - \tau_{\mathrm{hon}} = \delta(\mu_{\mathrm{adv,clip}} - \tau_{\mathrm{hon,clip}}) \approx -0.087$ (at $K=1024$: measured $-0.0861$, 95\% CI $[-0.0866, -0.0856]$).
-\item \textbf{Sample Median ($K \to \infty$):} The population median $m_\delta$ satisfies $F_\delta(m_\delta) = 1/2$. When $\mu_{\mathrm{adv}} \ll \tau_c$ so $F_{\mathrm{adv}}(m_\delta) \approx 1$, this becomes $(1 - \delta)\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) + \delta = \frac{1}{2}$, i.e.\ $\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) = \frac{1/2 - \delta}{1 - \delta} = 1 - \frac{1}{2(1-\delta)}$. Using $\Phi^{-1}(1 - p) = -\Phi^{-1}(p)$:
+\item \textbf{Sample Median ($K \to \infty$):} The population median $m_\delta$ satisfies $F_\delta(m_\delta) = 1/2$. If all contamination falls below $m_\delta$, then $F_{\mathrm{adv}}(m_\delta)=1$ and $(1 - \delta)\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) + \delta = \frac{1}{2}$, i.e.\ $\Phi\!\left(\frac{m_\delta - \tau_c}{\sigma}\right) = \frac{1/2 - \delta}{1 - \delta} = 1 - \frac{1}{2(1-\delta)}$. Using $\Phi^{-1}(1 - p) = -\Phi^{-1}(p)$:
 \begin{equation}
 \boxed{m_\delta - \tau_c = -\sigma\,\Phi^{-1}\!\left(\frac{1}{2(1-\delta)}\right)
 = -\sqrt{\frac{\pi}{2}}\,\sigma\,\delta + O(\delta^2),}
 \end{equation}
-where we used $\frac{d}{du}\Phi^{-1}(u)\big|_{u=1/2} = \frac{1}{\phi(0)} = \sqrt{2\pi}$ and $\frac{1}{2(1-\delta)} = \frac{1}{2} + \frac{\delta}{2} + O(\delta^2)$. Note this bias is \emph{nonzero} ($\approx -0.0446$ unclipped before $[0,1]$ truncation skew, measured $-0.0289~[-0.0297, -0.0282]$ at $K=1024$, outperforming Mean $-0.0861$, Wilcoxon $p = 1.26 \times 10^{-83}$).
-\item \textbf{Two-sided $\alpha_{\mathrm{trim}}$-Trimmed Mean:} If $\alpha_{\mathrm{trim}} < \delta$ (e.g.\ Experiment~05B's $10\%$ trim at $\delta = 0.15$), fraction $\delta - \alpha_{\mathrm{trim}} = 0.05$ of adversaries survives inside the kept $(1 - 2\alpha_{\mathrm{trim}}) = 0.80$ mass, yielding non-vanishing bias even if $\mu_{\mathrm{adv}} \to -\infty$ ($-0.0509$ measured at $K=1024$). Setting $\alpha_{\mathrm{trim}} > \delta$ ($20\%$ trim) removes all adversaries from the lower tail ($-0.0369$), leaving only asymmetric upper-tail winsorization and trimming shift.
+where we used $\frac{d}{du}\Phi^{-1}(u)\big|_{u=1/2} = \frac{1}{\phi(0)} = \sqrt{2\pi}$ and $\frac{1}{2(1-\delta)} = \frac{1}{2} + \frac{\delta}{2} + O(\delta^2)$. Note this bias is \emph{nonzero} ($-0.0446$ relative to the honest Gaussian median in the limiting one-sided model; the finite Gaussian mixture instead gave $-0.0289~[-0.0297, -0.0282]$ relative to the clipped honest mean at $K=1024$, compared with the mean bias $-0.0861$, Wilcoxon $p = 1.26 \times 10^{-83}$).
+\item \textbf{Two-sided $\alpha_{\mathrm{trim}}$-Trimmed Mean:} If $\alpha_{\mathrm{trim}} < \delta$ (e.g.\ Experiment~05B's $10\%$ trim at $\delta = 0.15$), fraction $\delta - \alpha_{\mathrm{trim}} = 0.05$ of adversaries survives inside the kept $(1 - 2\alpha_{\mathrm{trim}}) = 0.80$ mass, yielding non-vanishing bias even if $\mu_{\mathrm{adv}} \to -\infty$ ($-0.0509$ measured at $K=1024$). With separated supports a trim above the contamination fraction removes all low adversaries. The Gaussian supports overlap here; the measured bias at $20\%$ trim was $-0.0369$.
 \end{enumerate}
 
 % ============================================================================
@@ -386,7 +386,7 @@ Write $\tilde{V}_c := 2V_c - 1 \in \{-1, +1\}$, $\tilde{W}_j := 2W_j - 1 \in \{-
 For $\theta = 1/2$ ($\Var(Z^\star)=1/4$) and $q_j = 0.75$, Oracle ($p_c = 1$) gives $+0.25$, Noisy ($p_c = 0.8$) gives $+0.15$, Prompt-Copier ($p_c = 0.5$) gives $0.00$, and Inverter ($p_c = 0$) gives $-0.25$, strictly separating all accuracy levels whenever $q_j > 1/2$ and $\Var(Z^\star) > 0$.
 \end{proof}
 
-\subsection{Theorem Direction M2: Confounded Consensus Phase Transition Under Shared Latent Confounder $W$}
+\subsection{\texorpdfstring{Theorem Direction M2: Confounded Consensus Phase Transition Under Shared Latent Confounder $W$}{Consensus under a shared latent confounder}}
 \label{sec:confounded_consensus}
 
 Real LLM judge ensembles share pretraining corpora, prompt templates, and surface heuristics (length, formatting, sycophancy). Model this explicitly by a shared latent confounder $W$ per item $Z=(U,V)$.
@@ -405,13 +405,13 @@ Then:
 \boxed{\lim_{K \to \infty} \Prob\big(b_K(Z) \neq h^\star(Z)\big)
 = \Prob\!\left(Q(W) < \tfrac{1}{2}\right) + \tfrac{1}{2}\,\Prob\!\left(Q(W) = \tfrac{1}{2}\right),}
 \end{equation}
-and the TVD-MI optimality gap satisfies $\tau(c) - \Delta_c(b_K) \le 2\,\Prob(b_K(Z) \neq h^\star(Z))$.
+and the TVD-MI optimality gap satisfies $\tau(c) - \E[\Delta_c(b_K)] \le 2\,\Prob(b_K(Z) \neq h^\star(Z))$ for $Z$ drawn from the equal mixture of joint and product laws.
 \item Even when average competence is positive ($\E[Q(W)] = \tfrac{1}{2} + \bar{\gamma} > \tfrac{1}{2}$), majority vote fails to converge to $h^\star$ whenever the anti-competent tail $\Prob(Q(W) < 1/2) > 0$.
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-Fix $(Z, W)$. Conditional on $(Z, W)$, the empirical fraction $\bar{X}_K := \frac{1}{K}\sum_{j=1}^K \ind[b_j(Z) = h^\star(Z)]$ satisfies $\bar{X}_K \xrightarrow{\text{a.s.}} Q(W)$ as $K \to \infty$ by the strong law of large numbers. Therefore, on $\{Q(W) > 1/2\}$, $\ind[\bar{X}_K \le 1/2] \to 0$ almost surely; on $\{Q(W) < 1/2\}$, $\ind[\bar{X}_K \le 1/2] \to 1$ almost surely; and on $\{Q(W) = 1/2\}$, $\Prob(\bar{X}_K \le 1/2 \mid Z,W) \to 1/2$ by the central limit theorem. Taking expectation over $(Z,W)$ via bounded convergence yields eq.~\eqref{eq:confounded_limit}, while $|\Delta_c(h^\star) - \Delta_c(b_K)| \le 2\E[|h^\star(Z) - b_K(Z)|] = 2\Prob(b_K(Z) \neq h^\star(Z))$.
+Fix $(Z, W)$. Conditional on $(Z, W)$, the empirical fraction $\bar{X}_K := \frac{1}{K}\sum_{j=1}^K \ind[b_j(Z) = h^\star(Z)]$ satisfies $\bar{X}_K \xrightarrow{\text{a.s.}} Q(W)$ as $K \to \infty$ by the strong law of large numbers. Therefore, on $\{Q(W) > 1/2\}$, $\ind[\bar{X}_K \le 1/2] \to 0$ almost surely; on $\{Q(W) < 1/2\}$, $\ind[\bar{X}_K \le 1/2] \to 1$ almost surely; and on $\{Q(W) = 1/2\}$, $\Prob(\bar{X}_K \le 1/2 \mid Z,W) \to 1/2$ by the central limit theorem. Taking expectation over $(Z,W)$ via bounded convergence yields eq.~\eqref{eq:confounded_limit}, while $\Delta_c(h^\star)-\E[\Delta_c(b_K)] \le 2\E[|h^\star(Z)-b_K(Z)|] = 2\Prob(b_K(Z)\neq h^\star(Z))$ for that mixture.
 \end{proof}
 
 Note how Theorem~\ref{thm:confounded_consensus} unifies Paper Section~4 (Consensus Convergence), Paper Section~6 (Diversity as Covariance, where persistent $\rho > 0$ stems directly from $\Var(Q(W)) > 0$), and CARE (Chen et al., 2026)!
@@ -419,7 +419,7 @@ Note how Theorem~\ref{thm:confounded_consensus} unifies Paper Section~4 (Consens
 \subsection{Theorem Direction M3: Lean 4 Formalization Upgrade Path}
 \label{sec:lean_roadmap}
 
-In \path{experiments/00_lean_formalization/lean/TvdmiJudge/Basic.lean}, all 14 formalized theorems currently compile without \texttt{sorry} under Lean~v4.29.0 using only standard axioms (\texttt{[propext, Classical.choice, Quot.sound]}), verified in this session. However, every theorem in \texttt{Basic.lean} currently reasons about scalar real inequalities rather than probability measures or function spaces. The concrete formalization upgrade path consists of three self-contained Lean modules:
+In \path{experiments/00_lean_formalization/lean/TvdmiJudge/Basic.lean}, all 28 theorem declarations compile without \texttt{sorry} under Lean~v4.29.0 using only standard axioms (\texttt{[propext, Classical.choice, Quot.sound]}), verified in this session. However, every theorem in \texttt{Basic.lean} currently reasons about scalar real inequalities rather than probability measures or function spaces. The concrete formalization upgrade path consists of three self-contained Lean modules:
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
 \item \textbf{Variational TVD duality on finite spaces (\path{TvdmiJudge/FiniteTVD.lean}):} Define \texttt{tvd (P Q : PMF alpha)} $= \frac{1}{2}\sum_x |P(x) - Q(x)|$ and \texttt{criticGap (P Q : PMF alpha) (h : alpha -> Real)} $= \sum_x h(x)(P(x) - Q(x))$, and prove $\sup_{h \in [0,1]^\alpha} \mathrm{criticGap}(P,Q,h) = \mathrm{tvd}(P,Q)$ attained by $h^\star(x) = \ind[P(x) > Q(x)]$, plus bijection invariance (Proposition~\ref{prop:bijection}).
 \item \textbf{Multi-sample Hoeffding and split-sample union bound (\path{TvdmiJudge/Concentration.lean}):} Formalize Theorem~\ref{thm:split_thm3p}'s corrected exponent $\exp(-n\eta^2)$ and finite union-bound composition over $E_1 \cap E_2 \cap E_3$.
@@ -437,7 +437,7 @@ In \path{experiments/00_lean_formalization/lean/TvdmiJudge/Basic.lean}, all 14 f
 \label{fig:exp12_4panel}
 \end{figure}
 
-\subsection{Measured Check A: Prompt-Copy Blindness vs.\ Oriented Peer TVD-MI ($n=400, K=16, 500$ reps)}
+\subsection{\texorpdfstring{Measured Check A: Prompt-Copy Blindness vs.\ Oriented Peer TVD-MI ($n=400, K=16, 500$ reps)}{Prompt copying and oriented peer scores}}
 
 {\footnotesize\setlength{\tabcolsep}{4pt}
 \begin{center}
@@ -456,7 +456,7 @@ Spearman $\rho$ with Gold & --- & $-0.500$ & $+0.389$ & \textbf{$+0.949$} \\
 \end{center}
 }
 
-\subsection{Measured Check B: Experiment 01 Bug Fix ($\beta \in \{0.5, 1, 2, 4\}, 500$ reps)}
+\subsection{\texorpdfstring{Measured Check B: Experiment 01 Bug Fix ($\beta \in \{0.5, 1, 2, 4\}, 500$ reps)}{Corrected coverage simulations}}
 
 {\footnotesize\setlength{\tabcolsep}{3.5pt}
 \begin{center}
@@ -473,7 +473,7 @@ $\beta$ & Theory $1/\beta$ & Buggy $\mathrm{Beta}(\beta,1)$ & Fixed Cont.\ (all 
 \end{center}
 }
 
-\subsection{Measured Check C1: Null False-Positive Overfitting ($\tau(c)=0, n=50, 500$ reps)}
+\subsection{\texorpdfstring{Measured Check C1: Null False-Positive Overfitting ($\tau(c)=0, n=50, 500$ reps)}{Null false-positive rates}}
 
 {\footnotesize\setlength{\tabcolsep}{3.5pt}
 \begin{center}
@@ -491,7 +491,7 @@ $K$ & Naive Max Mean [95\% CI] & Split-Sample Mean [95\% CI] & $p$-val (Split $=
 \end{center}
 }
 
-\subsection{Measured Check D ($K=1024$) and Check E ($K \in [16, 256]$)}
+\subsection{\texorpdfstring{Measured Check D ($K=1024$) and Check E ($K \in [16, 256]$)}{Large-panel median bias and local scaling}}
 
 \textbf{Check D ($\tau_c=0.80, \mu_{\mathrm{adv}}=0.20, \sigma=0.20, \delta=0.15, K=1024$):}
 Simple Mean RMSE $= 0.0863$ [$0.0858, 0.0868$] (bias $-0.0861$);

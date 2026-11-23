@@ -698,7 +698,7 @@ def run_check_e() -> Dict:
         row = {
             "rho": rho,
             "floor_theory": float(sigma * np.sqrt(rho)),
-            "k_star_crossover": float((1.0 - rho) / rho) if rho > 0 else np.inf,
+            "k_star_crossover": float((1.0 - rho) / rho) if rho > 0 else "inf",
             "broken_free_b_alpha": float(alpha_free_b),
             "broken_free_b_R2": float(r2_free),
             "fixed_local_alpha_unclipped_16_256": float(alpha_local_emp),
@@ -856,7 +856,7 @@ def main() -> None:
     }
     json_path = os.path.join(RESULTS_DIR, "summary_metrics.json")
     with open(json_path, "w") as f:
-        json.dump(summary, f, indent=2)
+        json.dump(summary, f, indent=2, allow_nan=False)
     print(f"\nDone in {summary['elapsed_sec']:.2f}s. Saved {json_path}.")
 
 

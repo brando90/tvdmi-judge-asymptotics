@@ -64,8 +64,8 @@ Wild ($K=38$) & \textbf{\texttt{RB-Spec TVD-MI}} & $\mathbf{0.689\,[0.659,0.718]
 
 In \textsc{MT-Bench} (Table~\ref{tab:real-llm-main}), \texttt{RB-Spec Pairwise}
 lifts pairwise accuracy from $0.685$ (Uniform Mean) and $0.718$ (Naive SVD) to
-$0.795\,[0.769, 0.820]$ while preserving 6-model win-rate ranking
-($\mathrm{Spearman}=0.943$, $\tau=0.867$, Pearson $r=0.978$, vs.\ Naive SVD
+$0.794\,[0.769, 0.818]$ while preserving 6-model win-rate ranking
+($\mathrm{Spearman}=0.943$, $\tau=0.867$, Pearson $r=0.980$, vs.\ Naive SVD
 $\mathrm{Spearman}=0.771$).
 
 \subsection{Affine Calibration, \textsc{RewardBench~2}, Confounder Recovery, and Davis--Kahan (Experiment~14)}
@@ -83,7 +83,7 @@ and $500$-repetition Davis--Kahan subspace convergence.
   \textbf{(A)} On \textsc{SummEval} ($K=38$), $m=2$--$50$ human anchor articles close $\mathrm{ICC(A,1)}$ ($0.334 \to 0.645$) into $\mathrm{ICC(C,1)}$ ($0.647$) and cut MAE ($1.130 \to 0.368$).
   \textbf{(B)} On \textsc{RewardBench~2} ($1,753$ prompts), \texttt{RB-Spec TVD-MI} resists $32$ weak \texttt{OpenAssistant} clones ($0.778$ vs.\ $0.432$) and $54.9\%$ naturally anti-correlated \texttt{PKU-beaver-v1.0-reward} floods ($0.796$ vs.\ $0.145$).
   \textbf{(C)} Native Bradley--Terry logits start well-calibrated ($\mathrm{ECE}=0.022$ for \texttt{RB-Spec}, $0.013$ raw at $m=0$).
-  \textbf{(D--E)} Under universal length confounders $c \in [0, 2]$, vanilla \texttt{RB-Spec} degrades while \texttt{CR-RB-Spec} holds flat on \textsc{SummEval} ($0.594$) and Monte Carlo ($0.892$).
+  \textbf{(D--E)} Under universal length confounders $c \in [0, 2]$, vanilla \texttt{RB-Spec} degrades while \texttt{CR-RB-Spec} holds flat on \textsc{SummEval} ($0.577$) and reaches $0.892$ in simulation at $c=2$.
   \textbf{(F)} \textsc{RewardBench~2} empirical $\sin^2\theta$ decays at $n^{-1.03}$ with zero Lean bound violations.}
   \label{fig:exp14-overview}
 \end{figure}
@@ -97,20 +97,20 @@ and $500$-repetition Davis--Kahan subspace convergence.
 \toprule
 Task / Benchmark & Condition & Baseline / Uncalibrated & \texttt{RB-Spec} / \texttt{CR-RB-Spec} & Wilcoxon $p$-value \\
 \midrule
-\textsc{SummEval} Affine ($K=38$) & $m=0 \to 20$ anchors & $\mathrm{ICC(A,1)}=0.334$, $\mathrm{MAE}=1.130$ & $\mathrm{ICC(A,1)}=\mathbf{0.644}$, $\mathrm{MAE}=\mathbf{0.370}$ & $4.27\times 10^{-18}$ ($m=10$) \\
+\textsc{SummEval} Affine ($K=38$) & $m=0 \to 20$ anchors & $\mathrm{ICC(A,1)}=0.334$, $\mathrm{MAE}=1.130$ & $\mathrm{ICC(A,1)}=\mathbf{0.644}$, $\mathrm{MAE}=\mathbf{0.370}$ & $4.27\times 10^{-18}$ (MAE, $m=10$) \\
 \textsc{RewardBench~2} Natural ($K=23$) & Best Single $0.892$ & Mean $0.812$, Naive SVD $0.833$ & $0.787\,[0.768,0.806]$ & $1.31\times 10^{-6}$ (vs.\ Mean) \\
 \textsc{RewardBench~2} Weak Flood ($K=55$) & $32$ \texttt{OpenAssistant} clones & Mean $0.480$, Naive SVD $0.432$ & $\mathbf{0.778\,[0.758,0.795]}$ & $1.65\times 10^{-124}$ (vs.\ SVD) \\
 \textsc{RewardBench~2} PKU Flood ($K=51$) & $54.9\%$ \texttt{beaver-v1-reward} & Mean $0.311$, Naive SVD $0.145$ & $\mathbf{0.796\,[0.778,0.815]}$ & $2.11\times 10^{-229}$ (vs.\ SVD) \\
-\textsc{SummEval} Length Confounder ($c=2$) & $K=38$ universal bias & Mean $0.276$, Vanilla RB $0.276$ & \texttt{CR-RB}: $\mathbf{0.594}$ & $6.03\times 10^{-13}$ \\
-\textsc{MT-Bench} Length Confounder ($c=2$) & $K=17$ universal bias & Mean $0.676$, Vanilla RB $0.671$ & \texttt{CR-RB}: $\mathbf{0.771}$ & $1.59\times 10^{-4}$ \\
+\textsc{SummEval} Length Confounder ($c=2$) & $K=38$ universal bias & Mean $0.277$, Vanilla RB $0.276$ & \texttt{CR-RB}: $\mathbf{0.577}$ & $1.72\times 10^{-12}$ \\
+\textsc{MT-Bench} Length Confounder ($c=2$) & $K=17$ universal bias & Mean $0.676$, Vanilla RB $0.668$ & \texttt{CR-RB}: $\mathbf{0.774}$ & $2.73\times 10^{-5}$ \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
 \clearpage
-\subsection{Experiment~15: Signal-Deconfounded Shrinkage (\texttt{SRB-Spec}), \textsc{JudgeBench}, Partial Proxies, and Rank-$r$ Spectral Bounds}
+\subsection{Experiment~15: Signal-Deconfounded Shrinkage (\texttt{SRB-Spec}), \textsc{JudgeBench}, Partial Proxies, and Rank-r Spectral Bounds}
 
-Across \textsc{RewardBench~2} ($1,753$ prompts), \textsc{JudgeBench} ($33$ official judges $\times$ $350$ pairs), \textsc{SummEval}, and \textsc{MT-Bench}, \texttt{SRB-Spec} closes clean-pool gaps via residual clone balancing and tempered precision weighting while preserving robustness to $32$-clone and inverted-polarity floods, verifying the $(1-r^2)c^2 v_W$ partial-proxy law and rank-$r$ ($r=1,2,3$) spectral guarantees.
+Across \textsc{RewardBench~2} ($1,753$ prompts), \textsc{JudgeBench} ($33$ official judges $\times$ $350$ pairs), \textsc{SummEval}, and \textsc{MT-Bench}, \texttt{SRB-Spec} closes clean-pool gaps via residual clone balancing and tempered precision weighting while preserving robustness to $32$-clone and inverted-polarity floods, with separate numerical checks of proxy error and spectral bounds at ranks 1, 2 and 3.
 
 \begin{figure}[ht]
   \centering
@@ -118,7 +118,7 @@ Across \textsc{RewardBench~2} ($1,753$ prompts), \textsc{JudgeBench} ($33$ offic
   \caption{\textbf{Experiment~15 empirical verification.}
   \textbf{(A--B)} On \textsc{RewardBench~2}, \texttt{SRB-Spec} eliminates vanilla \texttt{RB-Spec}'s clean-pool gap ($0.787 \to 0.831$ Auto / $0.836$ $\alpha=1$) and strengthens clone ($0.832$) and PKU polarities ($0.837$); gains extend cleanly to \textsc{MT-Bench} ($0.803$).
   \textbf{(C)} On $33$-judge \textsc{JudgeBench} ($350$ pairs), \texttt{SRB-Spec (Auto)} holds $0.697$ clean, $0.691$ under weak clones, and $0.694$ under $46\%$ inverted judges (adding length residualization, \texttt{CR-SRB-Spec}, reaches $0.714$ / $0.709$ / $0.711$; Table~\ref{tab:app-exp15-main}).
-  \textbf{(D--E)} Real-LLM and $500$-rep Monte Carlo partial-proxy sweeps match Lean formula $(1-r^2)c^2v_W+\mathrm{Var}_{\mathrm{bal}}$.
+  \textbf{(D--E)} Benchmark accuracy increases with proxy strength; the $500$-rep simulation tracks $(1-r^2)c^2v_W+\mathrm{Var}_{\mathrm{bal}}$.
   \textbf{(F)} Rank-$r$ ($r=1,2,3$) subspace leakage decays with $0$ bound violations across $10{,}500$ i.i.d.\ draws.}
   \label{fig:exp15-overview}
 \end{figure}
@@ -135,12 +135,12 @@ Task / Benchmark & Regime / Condition & Baseline / Vanilla & \texttt{SRB-Spec} /
 \textsc{RewardBench~2} Clean ($K=23$) & Best-of-4 ($1,753$ prompts) & Naive SVD $0.833$, Vanilla RB $0.787$ & Auto $\mathbf{0.831}$, $\alpha=1$ $\mathbf{0.836}$ & $p=7.14\times 10^{-14}$ vs.\ RB \\
 \textsc{RewardBench~2} Weak ($K=55$) & $32$ \texttt{OpenAssistant} clones & Naive SVD $0.435$, Vanilla RB $0.776$ & Auto $\mathbf{0.827}$, $\alpha=1$ $\mathbf{0.832}$ & $p=1.99\times 10^{-137}$ vs.\ SVD \\
 \textsc{RewardBench~2} PKU ($K=51$) & $54.9\%$ \texttt{beaver-v1-reward} & Naive SVD $0.143$, Vanilla RB $0.799$ & Auto $\mathbf{0.836}$, $\alpha=1$ $\mathbf{0.837}$ & $p=2.91\times 10^{-248}$ vs.\ SVD \\
-\textsc{SummEval} Wild / \textsc{MT-Bench} & $K=38$ (Sp) / $K=17$ (Acc) & Vanilla RB $0.628$ / $0.794$ & $\alpha=1$: $\mathbf{0.647}$ / $\mathbf{0.803}$ & $5.42\times 10^{-4}$ / $0.046$ \\
-\textsc{JudgeBench} ($33$ judges, $350$ pairs) & Clean ($K=33$) / Adv ($K=61$) & Mean $0.700$ / $0.634$, SVD $0.694$ / $0.660$ & \texttt{CR-SRB}: $\mathbf{0.714}$ / $\mathbf{0.711}$ & $p=0.0038$ vs.\ Mean (Adv) \\
-Partial Proxy MC ($500$ reps, $c=1.5$) & $r = 0.0 \to 0.70 \to 1.00$ & Lean curve: $2.334 \to 1.231 \to 0.084$ & Empirical: $2.355 \to 1.231 \to \mathbf{0.086}$ & Exact fit ($\le 0.022$ MSE) \\
+\textsc{SummEval} Wild / \textsc{MT-Bench} & $K=38$ (Sp) / $K=17$ (Acc) & Vanilla RB $0.628$ / $0.795$ & $\alpha=1$: $\mathbf{0.647}$ / $\mathbf{0.803}$ & $5.42\times 10^{-4}$ / $0.033$ \\
+\textsc{JudgeBench} ($33$ judges, $350$ pairs) & Clean ($K=33$) / Adv ($K=61$) & Mean $0.700$ / $0.631$, SVD $0.694$ / $0.660$ & \texttt{CR-SRB}: $\mathbf{0.714}$ / $\mathbf{0.711}$ & $p=0.0025$ vs.\ Mean (Adv) \\
+Partial Proxy MC ($500$ reps, $c=1.5$) & $r = 0.0 \to 0.70 \to 1.00$ & Lean curve: $2.334 \to 1.231 \to 0.084$ & Empirical: $2.355 \to 1.231 \to \mathbf{0.086}$ & Max. absolute difference $0.022$ \\
 Multi-Factor DK (\textsc{RewardBench~2}) & $r=1,2,3$ ($n=10 \to 640$) & Gaps $12.85 / 0.95 / 0.066$ & Slopes $\mathbf{-1.00} / \mathbf{-1.03} / \mathbf{-0.42}$ & $0/10{,}500$ bound violations \\
 \bottomrule
 \end{tabular}}
 \vspace{2pt}
-{\footnotesize Note: Tables~\ref{tab:app-exp14-main} and \ref{tab:app-exp15-main} use independent 5-fold outer CV permutations on \textsc{RewardBench~2}, accounting for the $\sim 0.002$--$0.003$ baseline difference in Naive SVD and Vanilla \texttt{RB-Spec}.}
+{\footnotesize Note: Tables~\ref{tab:app-exp14-main} and \ref{tab:app-exp15-main} use separate five-fold splits and clone-noise draws on \textsc{RewardBench~2}. The clean SVD and vanilla \texttt{RB-Spec} accuracies agree across runs. Their flooded accuracies differ by about $0.002$--$0.003$.}
 \end{table}

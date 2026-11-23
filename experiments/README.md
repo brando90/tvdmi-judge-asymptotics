@@ -39,21 +39,22 @@ Use 500 Monte Carlo repetitions per configuration unless noted otherwise.
 | 03 | Two-axis decomposition | Theorem 3 | K × n grid | Gap | Heatmap, two error sources |
 | 04 | Diversity & dependence | Variance formula | K (log) | RMSE (log) | Slope −0.5 then floor at √(σ²ρ) |
 | 05 | Adversarial robustness | Breakdown threshold | δ | Gap | Phase transition at δ* = 2γ/(1+2γ) |
-| 06 | LLM judges (optional) | All of the above | K | Corr with gold | Power-law or exponential |
+| 06 | Synthetic LLM-judge proxy | Simulated judge scaling | K | Corr with gold | Power-law or exponential |
 | 07 | Aggregation rules | Comparison | K | Error | Method-dependent |
 | 08 | TVD-MI score estimator | Bias/variance | K, n | MSE | Decreasing |
 | 09 | Pairwise comparisons | Bradley-Terry | K, m | Ranking error | Decreasing |
 | 10 | Diversity metrics | Correlation | Diversity | α | Predictive |
 | 11 | Finite-sample bounds | Concentration | K | Bound vs error | Tight/loose |
 | 12 | `12_repo_audit_bugfixes_and_next_theory_roadmap_start_21Nov2026` | Repo audit & fixes | K, B, rho, delta | Gap / RMSE / bias | Corrected `1/beta`, split-sample `K*`, oriented peer TVD-MI |
-| 13 | `13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026` | Real-LLM & Lean `NewTheory` | M clones, delta, budget | Spearman / Acc / ICC(A,1) | Clone hijacking vs `RB-Spec` `1/F` recovery on SummEval & MT-Bench |
+| 13 | `13_real_llm_validation_hierarchical_rb_spectral_theory_and_lean_start_21Nov2026` | Real-LLM & Lean `NewTheory` | M clones, delta, budget | Spearman / Acc / ICC(A,1) | Known-family `1/F` bound and empirical clone resistance on SummEval and MT-Bench |
 | 14 | `14_affine_calibration_rewardbench2_and_confounder_em_start_21Nov2026` | Calibration, RB2, Confounders, Davis–Kahan | m anchors, c confounder, n samples | ICC(A,1) / ECE / Acc / sin^2(theta) | Bias-calibrated ICC agreement, `RB2` natural clones/cost inversion, `CR-RB-Spec`, `O(1/n)` sin^2 decay |
 | 15 | `15_shrinkage_partial_confounders_and_multifactor_lean_start_21Nov2026` | `SRB-Spec`, `JudgeBench`, partial proxies `r`, rank-`r` & measure Lean | shrinkage alpha, proxy corr r, rank r, n prompts | Best-of-4 / JudgeBench Acc, `(1-r^2)c^2 v_W` floor, rank-`r` sin^2 | Residualized shrinkage `SRB-Spec` closes clean gap & stays flood-safe; `33`-judge `JudgeBench`; partial-proxy MSE matches Lean `(1-r^2)`; rank-`r` & measure-theoretic TVD bounds |
-| 16 | `16_mega_qa_repo_audit_and_reconciliation_start_23Nov2026` | 3-stage sequential `agy` Mega QA audit | Stages 1–3 (`Claude Opus` -> `Gemini Neon` -> `Claude Opus`) | Correctness, Lean 4 (`66` thms), Paper (`main`/`arxiv`), Structural RAMP/erosion | All critical/major findings reconciled, deterministic Lean/Python/PDF/anonymity/secret checks clean on `main` |
+| 16 | `16_mega_qa_repo_audit_and_reconciliation_start_23Nov2026` | 3-stage sequential `agy` Mega QA audit | Three Gemini stages after the requested Claude models hit quota | Correctness, Lean 4 (`66` thms), Paper (`main`/`arxiv`), Structural RAMP/erosion | All critical/major findings reconciled, deterministic Lean/Python/PDF/anonymity/secret checks clean on `main` |
+| 17 | `17_cross_company_mega_qa_and_collaborator_brief_start_23Nov2026` | Cross-company Mega QA & collaborator summary slide | Stages 1–3 (`Codex` -> `Claude` -> `Codex`) | Full repo audit + 1-page summary slide + verified Sanmi/Henry B email | Review findings and sign-off for the orchestrator’s publication and email steps |
 
 Experiments 01–05 are the core synthetic experiments that directly validate
-the theorems. Experiment 06 validates on real data. Experiments 07–11 are
-secondary extensions.
+the theorems. Experiment 06 simulates judge scores. Experiments 07–11 are
+secondary extensions. Experiments 13–15 evaluate released benchmark data.
 
 ## Adding a new experiment
 

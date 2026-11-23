@@ -26,22 +26,23 @@ Let $\bar{S}_K := \frac{1}{K}\sum_{j=1}^K S_j$. Then
 
 \begin{corollary}[Scaling regimes]
 \label{cor:scaling-regimes}
+For an unbiased ensemble, taking root mean squared error relative to the common mean gives the following regimes.
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
-\item If $\rho_K(c) = 0$ (independent judges):
-  $\RMSE \sim K^{-1/2}$.
+\item If $\rho_K(c) = 0$ (uncorrelated judges):
+  $\RMSE \asymp K^{-1/2}$.
 \item If $\rho_K(c) = \rho_0 > 0$ (constant dependence):
   irreducible error floor $\sigma\sqrt{\rho_0}$, with vanishing local elasticity
   $\alpha_{\mathrm{eff}}(K) := -d\log\RMSE / d\log K = \frac{1-\rho_0}{2(1+(K-1)\rho_0)}$.
 \item If $\rho_K(c) \sim K^{-\beta}$ for $\beta > 0$ (decaying dependence):
-  $\RMSE \sim K^{-\alpha}$ with $\alpha = \tfrac{1}{2}\min(1,\beta)$.
+  $\RMSE \asymp K^{-\alpha}$ with $\alpha = \tfrac{1}{2}\min(1,\beta)$.
 \end{enumerate}
 \end{corollary}
 
 \begin{theorem}[Impossibility under persistent dependence]
 \label{thm:impossibility-dependence}
 If residual pairwise dependence does not vanish, i.e.,
-$\liminf_{K \to \infty} \rho_K(c) > 0$, then averaging-based aggregation
-cannot be asymptotically consistent: $\liminf_{K \to \infty} \Var(\bar{S}_K \mid c) \ge \sigma^2\rho_0 > 0$.
+$\rho_0:=\liminf_{K \to \infty} \rho_K(c) > 0$, then averaging-based aggregation
+with $\sigma^2>0$ cannot be mean-square consistent: $\liminf_{K \to \infty} \Var(\bar{S}_K \mid c) \ge \sigma^2\rho_0 > 0$.
 \end{theorem}
 
 \subsection{Hierarchical Clone Hijacking and Redundancy-Balanced Spectral TVD-MI}
@@ -55,7 +56,7 @@ samples of one cheap model alongside a few diverse judges).
 \begin{assumption}[Hierarchical random-effects judge panel]
 \label{asm:hierarchical}
 Each judge $j \in \mathcal{G}_f$ in family $f \in \{1,\dots,F\}$ satisfies
-$S_j = \mu + u_f + e_j$, where family biases $u_f$ are independent with
+$S_j = \mu + u_f + e_j$, where family and individual errors are mutually independent and centered, family effects $u_f$ have
 $\Var(u_f) = \tau_f^2$, idiosyncratic errors $e_j$ are independent with
 $\Var(e_j) = \sigma_f^2$, and $|\mathcal{G}_f| = K_f$.
 \end{assumption}
@@ -70,17 +71,14 @@ $\bar{S}^{\mathrm{unif}}_{K_1, K_2}$. Then
 = \frac{K_1^2 \tau_1^2 + K_1 \sigma_1^2 + K_2^2 \tau_2^2 + K_2 \sigma_2^2}{(K_1 + K_2)^2}
 \;\xrightarrow[K_1 \to \infty]{}\; \tau_1^2.
 \end{equation}
-Whenever $\tau_1^2 > \Var(\bar{S}^{\mathrm{unif}}_{1, K_2})$ (a weaker model
-family is cloned repeatedly), adding judges strictly \emph{increases}
-ensemble error (formally verified in Lean~4 as
-\texttt{clone\_hijacking\_strict\_increase\_counterexample}).
+Whenever $\tau_1^2 > \Var(\bar{S}^{\mathrm{unif}}_{1, K_2})$, sufficiently many clones raise the variance above its initial value. Lean verifies a strict example.
 \end{proposition}
 
 \begin{theorem}[Family-balanced $1/F$ recovery]
 \label{thm:balanced-1F}
 Under Assumption~\ref{asm:hierarchical}, let $\bar{S}^{\mathrm{bal}}_{F, \{K_f\}}$
 weight every judge in family $f$ by $1 / (F K_f)$. Then for \emph{all}
-positive clone multiplicities $K_1, \dots, K_F \ge 1$,
+uniformly bounded variance components and positive clone multiplicities $K_1, \dots, K_F \ge 1$,
 \begin{equation}
 \label{eq:balanced-inv-F}
 \Var\!\big(\bar{S}^{\mathrm{bal}}_{F, \{K_f\}}\big)
@@ -103,5 +101,5 @@ Taking the leading right singular vector $v_1$ of the balanced matrix
 $Z^{\mathrm{bal}}_{i,j} = d_j \widetilde{Z}_{i,j}$ yields weights
 $w^{\mathrm{RB}}_j \propto d_j v_{1,j}$, oriented unsupervised by the balanced
 sign $\mathrm{sign}(\sum_{j=1}^K d_j w^{\mathrm{RB}}_j)$. This construction aligns
-with \citet{chen2026care} while requiring neither label supervision nor known
+with \citet{zhao2026care} while requiring neither label supervision nor known
 family identities.

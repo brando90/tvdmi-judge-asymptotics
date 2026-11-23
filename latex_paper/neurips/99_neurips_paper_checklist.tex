@@ -35,7 +35,7 @@
 \item {\bf Theory assumptions and proofs}
     \item[] Question: For each theoretical result, does the paper provide the full set of assumptions and a complete (and correct) proof?
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: All assumptions are explicitly stated in Sections~2--8, full derivations appear in Appendices~\ref{app:proofs}--\ref{app:experiments}, and core finite-alphabet, calibration, confounder, and Davis--Kahan theorems are formally verified in Lean~4 with Mathlib (Section~\ref{sec:lean}, zero \texttt{sorry}).
+    \item[] Justification: All assumptions are explicitly stated in Sections~2--8, additional derivations appear in Appendices~\ref{app:proofs}--\ref{app:experiments}, and core finite-alphabet, calibration, confounder, and Davis--Kahan identities and conditional bounds are formally verified in Lean~4 with Mathlib (Section~\ref{sec:lean}, zero \texttt{sorry}).
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not include theoretical results. 
@@ -68,8 +68,8 @@
 
 \item {\bf Open access to data and code}
     \item[] Question: Does the paper provide open access to the data and code, with sufficient instructions to faithfully reproduce the main experimental results, as described in supplemental material?
-    \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: All Lean~4 modules, synthetic simulation scripts, and evaluation runners over public \textsc{SummEval}, \textsc{LMSYS MT-Bench}, \textsc{RewardBench~2}, and \textsc{JudgeBench} benchmarks are released with execution commands in the repository (anonymized for venue review).
+    \item[] Answer: \answerNo{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
+    \item[] Justification: The runners and Lean sources are available in the project repository. The anonymous manuscript does not provide a complete acquisition pipeline for the aligned benchmark caches.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that paper does not include experiments requiring code.
@@ -97,7 +97,7 @@
 \item {\bf Experiment statistical significance}
     \item[] Question: Does the paper report error bars suitably and correctly defined or other appropriate information about the statistical significance of the experiments?
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: Section~\ref{sec:experiments} and Appendix~\ref{app:experiments} report $95\%$ cluster-bootstrap confidence intervals ($2,000$ independent article, question, or prompt clusters) alongside two-sided paired Wilcoxon signed-rank $p$-values and $500$-repetition Monte Carlo intervals.
+    \item[] Justification: Section~\ref{sec:experiments} and Appendix~\ref{app:experiments} report $95\%$ cluster-bootstrap confidence intervals ($2,000$ draws resampling articles, questions, or prompts) alongside two-sided paired Wilcoxon signed-rank $p$-values and $500$-repetition Monte Carlo intervals.
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not include experiments.
@@ -114,7 +114,7 @@
 \item {\bf Experiments compute resources}
     \item[] Question: For each experiment, does the paper provide sufficient information on the computer resources (type of compute workers, memory, time of execution) needed to reproduce the experiments?
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: All Monte Carlo simulations, spectral aggregation suites, and Lean~4 verification run on a single multi-core CPU workstation (Apple Silicon macOS) in under $90$\,s per script with zero GPU or live paid LLM inference calls (Appendix~\ref{app:experiments}).
+    \item[] Justification: All Monte Carlo simulations, spectral aggregation suites, and Lean~4 verification run on a single multi-core CPU workstation (Apple Silicon macOS) during the recorded benchmark runs with zero GPU or live paid LLM inference calls (Appendix~\ref{app:experiments}).
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not include experiments.
@@ -164,7 +164,7 @@
 \item {\bf Licenses for existing assets}
     \item[] Question: Are the creators or original owners of assets (e.g., code, data, models), used in the paper, properly credited and are the license and terms of use explicitly mentioned and properly respected?
     \item[] Answer: \answerYes{} % Replace by \answerYes{}, \answerNo{}, or \answerNA{}.
-    \item[] Justification: We cite all source datasets and toolchains in Section~\ref{sec:experiments} and \texttt{experiments/README.md}, respecting their licenses: \textsc{SummEval} (MIT), \textsc{G-Eval} outputs (MIT), \textsc{MT-Bench} (CC-BY-4.0 / Apache-2.0), \textsc{RewardBench~2} (ODC-BY / Apache-2.0), \textsc{JudgeBench} (Apache-2.0), and \texttt{Mathlib4} (Apache-2.0).
+    \item[] Justification: The benchmark and software licenses are \textsc{SummEval} (MIT), \textsc{G-Eval} outputs (MIT), \textsc{MT-Bench} (CC-BY-4.0 / Apache-2.0), \textsc{RewardBench~2} (ODC-BY / Apache-2.0), \textsc{JudgeBench} (Apache-2.0), and \texttt{Mathlib4} (Apache-2.0).
     \item[] Guidelines:
     \begin{itemize}
         \item The answer NA means that the paper does not use existing assets.
@@ -172,7 +172,7 @@
         \item The authors should state which version of the asset is used and, if possible, include a URL.
         \item The name of the license (e.g., CC-BY 4.0) should be included for each asset.
         \item For scraped data from a particular source (e.g., website), the copyright and terms of service of that source should be provided.
-        \item If assets are released, the license, copyright information, and terms of use in the package should be provided. For popular datasets, \url{paperswithcode.com/datasets} has curated licenses for some datasets. Their licensing guide can help determine the license of a dataset.
+        \item If assets are released, the license, copyright information, and terms of use in the package should be provided. The \href{https://huggingface.co/docs/hub/datasets-cards}{Hugging Face dataset card guide} explains where to record a dataset license.
         \item For existing datasets that are re-packaged, both the original license and the license of the derived asset (if it has changed) should be provided.
         \item If this information is not available online, the authors are encouraged to reach out to the asset's creators.
     \end{itemize}
